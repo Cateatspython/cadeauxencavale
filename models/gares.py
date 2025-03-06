@@ -1,29 +1,5 @@
 from ..app import app, db
-
-class Utilisateur(db.Model):
-    __tablename__="utilisateur"
-    id_utilisateur=db.Column(db.String(30), primary_key=True)
-    pseudo=db.Column(db.String(20))
-    password=db.Column(db.Text)
-    email=db.Column(db.Text)
-
-    #Relations
-    historique=db.relationship("Historique", backref="utilisateur", lazy=True)
-    historique=db.relationship("Gares_favorites", backref="utilisateur", lazy=True)
-
-
-class Historique(db.Model):
-    __tablename__="historique"
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    id_utilisateur=db.Column(db.String(30), ForeignKey('utilisateur.id_utilisateur')) #Foreign Key id_utilisateur de Utilisateurs
-    date_heure_recherche=db.Column(db.DateTime)
-    requete_json=db.Column(db.Text)
-
-class Gares_favorites(db.Model):
-    __tablename__="gares_favorites"
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    UIC=db.Column(db.Integer, ForeignKey('gares.UIC')) #Foreign Key UIC de Gares
-    id_utilisateur=db.Column(db.String(30), ForeignKey('utilisateur.id_utilisateur')) #Foreign Key id_utilisateur de Utilisateurs
+from werkzeug.security import generate_password_hash
 
 class Gares(db.Model):
     __tablename__="gares"
@@ -69,5 +45,3 @@ class Declaration_de_perte(db.Model):
     date_perte=db.Column(db.DateTime)
     type_objet=db.Column(db.Text) #normalisation du pluriel
     nature_objet=db.Column(db.Text) #normalisation du pluriel
-
-
