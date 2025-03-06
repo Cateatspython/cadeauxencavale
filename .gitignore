@@ -46,3 +46,7 @@ instance/
 
 # pyenv
 .python-version
+
+# db
+.db
+.sqlite
