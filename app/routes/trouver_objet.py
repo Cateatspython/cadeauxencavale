@@ -6,26 +6,58 @@ from flask import request
 from ..models.formulaires import TrouverObjet
 from datetime import datetime
 
-@app.route('/trouver_objet/autocomplete', methods=['GET'])
-def autocomplete():
+@app.route("/autocomplete-gares", methods=["GET"])
+def autocomplete_gares():
     """
-    Permet l'auto-completion de la partie 'Gares' du formulaire de recherche 
+    Renvoie les noms des gares pour l'autocomplétion, filtrés selon la saisie de l'utilisateur.
     """
-    query = request.args.get('q', '').lower()
-    results = db.session.query(Gares.nom).filter(Gares.nom.ilike(f"%{query}%")).all()
-    suggestions = [result.nom for result in results]
-    return jsonify(suggestions)
+    query = request.args.get("query", "").lower()
+    gares = Gares.query.filter(Gares.nom.ilike(f"%{query}%")).with_entities(Gares.nom).all()
+    gares_noms = [gare.nom for gare in gares]
+    return jsonify(gares_noms)
 
 @app.route("/trouver-objet")
 def trouver_objet():
     """
-    Route qui permet le fonctionnement du formulaire pour trouver la ou les gares 
-    les plus probables pour retrouver un objet perdu.
-    1. Récupère les entrées utilisateur du formulaire
-    2. Soulève un erreur si l'utilisateur rentre plus de deux gares
-    4. Renvoie vers le template :
-    - geolocalisations : 
-    - 
+    Route pour rechercher des objets trouvés dans les gares et afficher des statistiques.
+
+    Cette route permet aux utilisateurs de renseigner un formulaire pour rechercher des objets perdus.
+    Les résultats sont filtrés selon les critères suivants :
+    - Type d'objet recherché
+    - Liste des gares sélectionnées (maximum 2)
+    - Date du trajet
+    - Heure approximative de perte
+
+    Fonctionnalités :
+    1. Validation du formulaire :
+       - Tous les champs doivent être remplis
+       - Limitation à 2 gares maximum
+       - Vérification du format des dates et heures (ISO 8601)
+    
+    2. Requêtes SQLAlchemy :
+       - Récupération des gares correspondant aux critères
+       - Filtrage des objets trouvés entre la date/heure approximative de perte et la fin des vacances de Noël
+       - Comptage des objets trouvés le jour donné et par type d'objet
+       
+    3. Données renvoyées au template :
+       - Géolocalisations des gares sélectionnées
+       - Informations sur chaque gare (nom, adresse, horaires, nombre d'objets trouvés)
+       - Statistiques pour la datavisualisation :
+         - Nombre total d'objets trouvés le jour sélectionné
+         - Répartition des objets trouvés par type dans les gares sélectionnées
+
+    Renvoie :
+        Render_template vers "trouver_objet.html" avec les données nécessaires pour l'affichage :
+        - form : le formulaire validé ou vide
+        - geolocalisations : liste des coordonnées des gares sélectionnées
+        - donnees : détails des gares (nom, adresse, horaires, etc.)
+        - nb_objets_jour : nombre d'objets trouvés le jour donné
+        - nb_objets_par_type : nombre d'objets par type pendant la période de vacances
+
+    Redirige vers la même page avec un message d'erreur si :
+        - Un champ du formulaire est vide
+        - Plus de 2 gares sont sélectionnées
+        - Les formats de date/heure sont invalides
     """
     form = TrouverObjet()
     donnees=[]
@@ -35,9 +67,15 @@ def trouver_objet():
         gares = request.form.getlist("gares")  # Liste des gares sélectionnées
         date_trajet = request.form.get("date_trajet", None)
         heure_approx_perte = request.form.get("heure_approx_perte", None)
+        
+        # Soulever une erreur si les champs sont vides
+        if not (type_d_objet and gares and date_trajet and heure_approx_perte):
+            flash("Veuillez renseigner tous les champs du formulaire", "error")
+            return redirect(url_for("trouver_objet"))
+
 
         # Limiter le nombre de gares à deux maximum
-        if len(gares) > 2:
+        if len(gares) > 2 :
             flash("Veuillez sélectionner au maximum deux gares.", "error")
             return redirect(url_for("trouver_objet"))
 

@@ -1,0 +1,52 @@
+<form method="POST" action="{{ url_for('trouver_objet') }}">
+    {{ form.hidden_tag() }}
+
+    <!-- Type d'objet -->
+    <label for="type_d_objet">Type d'objet :</label>
+    {{ form.type_d_objet(class="form-control") }}
+    {% if form.type_d_objet.errors %}
+        <ul class="errors">
+            {% for error in form.type_d_objet.errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <!-- Gares -->
+    <label for="gares">Sélectionnez une ou deux gares :</label>
+    {{ form.gares(class="form-control") }}
+    <datalist id="gares-list"></datalist>
+    {% if form.gares.errors %}
+        <ul class="errors">
+            {% for error in form.gares.errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <!-- Date du trajet -->
+    <label for="date_trajet">Date du trajet :</label>
+    {{ form.date_trajet(class="form-control", id="date_trajet") }}
+    {% if form.date_trajet.errors %}
+        <ul class="errors">
+            {% for error in form.date_trajet.errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <!-- Heure approximative de perte -->
+    <label for="heure_approx_perte">Heure approximative de perte :</label>
+    {{ form.heure_approx_perte(class="form-control", id="heure_approx_perte") }}
+    {% if form.heure_approx_perte.errors %}
+        <ul class="errors">
+            {% for error in form.heure_approx_perte.errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <!-- Bouton de soumission -->
+    {{ form.submit(class="btn btn-primary") }}
+</form>
+
