@@ -1,7 +1,10 @@
-from ..app import app, db
+from ..app import app, db, login
 from werkzeug.security import generate_password_hash
 from flask_login import UserMixin
-from .models import users.py #probablement incorrect
+from sqlalchemy import ForeignKey
+from sqlalchemy import String
+from flask_wtf import FlaskForm
+from wtforms import StringField, SelectField, SelectMultipleField, TextAreaField, PasswordField
 
 class Utilisateur(UserMixin, db.Model):
     __tablename__="utilisateur"
@@ -33,7 +36,7 @@ class Utilisateur(UserMixin, db.Model):
             erreurs.append("Le pseudonyme existe déjà.")
 
         if len(erreurs) > 0:
-        return False, erreurs
+            return False, erreurs
 
         utilisateur = Users(
             pseudo=pseudo,
@@ -64,7 +67,7 @@ class Utilisateur(UserMixin, db.Model):
 
 #ou à mettre dans un fichier dédié formulaire.py ?
 class Connexion(FlaskForm):
-    pseudo=Stringfield("pseudo", validators=[])
+    pseudo=StringField("pseudo", validators=[])
     password=PasswordField("pseudo", validators=[])
 
 class Historique(db.Model):

@@ -1,11 +1,12 @@
-from ..app import app, db
+from ..app import app, db, login
 from flask import render_template, request, flash, redirect, url_for
 from sqlalchemy import or_
-from ..models.users import AjoutUtilisateur
+from ..models.users import Utilisateur
 from flask_login import current_user,logout_user
+from flask_wtf import FlaskForm
 
 @app.route("/accueil")
-def 
+#def 
 
 @app.route("/inscription")
 def ajout_utilisateur():
@@ -36,13 +37,13 @@ def connexion():
     
     if form.validate_on_submit():
         utilisateur=Users.identification(
-            pseudo=clean_arg(request.form.get("pseudo",None))
+            pseudo=clean_arg(request.form.get("pseudo", None)),
             password=clean_arg(request.form.get("password",None))
         )
         if utilisateur:
             flash("Connexion effectuée","success")
             login_user(utilisateur)
-            reutrn redirect(url_for("accueil"))
+            return redirect(url_for("accueil"))
         else:
             flash("Les identifiants n'ont pas été reconnus.","error")
             return render_template("//ÀFAIRE//.html", form=form)
@@ -52,21 +53,12 @@ def connexion():
 
 login.login_view='connexion'
 
-@app.route("deconnexion", methods=["POST","GET"])
+@app.route("/deconnexion", methods=["POST","GET"])
 def deconnexion():
     if current_user.is_authenticated is True:
         logout_user()
     flash("Vous êtes déconnecté.","info")
     return redirect(url_for("accueil"))
 
-
-@app.route("/moncompte")
-
-
-#Rendre la connexion obligatoire
-@app.route("/recherche",methods["GET","POST"])
-@app.route("/recherche/<int:page>",methods["GET","POST"])
-@login_required
-def recherche(page=1):
-    ///
-
+#connexion obligatoire pour accéder à moncompte, l'historique et les gares favorites
+#@app.route("/moncompte")

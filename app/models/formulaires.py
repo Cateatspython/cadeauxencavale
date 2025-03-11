@@ -2,8 +2,7 @@ from ..app import app, db
 from flask_wtf import FlaskForm
 from wtforms import SelectField, SelectMultipleField, DateField, TimeField, SubmitField
 from wtforms.validators import DataRequired
-from .models import Objets_trouves
-
+from ..models.gares import Objets_trouves
 
 class TrouverObjet(FlaskForm):
     """

@@ -1,7 +1,8 @@
 from ..app import app, db
 from flask import render_template, request, flash, redirect, url_for, jsonify
 from sqlalchemy import or_, func
-from ..models.models import Gares, Horaires, Objets_trouves, Declaration_de_perte
+from ..models.gares import Gares, Horaires, Objets_trouves, Declaration_de_perte
+from flask import request
 from ..models.formulaires import TrouverObjet
 from datetime import datetime
 
