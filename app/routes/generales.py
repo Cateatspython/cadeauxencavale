@@ -59,13 +59,8 @@ def deconnexion():
     flash("Vous êtes déconnecté.","info")
     return redirect(url_for("accueil"))
 
-
+#connexion obligatoire pour accéder à moncompte, l'historique et les gares favorites
 @app.route("/moncompte")
-
-
-#Rendre la connexion obligatoire
-@app.route("/recherche",methods["GET","POST"])
-@app.route("/recherche/<int:page>",methods["GET","POST"])
 @login_required
 def recherche(page=1):
     ///
