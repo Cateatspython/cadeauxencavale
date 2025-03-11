@@ -1,4 +1,5 @@
 from ..app import app, db
+from sqlalchemy import ForeignKey
 from werkzeug.security import generate_password_hash
 
 class Gares(db.Model):
