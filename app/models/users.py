@@ -1,6 +1,7 @@
 from ..app import app, db
 from werkzeug.security import generate_password_hash
 from flask_login import UserMixin
+from .models import users.py #probablement incorrect
 
 class Utilisateur(UserMixin, db.Model):
     __tablename__="utilisateur"
@@ -78,9 +79,3 @@ class Gares_favorites(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     UIC=db.Column(db.Integer, ForeignKey('gares.UIC')) #Foreign Key UIC de Gares
     id_utilisateur=db.Column(db.String(30), ForeignKey('utilisateur.id_utilisateur')) #Foreign Key id_utilisateur de Utilisateurs
-    __tablename__="declaration_perte"
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    UIC=db.Column(db.Integer, ForeignKey('gares.UIC')) #Foreign Key UIC de Gares
-    date_perte=db.Column(db.DateTime)
-    type_objet=db.Column(db.Text) #normalisation du pluriel
-    nature_objet=db.Column(db.Text) #normalisation du pluriel
