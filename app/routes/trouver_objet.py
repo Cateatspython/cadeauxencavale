@@ -79,12 +79,18 @@ def trouver_objet():
             flash("Veuillez sélectionner au maximum deux gares.", "error")
             return redirect(url_for("trouver_objet"))
 
-         # Combine date_trajet et heure_approx_perte en datetime ISO 8601
+        # Combine date_trajet et heure_approx_perte en datetime ISO 8601
+        fin_vacances_noel = datetime.fromisoformat("2025-01-06T23:59:59+01:00")
+        debut_vacances_noel = datetime.fromisoformat("2024-12-20T00:00:00+01:00")
         try:
             date_heure_perte = datetime.fromisoformat(f"{date_trajet}T{heure_approx_perte}")
-            fin_vacances_noel = datetime.fromisoformat("2025-01-06T23:59:59+01:00")
         except ValueError:
             flash("Format de date ou heure invalide.", "error")
+            return redirect(url_for("trouver_objet"))
+
+        # Vérifier si la date de perte est entre la date de début et la date de fin des vacances de Noël
+        if not (debut_vacances_noel <= date_heure_perte <= fin_vacances_noel):
+            flash("La date de perte doit être entre le 20 décembre 2024 et le 6 janvier 2025.", "error")
             return redirect(url_for("trouver_objet"))
 
         # Récupérer les gares correspondantes
@@ -97,7 +103,10 @@ def trouver_objet():
             {"nom": gare.nom, "latitude": gare.latitude, "longitude": gare.longitude} for gare in gares_result
         ]
 
-        # Filtrer les objets trouvés dans l'intervalle et les gares sélectionnées
+        # Filtrer les objets trouvés par :
+        # - le type sélectionné
+        # - dans l'intervalle datetime perte / datetime fin des vacances
+        # - les gares sélectionnées
         objets_trouves = Objets_trouves.query.filter(
             Objets_trouves.type_objet.ilike(f"%{type_d_objet}%"),
             Objets_trouves.date_heure_trouves >= date_heure_perte,
@@ -105,45 +114,64 @@ def trouver_objet():
             Objets_trouves.UIC.in_([gare.UIC for gare in gares_result])
         ).all()
 
-        # Statistiques pour dataviz
-        nb_objets_jour = db.session.query(func.count(Objets_trouves.id)).filter(
-            func.date(Objets_trouves.date_heure_trouves) == date_trajet,
-            Objets_trouves.type_objet.ilike(f"%{type_d_objet}%")
-        ).scalar()
+        # Horaires des gares sélectionnées
+        horaires = Horaires.query.filter(Horaires.UIC.in_([gare.UIC for gare in gares_result])).all()
 
-        nb_objets_par_type = db.session.query(
-            Objets_trouves.type_objet, func.count(Objets_trouves.id)
-        ).filter(
-            Objets_trouves.UIC.in_([gare.UIC for gare in gares_result]),
-            Objets_trouves.date_heure_trouves <= fin_vacances_noel
-        ).group_by(Objets_trouves.type_objet).all()
+        ### A VOIR AVEC PIERRE POUR DONNEES A TRANSMETTRE
+        # # Statistiques pour dataviz :
+        # #1. Tous les objets trouvés en France du type sélectionné, pendant toute la journée de perte.
+        # nb_objets_jour = db.session.query(func.count(Objets_trouves.id)).filter(
+        #     func.date(Objets_trouves.date_heure_trouves) == date_trajet,
+        #     Objets_trouves.type_objet.ilike(f"%{type_d_objet}%")
+        # ).scalar()
 
-        # Infos pour les gares sélectionnées
+        # #2. Nombre d'objets trouvés par type dans les gares sélectionnées, pendant la périodes des vacances de noël
+        # nb_objets_par_type = db.session.query(
+        #     Objets_trouves.type_objet, func.count(Objets_trouves.id)
+        # ).filter(
+        #     Objets_trouves.UIC.in_([gare.UIC for gare in gares_result]),
+        #     Objets_trouves.date_heure_trouves <= fin_vacances_noel
+        # ).group_by(Objets_trouves.type_objet).all()
+
+        # Infos pour les gares sélectionnées (liste de dictionnaires)
         donnees = [
             {
-                "nom": gare.nom,
-                "adresse": gare.adresse,
-                "horaires": [(h.jour_de_la_semaine, h.horaires_jour_normal, h.horaires_jour_ferie) for h in gare.horaires],
-                "nb_objets_trouves": len([obj for obj in objets_trouves if obj.UIC == gare.UIC])
+            #nom de la gare (str)
+            "nom": gare.nom,
+            #adresse complète de la gare (str)
+            "adresse": f'{gare.adresse}, {gare.code_postal} {gare.ville}.',
+            #géolocalisation de la gare (dict)
+            "geolocalisation": {
+                "latitude": gare.latitude,
+                "longitude": gare.longitude
+            },
+            #horaires d'ouverture de la gare sous forme de dictionnaire imbriqué (dict)
+            "horaires": {
+                h.jour_de_la_semaine: {
+                "horaires_jour_normal": h.horaires_jour_normal,
+                "horaires_jour_ferie": h.horaires_jour_ferie
+                }
+                for h in horaires if h.UIC == gare.UIC
+            },
+            #nombre d'objets trouvés du type cherché entre date/heure approx perte et la fin des vacances pour la gare itérée (int)
+            "nb_objets_trouves_periode_perte_type": len([obj for obj in objets_trouves if obj.UIC == gare.UIC])
             }
             for gare in gares_result
         ]
 
-        return render_template("trouver_objet.html",
+    return render_template("trouver_objet.html",
                                form=form,
                                geolocalisations=geolocalisations,
                                donnees=donnees,
-                               nb_objets_jour=nb_objets_jour,
-                               nb_objets_par_type=nb_objets_par_type)
-
-    return render_template("trouver_objet.html", form=form, geolocalisations=[])
+                               #nb_objets_jour=nb_objets_jour,
+                               #nb_objets_par_type=nb_objets_par_type
+                               )
 
     #La route doit renvoyer : 
     #-> Les données de géolocalisations des deux gares max vers le script JS
     #-> Les données de la gare (Nom complet + Adresse complète + horaires d'ouverture et potentiellement //
     # le nb d'objets trouvés du type cherché entre date/heure approx perte et la fin des vacances)
-    # -> Données dataviz personnalisées pour script JS : nombre d'objets du même type, perdus et trouvés le même jour partout en France et //
-    # nombre do'bjets perdus pour tous les types d'objets dans la gare sélectionnée sur toute la période des vacances.
+    # -> Données dataviz personnalisées pour script JS : ???
 
 
 
