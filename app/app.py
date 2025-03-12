@@ -4,8 +4,8 @@ from .config import Config
 from flask_login import LoginManager
 
 app = Flask(
-    __name__, 
-    template_folder='templates',
+    'Cadeaux en cavale', 
+    template_folder='app/templates',
     static_folder='statics')
 app.config.from_object(Config)
 

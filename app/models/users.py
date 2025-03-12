@@ -18,29 +18,31 @@ class Utilisateur(UserMixin, db.Model):
     historique=db.relationship("Gares_favorites", backref="utilisateur", lazy=True)
 
     @staticmethod
-    def ajout(pseudo, password, email):
-        erreurs = []
-        if not pseudo:
-            erreurs.append("Le pseudonyme est vide.")
-        if len(pseudo)<20:
-            erreurs.append("Le pseudonyme est trop long.")
-        if not password or len(password) < 6:
-            erreurs.append("Le mot de passe est vide ou trop court.")
+    def identification(prenom, password):
+        utilisateur = Users.query.filter(Users.prenom == prenom).first()
+        if utilisateur and check_password_hash(utilisateur.password, password):
+            return utilisateur
+        return None
 
+    @staticmethod
+    def ajout(prenom, password):
+        erreurs = []
+        if not prenom:
+            erreurs.append("Le prénom est vide")
+        if not password or len(password) < 6:
+            erreurs.append("Le mot de passe est vide ou trop court")
 
         unique = Users.query.filter(
-            db.or_(Users.pseudo == pseudo)
+            db.or_(Users.prenom == prenom)
         ).count()
-        #vérifier si le psudonyme existe déjà (présent plus de 0 fois)
         if unique > 0:
-            erreurs.append("Le pseudonyme existe déjà.")
+            erreurs.append("Le prénom existe déjà")
 
         if len(erreurs) > 0:
             return False, erreurs
-
+        
         utilisateur = Users(
-            pseudo=pseudo,
-            #hash du mot de passe pour ne pas le stocker en clair
+            prenom=prenom,
             password=generate_password_hash(password)
         )
 
@@ -52,23 +54,21 @@ class Utilisateur(UserMixin, db.Model):
             return False, [str(erreur)]
 
     def get_id(self):
-        return self.id
+        return self.id_utilisateur
 
     @login.user_loader
     def get_user_by_id(id):
-        return Users.quer.get(int(id))
-
-    @staticmethod
-    def identification(pseudo, password):
-        utilisateur = Users.query.filter(Users.pseudo==pseudo).first()
-        if utilisateur and check_password_hash(utilisateur.password,password):
-            return utilisateur
-        return None
+        return Users.query.get(int(id_utilisateur))
 
 #ou à mettre dans un fichier dédié formulaire.py ?
 class Connexion(FlaskForm):
     pseudo=StringField("pseudo", validators=[])
     password=PasswordField("pseudo", validators=[])
+
+class AjoutUtilisateur(FlaskForm):
+    pseudo = StringField("prenom", validators=[])
+    password = PasswordField("password", validators=[])
+
 
 class Historique(db.Model):
     __tablename__="historique"

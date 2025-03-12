@@ -1,12 +1,13 @@
 from ..app import app, db, login
 from flask import render_template, request, flash, redirect, url_for
 from sqlalchemy import or_
-from ..models.users import Utilisateur
-from flask_login import current_user,logout_user
+from ..models.users import Utilisateur, AjoutUtilisateur, Connexion
+from flask_login import current_user,logout_user, login_required
 from flask_wtf import FlaskForm
 
 @app.route("/accueil")
-#def 
+def accueil():
+    return render_template("index.html")
 
 @app.route("/inscription")
 def ajout_utilisateur():
@@ -14,8 +15,7 @@ def ajout_utilisateur():
 
     if form.validate_on_submit():
         statut, donnees = Users.ajout(
-            pseudo=clean_arg(request.form.get("pseudo", None)),
-            email=clean_arg(request.form.get("email", None)),
+            prenom=clean_arg(request.form.get("prenom", None)),
             password=clean_arg(request.form.get("password", None))
         )
         if statut is True:
@@ -23,9 +23,9 @@ def ajout_utilisateur():
             return redirect(url_for("accueil"))
         else:
             flash(",".join(donnees), "error")
-            return render_template("//ÀFAIRE//.html", form=form)
+            return render_template("signup.html", form=form)
     else:
-        return render_template("//ÀFAIRE//.html", form=form)
+        return render_template("signup.html", form=form)
 
 @app.route("/connexion", methods=["GET","POST"])
 def connexion():
@@ -46,10 +46,10 @@ def connexion():
             return redirect(url_for("accueil"))
         else:
             flash("Les identifiants n'ont pas été reconnus.","error")
-            return render_template("//ÀFAIRE//.html", form=form)
+            return render_template("login.html", form=form)
 
     else:
-        return render_template("//ÀFAIRE//.html", form=form)
+        return render_template("login.html", form=form)
 
 login.login_view='connexion'
 
@@ -61,4 +61,7 @@ def deconnexion():
     return redirect(url_for("accueil"))
 
 #connexion obligatoire pour accéder à moncompte, l'historique et les gares favorites
-#@app.route("/moncompte")
+@app.route("/moncompte")
+@login_required
+def moncompte():
+    return render_template('profil.html')
