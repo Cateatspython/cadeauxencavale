@@ -10,5 +10,5 @@ class Config():
     SQLALCHEMY_ECHO=os.environ.get("SQLALCHEMY_ECHO")
     RESOURCES_PER_PAGE = int(os.environ.get("RESOURCES_PER_PAGE"))
     #PAYS_PER_PAGE = int(os.environ.get("PAYS_PER_PAGE")) -- inutile
-    SECRET_KEY = os.environ.get("SECRET_KEY")
+    SECRET_KEY = os.environ.get("SECRET_KEY", "turlututuchapeaupointu")
     WTF_CSRF_ENABLE = os.environ.get("WTF_CSRF_ENABLE")
