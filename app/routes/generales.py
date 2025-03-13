@@ -1,7 +1,7 @@
 from ..app import app, db, login
 from flask import render_template, request, flash, redirect, url_for
 from sqlalchemy import or_
-from ..models.users import Utilisateur
+from ..models.users import Utilisateur, Historique, Gares_favorites
 from ..models.formulaires import AjoutUtilisateur, Connexion, ChangerMdp
 from flask_login import current_user,logout_user, login_required, login_user
 from flask_wtf import FlaskForm
@@ -85,10 +85,13 @@ def deconnexion():
 @app.route("/moncompte")
 @login_required
 def moncompte():
-
+    historique = Historique.query.filter_by(id=current_user.id).order_by(Historique.date_heure_recherche.desc()).all()
     
+    favoris = Gares_favorites.query.filter_by(id=current_user.id).all()
 
-    return render_template('profil.html')
+    utilisateur = Utilisateur.query.all()
+
+    return render_template('pages/moncompte.html', historique=historique, favoris=favoris, utilisateur=utilisateur)
 
 @app.route("/changer-mot-de-passe", methods=["GET","POST"])
 @login_required
