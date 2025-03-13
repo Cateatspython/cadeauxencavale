@@ -1,7 +1,7 @@
 from ..app import app, db
 from flask_wtf import FlaskForm
-from wtforms import SelectField, SelectMultipleField, DateField, TimeField, SubmitField
-from wtforms.validators import DataRequired
+from wtforms import SelectField, SelectMultipleField, DateField, TimeField, SubmitField, StringField, PasswordField
+from wtforms.validators import DataRequired, Email, Length
 from ..models.gares import Objets_trouves
 
 class TrouverObjet(FlaskForm):
@@ -47,3 +47,15 @@ class TrouverObjet(FlaskForm):
         ]
         # Rajouter un champ vide qui s'affiche par défaut
         self.type_d_objet.choices.insert(0, ("", "Sélectionnez un type d'objet..."))
+
+class Connexion(FlaskForm):
+    #Formulaire pour pouvoir se connecter
+    pseudo=StringField("pseudo", validators=[])
+    email=StringField("email", validators=[])
+    password=PasswordField("password", validators=[])
+
+class AjoutUtilisateur(FlaskForm):
+    #Formulaire pour pouvoir ajouter un utilisateur
+    pseudo = StringField("pseudo", validators=[DataRequired(), Length(min=3, max=20)])
+    password = PasswordField("password", validators=[DataRequired(), Length(min=6)])
+    email=StringField("email", validators=[DataRequired(), Email()])
