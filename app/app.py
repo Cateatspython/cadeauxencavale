@@ -4,8 +4,8 @@ from .config import Config
 from flask_login import LoginManager
 
 app = Flask(
-    __name__, 
-    template_folder='templates',
+    'Cadeaux en cavale', 
+    template_folder='app/templates',
     static_folder='statics')
 app.config.from_object(Config)
 
@@ -14,4 +14,5 @@ db = SQLAlchemy(app)
 login = LoginManager(app)
 
 from .routes import trouver_objet
+from .routes import generales
 #ne pas oublier d'ajouter les autres .py de /routes lorsque complétés
