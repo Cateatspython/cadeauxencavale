@@ -94,13 +94,13 @@ class Gares_favorites(db.Model):
     __tablename__="gares_favorites"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     UIC=db.Column(db.Integer, ForeignKey('gares.UIC')) #Foreign Key UIC de Gares
-    id_utilisateur=db.Column(db.String(30), ForeignKey('utilisateur.id')) #Foreign Key id_utilisateur de Utilisateurs
+    utilisateur_id=db.Column(db.String(30), ForeignKey('utilisateur.id')) #Foreign Key id_utilisateur de Utilisateurs
 
     @staticmethod
-    def ajout_favoris(UIC, id_utilisateur):
+    def ajout_favoris(UIC, utilisateur_id):
         gare_favoris = Gares_favorites(
             UIC=UIC,
-            id_utilisateur=id_utilisateur
+            utilisateur_id=utilisateur_id
         )
 
         try:
