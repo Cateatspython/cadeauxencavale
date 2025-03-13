@@ -5,7 +5,7 @@ from ..models.users import Utilisateur, Historique, Gares_favorites
 from ..models.formulaires import AjoutUtilisateur, Connexion, ChangerMdp
 from flask_login import current_user,logout_user, login_required, login_user
 from flask_wtf import FlaskForm
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 @app.route("/accueil")
 def accueil():
@@ -30,46 +30,44 @@ def ajout_utilisateur():
     else:
         return render_template("pages/inscription.html", form=form)
 
-@app.route("/connexion", methods=["GET","POST"])
+@app.route("/connexion", methods=["GET", "POST"])
 def connexion():
-    form=Connexion()
+    form = Connexion()
 
     if current_user.is_authenticated is True:
         flash("Vous êtes déjà connecté", "info")
         return redirect(url_for("accueil"))
 
     if form.validate_on_submit():
-        print("✅ Formulaire validé !")
-    else:
-        print("❌ Erreurs dans le formulaire :", form.errors)
-    
-    if form.validate_on_submit():
-        print("✅ Formulaire validé !")
-
         pseudo = request.form.get("pseudo", None)
         email = request.form.get("email", None)
         password = request.form.get("password", None)
-
-        print(f"📩 Données reçues : pseudo={pseudo}, email={email}, password={password}")
-
-        utilisateur = Utilisateur.identification(pseudo=pseudo, email=email, password=password)
-
-        print(f"🔍 Utilisateur trouvé : {utilisateur}")
-
-        if utilisateur:
-            login_user(utilisateur)
-            print(f"👤 Utilisateur connecté : {current_user}")
-            flash("Connexion effectuée", "success")
-            print("✅ Redirection vers l'accueil")
-            return redirect(url_for("accueil"))
-
-        else:
-            flash("Les identifiants n'ont pas été reconnus.","error")
-            return render_template("pages/connexion.html", form=form)
-
-    else:
-        print("❌ Erreurs dans le formulaire :", form.errors)
     
+        """
+        Vérifications et gestion des erreurs par étapes : 
+            - vérification de l'email
+            - vérification du pseudo
+            - vérification du mdp
+        """
+
+        utilisateur = Utilisateur.query.filter_by(email=email).first()
+
+        if not utilisateur:
+            flash("Cet email n'est pas reconnu.", "error")
+            return render_template("pages/connexion.html", form=form, email=email, pseudo=pseudo, password=password)
+
+        if utilisateur.pseudo != pseudo:
+            flash("Ce pseudo n'est pas reconnu.", "error")
+            return render_template("pages/connexion.html", form=form, email=email, pseudo=pseudo, password=password)
+
+        if not check_password_hash(utilisateur.password, password):
+            flash("Ce mot de passe n'est pas reconnu.", "error")
+            return render_template("pages/connexion.html", form=form, email=email, pseudo=pseudo, password=password)
+
+        login_user(utilisateur)
+        flash("Connexion réussie", "success")
+        return redirect(url_for("accueil"))
+
     return render_template("pages/connexion.html", form=form)
 
 login.login_view='connexion'
@@ -91,7 +89,7 @@ def moncompte():
 
     utilisateur = Utilisateur.query.all()
 
-    return render_template('pages/moncompte.html', historique=historique, favoris=favoris, utilisateur=utilisateur)
+    return render_template('pages/moncompte.html', historique=historique, favoris=favoris, utilisateur=current_user)
 
 @app.route("/changer-mot-de-passe", methods=["GET","POST"])
 @login_required

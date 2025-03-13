@@ -42,11 +42,13 @@
                 <tr>
                     <td>{{ i.pseudo }}</td>
                     <td>{{ i.email }}</td>
-                    <td>{{ i.password }}</td>
+                    <td>●●●●●</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+
+        <a href="{{ url_for('chgnt_mdp') }}">Changer de mot de passe</a>
 
     <h2 class="subtitle">Gares favorites</h2>
     {% if favoris %}

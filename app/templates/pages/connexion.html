@@ -6,6 +6,20 @@
 <div class="">
     <h3 class="title">Connexion</h3>
     <div class="box">
+
+    <!--Affichage de l'erreur dans la box-->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="alert">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
         <form method="POST" action="{{ url_for('connexion') }}">
             {{ form.hidden_tag() }}
             <div class="field">
@@ -23,12 +37,6 @@
                 <div class="control">
                     <input class="input" type="password" name="password" placeholder="Votre mot de passe">
                 </div>
-            </div>
-            <div class="field">
-                <label class="checkbox">
-                    <input type="checkbox">
-                    Se souvenir de moi
-                </label>
             </div>
             <button class="">Connexion</button>
         </form>

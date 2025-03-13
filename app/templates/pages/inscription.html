@@ -5,7 +5,20 @@
 {% block content %}
 <div class="">
     <h3 class="title">S'inscrire</h3>
+
     <div class="box">
+
+        <!--Affichage de l'erreur dans la box-->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="notification">
+                    {% for category, message in messages %}
+                        <p class="{{ 'has-text-danger' if category == 'error' else 'has-text-success' }}">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
         <form method="POST" action="{{ url_for('ajout_utilisateur') }}",>
             {{ form.hidden_tag() }}
             <div class="field">
