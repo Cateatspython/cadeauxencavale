@@ -1,7 +1,8 @@
 from ..app import app, db, login
 from flask import render_template, request, flash, redirect, url_for
 from sqlalchemy import or_
-from ..models.users import Utilisateur, AjoutUtilisateur, Connexion
+from ..models.users import Utilisateur
+from ..models.formulaires import AjoutUtilisateur, Connexion
 from flask_login import current_user,logout_user, login_required
 from flask_wtf import FlaskForm
 
@@ -9,14 +10,15 @@ from flask_wtf import FlaskForm
 def accueil():
     return render_template("index.html")
 
-@app.route("/inscription")
+@app.route("/inscription", methods=['GET','POST'])
 def ajout_utilisateur():
     form = AjoutUtilisateur()
 
     if form.validate_on_submit():
-        statut, donnees = Users.ajout(
-            prenom=clean_arg(request.form.get("prenom", None)),
-            password=clean_arg(request.form.get("password", None))
+        statut, donnees = Utilisateur.ajout(
+            pseudo=request.form.get("pseudo", None),
+            email=request.form.get("email", None),
+            password=request.form.get("password", None)
         )
         if statut is True:
             flash("Ajout effectué", "success")
@@ -36,7 +38,7 @@ def connexion():
         return redirect(url_for("accueil"))
     
     if form.validate_on_submit():
-        utilisateur=Users.identification(
+        utilisateur=Utilisateur.identification(
             pseudo=clean_arg(request.form.get("pseudo", None)),
             password=clean_arg(request.form.get("password",None))
         )
