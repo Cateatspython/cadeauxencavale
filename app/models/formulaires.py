@@ -1,7 +1,7 @@
 from ..app import app, db
 from flask_wtf import FlaskForm
 from wtforms import SelectField, SelectMultipleField, DateField, TimeField, SubmitField, StringField, PasswordField
-from wtforms.validators import DataRequired, Email, Length
+from wtforms.validators import DataRequired, Email, Length, EqualTo
 from ..models.gares import Objets_trouves
 
 class TrouverObjet(FlaskForm):
@@ -50,12 +50,16 @@ class TrouverObjet(FlaskForm):
 
 class Connexion(FlaskForm):
     #Formulaire pour pouvoir se connecter
-    pseudo=StringField("pseudo", validators=[])
-    email=StringField("email", validators=[])
-    password=PasswordField("password", validators=[])
+    pseudo=StringField("pseudo", validators=[DataRequired(), Length(min=3, max=20)])
+    email=StringField("email", validators=[DataRequired(), Email()])
+    password=PasswordField("password", validators=[DataRequired(), Length(min=6)])
 
 class AjoutUtilisateur(FlaskForm):
     #Formulaire pour pouvoir ajouter un utilisateur
     pseudo = StringField("pseudo", validators=[DataRequired(), Length(min=3, max=20)])
     password = PasswordField("password", validators=[DataRequired(), Length(min=6)])
     email=StringField("email", validators=[DataRequired(), Email()])
+
+class ChangerMdp(FlaskForm):
+    new_password = PasswordField("password", validators=[DataRequired(), Length(min=6)])
+    confirmation_mdp = PasswordField("conf_password", validators=[DataRequired(), EqualTo("new_password", message="Les mots de passe ne correspondent pas")])
