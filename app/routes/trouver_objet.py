@@ -1,10 +1,12 @@
 from ..app import app, db
-from flask import render_template, request, flash, redirect, url_for, jsonify
+from flask import render_template, request, flash, redirect, url_for, jsonify, current_user
 from sqlalchemy import or_, func
 from ..models.gares import Gares, Horaires, Objets_trouves, Declaration_de_perte
+from ..models.users import Historique, Gares_favorites
 from flask import request
 from ..models.formulaires import TrouverObjet
 from datetime import datetime
+import json
 
 @app.route("/autocomplete-gares", methods=["GET"])
 def autocomplete_gares():
@@ -153,12 +155,44 @@ def trouver_objet():
                 }
                 for h in horaires if h.UIC == gare.UIC
             },
+            "UIC": gare.UIC,
             #nombre d'objets trouvés du type cherché entre date/heure approx perte et la fin des vacances pour la gare itérée (int)
             "nb_objets_trouves_periode_perte_type": len([obj for obj in objets_trouves if obj.UIC == gare.UIC])
             }
             for gare in gares_result
         ]
 
+        # Enregistrement de l'historique de recherche automatique si utilisateur connecté
+        if current_user.is_authenticated:
+            filtres_requetes = json.dumps({
+                "type_d_objet": type_d_objet,
+                "gares": gares,
+                "date_trajet": date_trajet,
+                "heure_approx_perte": heure_approx_perte
+            })
+            Historique.enregistrement_historique(
+                id_utilisateur=current_user.get_id(),
+                date_heure_recherche=datetime.now(),
+                requete_json=filtres_requetes
+            )
+        
+        # Ajout de la gare aux favoris si utilisateur connecté et activation du bouton "Ajouter aux favoris"
+        if request.method == "POST" and current_user.is_authenticated:
+            data = request.get_json()
+            UIC = data.get("UIC")
+
+            if UIC:
+                # Vérifier si la gare est déjà dans les favoris
+                favori_existant = Gares_favorites.query.filter_by(user_id=current_user.id, UIC=UIC).first()
+                if favori_existant:
+                    flash("Cette gare est déjà dans vos favoris.", "info")
+                    return jsonify({"status": "exists"}), 200
+                else:
+                    Gares_favorites.ajout_favoris(user_id=current_user.id, UIC=UIC)
+                    return jsonify({"status": "success"}), 200
+            else:
+                return jsonify({"status": "error", "message": "UIC manquant"}), 400
+    
     return render_template("trouver_objet.html",
                                form=form,
                                geolocalisations=geolocalisations,
@@ -172,6 +206,3 @@ def trouver_objet():
     #-> Les données de la gare (Nom complet + Adresse complète + horaires d'ouverture et potentiellement //
     # le nb d'objets trouvés du type cherché entre date/heure approx perte et la fin des vacances)
     # -> Données dataviz personnalisées pour script JS : ???
-
-
-

@@ -1,0 +1,22 @@
+<script>
+    document.querySelectorAll('.ajout-favoris-btn').forEach(button => {
+    button.addEventListener('click', () => {
+        const UIC = button.dataset.uic; // Récupère l'UIC depuis l'attribut data-uic
+
+        fetch('/trouver-objet', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ UIC: UIC })
+        }).then(response => {
+            if (response.ok) {
+                alert('Gare ajoutée aux favoris !');
+            } else {
+                alert('Erreur lors de l\'ajout aux favoris.');
+            }
+        });
+    });
+});
+
+</script>

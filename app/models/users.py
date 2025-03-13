@@ -1,5 +1,5 @@
 from ..app import app, db, login
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from sqlalchemy import ForeignKey
 from sqlalchemy import String
@@ -19,7 +19,7 @@ class Utilisateur(UserMixin, db.Model):
 
     @staticmethod
     def identification(prenom, password):
-        utilisateur = Users.query.filter(Users.prenom == prenom).first()
+        utilisateur = Utilisateur.query.filter(Utilisateur.prenom == prenom).first()
         if utilisateur and check_password_hash(utilisateur.password, password):
             return utilisateur
         return None
@@ -32,16 +32,16 @@ class Utilisateur(UserMixin, db.Model):
         if not password or len(password) < 6:
             erreurs.append("Le mot de passe est vide ou trop court")
 
-        unique = Users.query.filter(
-            db.or_(Users.prenom == prenom)
+        unique = Utilisateur.query.filter(
+            db.or_(Utilisateur.pseudo == prenom)
         ).count()
         if unique > 0:
-            erreurs.append("Le prénom existe déjà")
+            erreurs.append("Le pseudo existe déjà")
 
         if len(erreurs) > 0:
             return False, erreurs
         
-        utilisateur = Users(
+        utilisateur = Utilisateur(
             prenom=prenom,
             password=generate_password_hash(password)
         )
@@ -58,7 +58,7 @@ class Utilisateur(UserMixin, db.Model):
 
     @login.user_loader
     def get_user_by_id(id):
-        return Users.query.get(int(id_utilisateur))
+        return Utilisateur.query.get(int(id_utilisateur))
 
 #ou à mettre dans un fichier dédié formulaire.py ?
 class Connexion(FlaskForm):
@@ -77,8 +77,37 @@ class Historique(db.Model):
     date_heure_recherche=db.Column(db.DateTime)
     requete_json=db.Column(db.Text)
 
+    @staticmethod
+    def enregistrement_historique(id_utilisateur, date_heure_recherche, requete_json):
+        historique = Historique(
+            id_utilisateur=id_utilisateur,
+            date_heure_recherche=date_heure_recherche,
+            requete_json=requete_json
+        )
+
+        try:
+            db.session.add(historique)
+            db.session.commit()
+            return True, historique
+        except Exception as erreur:
+            return False, [str(erreur)]
+
 class Gares_favorites(db.Model):
     __tablename__="gares_favorites"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     UIC=db.Column(db.Integer, ForeignKey('gares.UIC')) #Foreign Key UIC de Gares
     id_utilisateur=db.Column(db.String(30), ForeignKey('utilisateur.id_utilisateur')) #Foreign Key id_utilisateur de Utilisateurs
+
+    @staticmethod
+    def ajout_favoris(UIC, id_utilisateur):
+        gare_favoris = Gares_favorites(
+            UIC=UIC,
+            id_utilisateur=id_utilisateur
+        )
+
+        try:
+            db.session.add(gare_favoris)
+            db.session.commit()
+            return True, gare_favoris
+        except Exception as erreur:
+            return False, [str(erreur)]
