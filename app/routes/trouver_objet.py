@@ -121,20 +121,69 @@ def trouver_objet():
         horaires = Horaires.query.filter(Horaires.UIC.in_([gare.UIC for gare in gares_result])).all()
 
         ### A VOIR AVEC PIERRE POUR DONNEES A TRANSMETTRE
-        # # Statistiques pour dataviz :
-        # #1. Tous les objets trouvés en France du type sélectionné, pendant toute la journée de perte.
-        # nb_objets_jour = db.session.query(func.count(Objets_trouves.id)).filter(
-        #     func.date(Objets_trouves.date_heure_trouves) == date_trajet,
-        #     Objets_trouves.type_objet.ilike(f"%{type_d_objet}%")
-        # ).scalar()
+        # Statistiques pour dataviz :
+        # 1. Tous les objets perdus, objets_trouvés.date_perte, objets_trouvés.date_restitution en France par Région, du type sélectionné, pendant toute la journée de perte.
+        datetime_debut_journee_perte = datetime.fromisoformat(f"{date_trajet}T00:00:00")
+        datetime_fin_journee_perte = datetime.fromisoformat(f"{date_trajet}T23:59:59")
 
-        # #2. Nombre d'objets trouvés par type dans les gares sélectionnées, pendant la périodes des vacances de noël
-        # nb_objets_par_type = db.session.query(
-        #     Objets_trouves.type_objet, func.count(Objets_trouves.id)
-        # ).filter(
-        #     Objets_trouves.UIC.in_([gare.UIC for gare in gares_result]),
-        #     Objets_trouves.date_heure_trouves <= fin_vacances_noel
-        # ).group_by(Objets_trouves.type_objet).all()
+        # Queries pour récupérer le nombre d'objets perdus par région
+        nb_objets_perdus_par_region = db.session.query(
+            Gares.region, func.count(Declaration_de_perte.id)
+        ).join(Gares, Declaration_de_perte.UIC == Gares.UIC).filter(
+            Declaration_de_perte.date_perte >= datetime_debut_journee_perte,
+            Declaration_de_perte.date_perte <= datetime_fin_journee_perte,
+            Declaration_de_perte.type_objet.ilike(f"%{type_d_objet}%")
+        ).group_by(Gares.region).all()
+        nb_objets_trouves_par_region = db.session.query(
+            Gares.region, func.count(Objets_trouves.date_perte)
+        ).join(Gares, Objets_trouves.UIC == Gares.UIC).filter(
+            Objets_trouves.date_heure_trouves >= datetime_debut_journee_perte,
+            Objets_trouves.date_heure_trouves <= datetime_fin_journee_perte,
+            Objets_trouves.type_objet.ilike(f"%{type_d_objet}%")
+        ).group_by(Gares.region).all()
+        nb_objets_restitues_par_region = db.session.query(
+            Gares.region, func.count(Objets_trouves.date_restitution)
+        ).join(Gares, Objets_trouves.UIC == Gares.UIC).filter(
+            Objets_trouves.date_restitution >= datetime_debut_journee_perte,
+            Objets_trouves.date_restitution <= datetime_fin_journee_perte,
+            Objets_trouves.type_objet.ilike(f"%{type_d_objet}%")
+        ).group_by(Gares.region).all()
+
+        # Convertir les résultats des requêtes en dictionnaires pour un accès rapide
+        perdus_par_region = dict(nb_objets_perdus_par_region)
+        trouves_par_region = dict(nb_objets_trouves_par_region)
+        restitues_par_region = dict(nb_objets_restitues_par_region)
+
+        # Récupérer toutes les régions uniques
+        regions = set(perdus_par_region.keys()) | set(trouves_par_region.keys()) | set(restitues_par_region.keys())
+
+        # Construire le dictionnaire final
+        data_par_region = [
+            {
+                "region": region,
+                "nb_objets_perdus": perdus_par_region.get(region, 0),
+                "nb_objets_trouves": trouves_par_region.get(region, 0),
+                "nb_objets_restitues": restitues_par_region.get(region, 0)
+            }
+            for region in regions
+        ]
+
+        # #2. Nombre d'objets trouvés par types dans les gares sélectionnées, pendant la période des vacances de Noël
+        nb_objets_par_type_par_gare = db.session.query(
+            Objets_trouves.UIC, Objets_trouves.type_objet, func.count(Objets_trouves.id)
+        ).filter(
+            Objets_trouves.date_heure_trouves >= date_heure_perte,
+            Objets_trouves.date_heure_trouves <= fin_vacances_noel,
+            Objets_trouves.UIC.in_([gare.UIC for gare in gares_result])
+        ).group_by(Objets_trouves.UIC, Objets_trouves.type_objet).all()
+
+        data_objets_par_types_gares =[
+            {
+                "gare": gare.nom for gare in gares_result if gare.UIC == UIC,
+                "type_objet": type_objet,
+                "nb_objets_trouves": nb
+            } for UIC, types, nb in nb_objets_par_type_par_gare
+        ]
 
         # Infos pour les gares sélectionnées (liste de dictionnaires)
         donnees = [
@@ -194,12 +243,12 @@ def trouver_objet():
             else:
                 return jsonify({"status": "error", "message": "UIC manquant"}), 400
     
-    return render_template("trouver_objet.html",
+    return render_template("pages/trouver_objet.html",
                                form=form,
                                geolocalisations=geolocalisations,
                                donnees=donnees,
-                               #nb_objets_jour=nb_objets_jour,
-                               #nb_objets_par_type=nb_objets_par_type
+                               data_par_region=data_par_region,
+                               data_objets_par_types_gares=data_objets_par_types_gares
                                )
 
     #La route doit renvoyer : 
