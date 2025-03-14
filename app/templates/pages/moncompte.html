@@ -3,5 +3,60 @@
 {% block title %}Mon compte{% endblock %}
 
 {% block content %}
+<div class="container">
+    <h1 class="title">Mon compte</h1>
 
+    <h2 class="subtitle">Historique des recherches</h2>
+    {% if historique %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Requête</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for h in historique %}
+                <tr>
+                    <td>{{ h.date_heure_recherche.strftime('%d/%m/%Y %H:%M') }}</td>
+                    <td>{{ h.requete_json }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Aucune recherche enregistrée.</p>
+    {% endif %}
+
+    <h2 class="subtitle">Informations</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Pseudo</th>
+                    <th>Email</th>
+                    <th>Mot de passe</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in utilisateur %}
+                <tr>
+                    <td>{{ i.pseudo }}</td>
+                    <td>{{ i.email }}</td>
+                    <td>{{ i.password }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    <h2 class="subtitle">Gares favorites</h2>
+    {% if favoris %}
+        <ul>
+            {% for f in favoris %}
+                <li>Gare UIC : {{ f.UIC }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Vous n'avez pas encore de gares favorites.</p>
+    {% endif %}
+</div>
 {% endblock %}

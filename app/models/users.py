@@ -18,8 +18,11 @@ class Utilisateur(UserMixin, db.Model):
     gares_favorites=db.relationship("Gares_favorites", backref="utilisateur", lazy=True)
 
     @staticmethod
-    def identification(pseudo, password):
-        utilisateur = Users.query.filter(Users.pseudo == pseudo).first()
+    def identification(pseudo, email, password):
+        utilisateur = Utilisateur.query.filter(
+            db.or_(Utilisateur.pseudo == pseudo, Utilisateur.email == email)
+        ).first()
+        
         if utilisateur and check_password_hash(utilisateur.password, password):
             return utilisateur
         return None
@@ -43,7 +46,7 @@ class Utilisateur(UserMixin, db.Model):
         if len(erreurs) > 0:
             print(f"Erreurs rencontrées : {erreurs}")
             return False, erreurs
-        utilisateur = Users(
+        utilisateur = Utilisateur(
             pseudo=pseudo,
             email=email,
             password=generate_password_hash(password)
@@ -91,13 +94,13 @@ class Gares_favorites(db.Model):
     __tablename__="gares_favorites"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     UIC=db.Column(db.Integer, ForeignKey('gares.UIC')) #Foreign Key UIC de Gares
-    id_utilisateur=db.Column(db.String(30), ForeignKey('utilisateur.id')) #Foreign Key id_utilisateur de Utilisateurs
+    utilisateur_id=db.Column(db.String(30), ForeignKey('utilisateur.id')) #Foreign Key id_utilisateur de Utilisateurs
 
     @staticmethod
-    def ajout_favoris(UIC, id_utilisateur):
+    def ajout_favoris(UIC, utilisateur_id):
         gare_favoris = Gares_favorites(
             UIC=UIC,
-            id_utilisateur=id_utilisateur
+            utilisateur_id=utilisateur_id
         )
 
         try:
