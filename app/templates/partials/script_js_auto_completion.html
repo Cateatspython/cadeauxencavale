@@ -1,20 +1,66 @@
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-	const inputGares = document.getElementById("gares");
-	const datalist = document.getElementById("gares-list");
+  document.addEventListener("DOMContentLoaded", function() {
+    const inputGares = document.getElementById("gares");
+    const datalist = document.getElementById("gares-list");
+    const selectedGaresContainer = document.getElementById("selected-gares");
+    const hiddenGaresInput = document.getElementById("hidden-gares");
 
-	inputGares.addEventListener("input", function() {
-    	fetch(`/autocomplete-gares?query=${inputGares.value}`)
-        	.then(response => response.json())
-        	.then(data => {
-            	datalist.innerHTML = "";
-            	data.forEach(gare => {
-                	const option = document.createElement("option");
-                	option.value = gare;
-                	datalist.appendChild(option);
-            	});
-        	})
-        	.catch(error => console.error("Erreur lors du chargement des suggestions :", error));
-	});
+    let selectedGares = []; // Liste des gares sélectionnées
+
+    // Autocomplétion : récupérer les gares depuis la route Flask
+    inputGares.addEventListener("input", function() {
+        if (inputGares.value.length > 1) { // Évite trop de requêtes
+            fetch(`/autocomplete-gares?query=${inputGares.value}`)
+                .then(response => response.json())
+                .then(data => {
+                    datalist.innerHTML = "";
+                    data.forEach(gare => {
+                        const option = document.createElement("option");
+                        option.value = gare;
+                        datalist.appendChild(option);
+                    });
+                })
+                .catch(error => console.error("Erreur chargement suggestions :", error));
+        }
+    });
+
+    // Ajout de la gare sélectionnée
+    inputGares.addEventListener("change", function() {
+        const selectedGare = inputGares.value.trim();
+        
+        if (selectedGare && !selectedGares.includes(selectedGare)) {
+            if (selectedGares.length < 2) {
+                selectedGares.push(selectedGare);
+                updateSelectedGares();
+            } else {
+                alert("Vous ne pouvez sélectionner que deux gares.");
+            }
+        }
+        inputGares.value = ""; // Efface le champ après sélection
+    });
+
+    // Met à jour l'affichage des gares sélectionnées
+    function updateSelectedGares() {
+        selectedGaresContainer.innerHTML = "";
+        selectedGares.forEach(gare => {
+            const div = document.createElement("div");
+            div.classList.add("gare-selected");
+            div.innerHTML = `${gare} <span class="remove-gare" data-gare="${gare}">❌</span>`;
+            selectedGaresContainer.appendChild(div);
+        });
+
+        // Met à jour l'input caché pour l'envoi du formulaire
+        hiddenGaresInput.value = selectedGares.join(",");
+
+        // Ajoute les événements de suppression
+        document.querySelectorAll(".remove-gare").forEach(btn => {
+            btn.addEventListener("click", function() {
+                const gareToRemove = this.getAttribute("data-gare");
+                selectedGares = selectedGares.filter(g => g !== gareToRemove);
+                updateSelectedGares();
+            });
+        });
+    }
 });
-</script>
+
+    </script>
