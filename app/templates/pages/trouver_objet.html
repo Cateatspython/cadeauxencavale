@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% include '/partials/script_js_auto_completion.html' %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll("input").forEach(input => {
+                input.addEventListener("keydown", function(event) {
+                    if (event.key === "Enter") {
+                        event.preventDefault(); // Empêche la soumission du formulaire
+                    }
+                });
+            });
+        });
+        </script>
+    <title>Recherche d'objets trouvés</title>
+</head>
+<body>
+    <h1>Recherche d'objets trouvés</h1>
+
+    <!-- Formulaire de recherche -->
+    <form method="POST" action="{{ url_for('trouver_objet') }}">
+        {{ form.hidden_tag() }}
+    
+        <!-- Type d'objet -->
+        <label for="type_d_objet">Type d'objet :</label>
+        {{ form.type_d_objet(class="form-control") }}
+        {% if form.type_d_objet.errors %}
+            <ul class="errors">
+                {% for error in form.type_d_objet.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+            <br/>
+        <!-- Gares -->
+        <input type="text" id="gares" list="gares-list" placeholder="Rechercher une gare..." autocomplete="off">
+        <datalist id="gares-list"></datalist>
+
+        <div id="selected-gares"></div>
+        <input type="hidden" id="hidden-gares" name="gares"> <!-- Stocker les valeurs pour le formulaire -->
+
+                
+        {% if form.gares.errors %}
+            <ul class="errors">
+                {% for error in form.gares.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    
+        <!-- Date du trajet -->
+        <label for="date_trajet">Date du trajet :</label>
+        {{ form.date_trajet(class="form-control", id="date_trajet") }}
+        {% if form.date_trajet.errors %}
+            <ul class="errors">
+                {% for error in form.date_trajet.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    
+        <!-- Heure approximative de perte -->
+        <label for="heure_approx_perte">Heure approximative de perte :</label>
+        {{ form.heure_approx_perte(class="form-control", id="heure_approx_perte") }}
+        {% if form.heure_approx_perte.errors %}
+            <ul class="errors">
+                {% for error in form.heure_approx_perte.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    
+        <!-- Bouton de soumission -->
+        {{ form.submit(class="btn btn-primary") }}
+    </form>
+    
+    
+
+    <!-- Affichage des résultats -->
+    {% if donnees %}
+        <h2>Résultats</h2>
+        {% for gare in donnees %}
+            <h3>{{ gare.nom }}</h3>
+            <p>Adresse : {{ gare.adresse }}</p>
+            <p>Nombre d'objets trouvés pendant la période : {{ gare.nb_objets_trouves_periode_perte_type }}</p>
+            <h4>Horaires</h4>
+            <ul>
+                {% for jour, horaires in gare.horaires.items() %}
+                    <li>{{ jour }} : {{ horaires.horaires_jour_normal }} (jour férié : {{ horaires.horaires_jour_ferie }})</li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    {% endif %}
+</body>
+</html>
