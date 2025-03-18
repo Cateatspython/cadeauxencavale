@@ -11,7 +11,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 def accueil():
     return render_template("index.html")
 
-@app.route("/inscription", methods=['GET','POST'])
+@app.route("/inscription", methods=['GET', 'POST'])
 def ajout_utilisateur():
     form = AjoutUtilisateur()
 
@@ -21,14 +21,16 @@ def ajout_utilisateur():
             email=request.form.get("email", None),
             password=request.form.get("password", None)
         )
+
         if statut is True:
             flash("Ajout effectué", "success")
             return redirect(url_for("accueil"))
-        else:
-            flash(",".join(donnees), "error")
-            return render_template("pages/inscription.html", form=form)
-    else:
-        return render_template("pages/inscription.html", form=form)
+        else: 
+            for erreur in donnees:
+                flash(erreur, "error")
+
+    return render_template("pages/inscription.html", form=form)
+
 
 @app.route("/connexion", methods=["GET", "POST"])
 def connexion():
@@ -87,9 +89,9 @@ def moncompte():
     
     favoris = Gares_favorites.query.filter_by(id=current_user.id).all()
 
-    utilisateur = Utilisateur.query.all()
+    utilisateur = Utilisateur.query.filter_by(id=current_user.id).all()
 
-    return render_template('pages/moncompte.html', historique=historique, favoris=favoris, utilisateur=current_user)
+    return render_template('pages/moncompte.html', historique=historique, favoris=favoris, utilisateur=utilisateur)
 
 @app.route("/changer-mot-de-passe", methods=["GET","POST"])
 @login_required
@@ -103,4 +105,4 @@ def chgnt_mdp():
         flash("Votre mot de passe a été changé avec succès !", "success")
         return redirect(url_for("moncompte"))
 
-    return render_template('changemdp.html', form=form)
+    return render_template('pages/changemdp.html', form=form)

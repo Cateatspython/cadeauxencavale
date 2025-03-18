@@ -49,17 +49,18 @@ class TrouverObjet(FlaskForm):
         self.type_d_objet.choices.insert(0, ("", "Sélectionnez un type d'objet..."))
 
 class Connexion(FlaskForm):
-    #Formulaire pour pouvoir se connecter
-    pseudo=StringField("pseudo", validators=[DataRequired(), Length(min=3, max=20)])
-    email=StringField("email", validators=[DataRequired(), Email()])
-    password=PasswordField("password", validators=[DataRequired(), Length(min=6)])
+    #Formulaire pour pouvoir se connecter -- comprend les messages à afficher en cas d'erreur dans le formulaire
+    pseudo=StringField("pseudo", validators=[DataRequired(message="Aucun pseudo n'a été renseigné."), Length(min=3, max=20)])
+    email=StringField("email", validators=[DataRequired(message="Aucune adresse email n'a été renseignée."), Email()])
+    password=PasswordField("password", validators=[DataRequired(message="Aucun mot de passe n'a été renseigné."), Length(min=6)])
 
 class AjoutUtilisateur(FlaskForm):
-    #Formulaire pour pouvoir ajouter un utilisateur
-    pseudo = StringField("pseudo", validators=[DataRequired(), Length(min=3, max=20)])
-    password = PasswordField("password", validators=[DataRequired(), Length(min=6)])
-    email=StringField("email", validators=[DataRequired(), Email()])
+    #Formulaire pour pouvoir ajouter un utilisateur -- comprend les messages à afficher en cas d'erreur dans le formulaire
+    pseudo = StringField("pseudo", validators=[DataRequired(message="Aucun pseudo n'a été renseigné."), Length(min=3, max=20, message="Le pseudo peut contenir entre 3 et 20 caractères.")])
+    password = PasswordField("password", validators=[DataRequired(message="Aucun mot de passe n'a été renseigné."), Length(min=6, message="Le mot de passe doit contenir au moins 6 caractères.")])
+    email=StringField("email", validators=[DataRequired(message="Aucune adresse email n'a été renseignée."), Email(message="Veuillez entrer un email valide.")])
 
 class ChangerMdp(FlaskForm):
-    new_password = PasswordField("password", validators=[DataRequired(), Length(min=6)])
-    confirmation_mdp = PasswordField("conf_password", validators=[DataRequired(), EqualTo("new_password", message="Les mots de passe ne correspondent pas")])
+    #Formulaire pour pouvoir changer de mot de passe -- comprend les messages à afficher en cas d'erreur dans le formulaire
+    new_password = PasswordField("password", validators=[DataRequired(message="Aucun mot de passe n'a été renseigné."), Length(min=6, message="Le mot de passe doit contenir au moins 6 caractères.")])
+    confirmation_mdp = PasswordField("conf_password", validators=[DataRequired(message="Aucun mot de passe n'a été renseigné."), EqualTo("new_password", message="Les mots de passe ne correspondent pas")])
