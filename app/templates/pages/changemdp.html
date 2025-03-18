@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="column is-4 is-offset-4">
+    <h3 class="title">Changer de mot de passe</h3>
+    <div class="box">
+
+        <!---Affichage dans la box des erreurs dans le formulaire-->
+        {% for field, errors in form.errors.items() %}
+            <div class="notification is-danger">
+                {% for error in errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            
+            <div class="field">
+                <div class="control">
+                    <input class="input" type="password" name="new_password" placeholder="Votre mot de passe">
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <input class="input" type="password" name="confirmation_mdp" placeholder="Votre mot de passe">
+                </div>
+            </div>
+
+            <button class="button is-block is-info is-large is-fullwidth">Changer</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
