@@ -1,8 +1,8 @@
 from ..app import app, db
 from flask_wtf import FlaskForm
-from wtforms import SelectField, SelectMultipleField, DateField, TimeField, SubmitField, StringField, PasswordField
+from wtforms import SelectField, FieldList, DateField, TimeField, SubmitField, StringField, PasswordField
 from wtforms.validators import DataRequired, Email, Length, EqualTo
-from ..models.gares import Objets_trouves
+from ..models.gares import Objets_trouves, Gares
 
 class TrouverObjet(FlaskForm):
     """
@@ -16,11 +16,7 @@ class TrouverObjet(FlaskForm):
     )
 
     # Champ autocomplété pour sélectionner une à deux gares
-    gares = SelectMultipleField(
-        "Gares",
-        choices=[],
-        validators=[DataRequired(message="Veuillez sélectionner au moins une gare.")]
-    )
+    gares = FieldList(StringField("Gares"), min_entries=1, max_entries=2, validators=[DataRequired()])
 
     # Champ pour rentrer une date au format normé
     date_trajet = DateField(
@@ -47,6 +43,7 @@ class TrouverObjet(FlaskForm):
         ]
         # Rajouter un champ vide qui s'affiche par défaut
         self.type_d_objet.choices.insert(0, ("", "Sélectionnez un type d'objet..."))
+        
 
 class Connexion(FlaskForm):
     #Formulaire pour pouvoir se connecter -- comprend les messages à afficher en cas d'erreur dans le formulaire

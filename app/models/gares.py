@@ -1,6 +1,7 @@
 from ..app import app, db
 from sqlalchemy import ForeignKey
 from werkzeug.security import generate_password_hash
+from sqlalchemy.sql import func
 
 class Gares(db.Model):
     __tablename__="gares"
@@ -9,9 +10,9 @@ class Gares(db.Model):
     latitude=db.Column(db.Float)
     longitude=db.Column(db.Float)
     adresse=db.Column(db.Text)
-    ville=db.Column(db.Text)
+    commune=db.Column(db.Text)
     code_postal=db.Column(db.Integer)
-    moyenne_voyageurs_2021_2023=db.Column(db.Integer)
+    moyenne_frequentation_2021_2023=db.Column(db.Integer)
     region=db.Column(db.Text)
 
     #Relations
@@ -32,8 +33,8 @@ class Objets_trouves(db.Model):
     __tablename__="objets_trouves"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     UIC=db.Column(db.Integer, ForeignKey('gares.UIC')) #Foreign Key UIC de Gares
-    date_heure_trouves=db.Column(db.DateTime)
-    date_heure_restitution=db.Column(db.DateTime)
+    date_perte=db.Column(db.DateTime)
+    date_restitution=db.Column(db.DateTime)
     type_objet=db.Column(db.Text)
     nature_objet=db.Column(db.Text)
 
@@ -43,4 +44,3 @@ class Declaration_de_perte(db.Model):
     UIC=db.Column(db.Integer, ForeignKey('gares.UIC')) #Foreign Key UIC de Gares
     date_perte=db.Column(db.DateTime)
     type_objet=db.Column(db.Text) #normalisation du pluriel
-    nature_objet=db.Column(db.Text) #normalisation du pluriel
