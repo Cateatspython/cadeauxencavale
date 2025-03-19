@@ -4,25 +4,48 @@
 
 {% block content %}
 <div class="">
-    <h3 class="title">S'inscrire</h3>
-    <div class="box">
-        <form method="POST" action="{{ url_for('ajout_utilisateur') }}",>
+    <h3 class="">S'inscrire</h3>
+
+    <div class="">
+
+        <!--Affichage de l'erreur dans la box-->
+        <!---Affichage des erreurs flash-->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="">
+                    {% for category, message in messages %}
+                        <p class="{{ 'has-text-danger' if category == 'error' else 'has-text-success' }}">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Affichage des erreurs liées au formulaire -->
+        {% for field, errors in form.errors.items() %}
+            <div class="">
+                {% for error in errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        <form method="POST" action="{{ url_for('ajout_utilisateur') }}">
             {{ form.hidden_tag() }}
-            <div class="field">
-                <div class="control">
-                    <input class="input" type="email" name="email" placeholder="Votre adresse email" autofocus="">
+            <div class="">
+                <div class="">
+                    <input class="" type="email" name="email" placeholder="Votre adresse email" autofocus="">
                 </div>
             </div>
 
-            <div class="field">
-                <div class="control">
-                    <input class="input" type="text" name="pseudo" placeholder="Votre pseudo" autofocus="">
+            <div class="">
+                <div class="">
+                    <input class="" type="text" name="pseudo" placeholder="Votre pseudo" autofocus="">
                 </div>
             </div>
 
-            <div class="field">
-                <div class="control">
-                    <input class="input" type="password" name="password" placeholder="Votre mot de passe">
+            <div class="">
+                <div class="">
+                    <input class="" type="password" name="password" placeholder="Votre mot de passe">
                 </div>
             </div>
 
