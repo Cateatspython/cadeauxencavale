@@ -135,13 +135,15 @@ def trouver_objet():
             Declaration_de_perte.date_perte <= datetime_fin_journee_perte,
             Declaration_de_perte.type_objet.ilike(f"%{type_d_objet}%")
         ).group_by(Gares.region).all()
+        # Queries pour récupérer le nombre d'objets trouvés par région
         nb_objets_trouves_par_region = db.session.query(
             Gares.region, func.count(Objets_trouves.date_perte)
         ).join(Gares, Objets_trouves.UIC == Gares.UIC).filter(
-            Objets_trouves.date_heure_trouves >= datetime_debut_journee_perte,
-            Objets_trouves.date_heure_trouves <= datetime_fin_journee_perte,
+            Objets_trouves.date_perte >= datetime_debut_journee_perte,
+            Objets_trouves.date_perte <= datetime_fin_journee_perte,
             Objets_trouves.type_objet.ilike(f"%{type_d_objet}%")
         ).group_by(Gares.region).all()
+        # Queries pour récupérer le nombre d'objets restitués par région
         nb_objets_restitues_par_region = db.session.query(
             Gares.region, func.count(Objets_trouves.date_restitution)
         ).join(Gares, Objets_trouves.UIC == Gares.UIC).filter(
@@ -173,8 +175,8 @@ def trouver_objet():
         nb_objets_par_type_par_gare = db.session.query(
             Objets_trouves.UIC, Objets_trouves.type_objet, func.count(Objets_trouves.id)
         ).filter(
-            Objets_trouves.date_heure_trouves >= date_heure_perte,
-            Objets_trouves.date_heure_trouves <= fin_vacances_noel,
+            Objets_trouves.date_perte >= date_heure_perte,
+            Objets_trouves.date_perte <= fin_vacances_noel,
             Objets_trouves.UIC.in_([gare.UIC for gare in gares_result])
         ).group_by(Objets_trouves.UIC, Objets_trouves.type_objet).all()
 
@@ -201,9 +203,9 @@ def trouver_objet():
             },
             #horaires d'ouverture de la gare sous forme de dictionnaire imbriqué (dict)
             "horaires": {
-                h.jour_de_la_semaine: {
-                "horaires_jour_normal": h.horaires_jour_normal,
-                "horaires_jour_ferie": h.horaires_jour_ferie
+                h.jour: {
+                "horaires_jour_normal": h.horaire_jour_normal,
+                "horaires_jour_ferie": h.horaire_jour_ferie
                 }
                 for h in horaires if h.UIC == gare.UIC
             },
