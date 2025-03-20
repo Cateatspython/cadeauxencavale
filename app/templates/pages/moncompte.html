@@ -3,12 +3,12 @@
 {% block title %}Mon compte{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1 class="title">Mon compte</h1>
+<div class="">
+    <h1 class="">Mon compte</h1>
 
-    <h2 class="subtitle">Historique des recherches</h2>
+    <h2 class="">Historique des recherches</h2>
     {% if historique %}
-        <table class="table">
+        <table class="">
             <thead>
                 <tr>
                     <th>Date</th>
@@ -28,8 +28,8 @@
         <p>Aucune recherche enregistrée.</p>
     {% endif %}
 
-    <h2 class="subtitle">Informations</h2>
-        <table class="table">
+    <h2 class="">Informations</h2>
+        <table class="">
             <thead>
                 <tr>
                     <th>Pseudo</th>
@@ -50,7 +50,7 @@
 
         <a href="{{ url_for('chgnt_mdp') }}">Changer de mot de passe</a>
 
-    <h2 class="subtitle">Gares favorites</h2>
+    <h2 class="">Gares favorites</h2>
     {% if favoris %}
         <ul>
             {% for f in favoris %}
