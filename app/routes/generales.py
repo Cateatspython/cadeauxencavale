@@ -9,7 +9,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 @app.route("/accueil")
 def accueil():
-    return render_template("/pages/accueil.html")
+    return render_template("/index.html")
 
 @app.route("/inscription", methods=['GET', 'POST'])
 def ajout_utilisateur():

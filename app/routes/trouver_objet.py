@@ -18,7 +18,7 @@ def autocomplete_gares():
     gares_noms = [gare.nom for gare in gares]
     return jsonify(gares_noms)
 
-@app.route("/trouver-objet", methods = ["GET", "POST"])
+@app.route("/trouver-objet", methods=["GET", "POST"])
 def trouver_objet():
     """
     Route pour rechercher des objets trouvés dans les gares et afficher des statistiques.
@@ -35,6 +35,7 @@ def trouver_objet():
        - Tous les champs doivent être remplis
        - Limitation à 2 gares maximum
        - Vérification du format des dates et heures (ISO 8601)
+       - Vérification de la date de perte entre le 20 décembre 2024 et le 6 janvier 2025
     
     2. Requêtes SQLAlchemy :
        - Récupération des gares correspondant aux critères
@@ -47,22 +48,23 @@ def trouver_objet():
        - Statistiques pour la datavisualisation :
          - Nombre total d'objets trouvés le jour sélectionné
          - Répartition des objets trouvés par type dans les gares sélectionnées
+         - Nombre d'objets perdus, trouvés et restitués par région le jour sélectionné
 
     Renvoie :
         Render_template vers "trouver_objet.html" avec les données nécessaires pour l'affichage :
         - form : le formulaire validé ou vide
-        - geolocalisations : liste des coordonnées des gares sélectionnées
         - donnees : détails des gares (nom, adresse, horaires, etc.)
-        - nb_objets_jour : nombre d'objets trouvés le jour donné
-        - nb_objets_par_type : nombre d'objets par type pendant la période de vacances
+        - data_par_region : statistiques des objets perdus, trouvés et restitués par région
+        - data_objets_par_types_gares : nombre d'objets trouvés par type dans les gares sélectionnées
 
     Redirige vers la même page avec un message d'erreur si :
         - Un champ du formulaire est vide
         - Plus de 2 gares sont sélectionnées
         - Les formats de date/heure sont invalides
+        - La date de perte n'est pas entre le 20 décembre 2024 et le 6 janvier 2025
     """
     form = TrouverObjet()
-    donnees=[]
+    donnees = []
     
     if form.validate_on_submit():
         type_d_objet = request.form.get("type_d_objet", None)
@@ -71,23 +73,21 @@ def trouver_objet():
         heure_approx_perte = request.form.get("heure_approx_perte", None)
         
         # Soulever une erreur si les champs sont vides
-        if not (type_d_objet and gares and date_trajet and heure_approx_perte):
+        if not (type_d_objet and gares and date_trajet and heure_approx_perte) or gares == []:
             flash("Veuillez renseigner tous les champs du formulaire", "error")
             return redirect(url_for("trouver_objet"))
 
+        print(f'Gares sélectionnées : {gares}')
         # Convertir la liste des gares en liste d'objets
-        if gares:
-            gares = gares.split(",")
+        gares = gares.split(",")
 
+        print(f'Gares sélectionnées : {gares}')
         # Limiter le nombre de gares à deux maximum
         if len(gares) > 2 :
             flash("Veuillez sélectionner au maximum deux gares.", "error")
+            print("Trop de gares sélectionnées")
             return redirect(url_for("trouver_objet"))
 
-        print(gares)
-        print(date_trajet)
-        print(heure_approx_perte)
-        print(type_d_objet)
         # Combine date_trajet et heure_approx_perte en datetime ISO 8601
         fin_vacances_noel = datetime.fromisoformat("2025-01-06T23:59:59+01:00")
         debut_vacances_noel = datetime.fromisoformat("2024-12-20T00:00:00+01:00")
@@ -101,6 +101,11 @@ def trouver_objet():
         if not (debut_vacances_noel <= date_heure_perte <= fin_vacances_noel):
             flash("La date de perte doit être entre le 20 décembre 2024 et le 6 janvier 2025.", "error")
             return redirect(url_for("trouver_objet"))
+
+        #Message de validation du formulaire si aucun problème n'est rencontré
+        flash("Formulaire validé !", "success")
+
+        ### RECUPERATION DES DONNEES ###
 
         # Récupérer les gares correspondantes
         gares_result = Gares.query.filter(
@@ -121,7 +126,6 @@ def trouver_objet():
         # Horaires des gares sélectionnées
         horaires = Horaires.query.filter(Horaires.UIC.in_([gare.UIC for gare in gares_result])).all()
 
-        ### A VOIR AVEC PIERRE POUR DONNEES A TRANSMETTRE
         # Statistiques pour dataviz :
         # 1. Tous les objets perdus, objets_trouvés.date_perte, objets_trouvés.date_restitution en France par Région, du type sélectionné, pendant toute la journée de perte.
         datetime_debut_journee_perte = datetime.fromisoformat(f"{date_trajet}T00:00:00")
@@ -170,7 +174,7 @@ def trouver_objet():
             }
             for region in regions
         ]
-
+        print(data_par_region)
         # #2. Nombre d'objets trouvés par types dans les gares sélectionnées, pendant la période des vacances de Noël
         nb_objets_par_type_par_gare = db.session.query(
             Objets_trouves.UIC, Objets_trouves.type_objet, func.count(Objets_trouves.id)
@@ -189,19 +193,22 @@ def trouver_objet():
             for UIC, type_objet, nb in nb_objets_par_type_par_gare
             for gare in gares_result if gare.UIC == UIC
         ]
+        print(data_objets_par_types_gares)
+
+
         # Infos pour les gares sélectionnées (liste de dictionnaires)
         donnees = [
             {
-            #nom de la gare (str)
+            # nom de la gare (str)
             "nom": gare.nom,
-            #adresse complète de la gare (str)
-            "adresse": f'{gare.adresse}, {gare.code_postal} {gare.commune}.',
-            #géolocalisation de la gare (dict)
+            # adresse complète de la gare (str)
+            "adresse": f'{gare.adresse}, {gare.code_postal} {gare.commune}.' if gare.adresse else f'{gare.code_postal} {gare.commune}.',
+            # géolocalisation de la gare (dict)
             "geolocalisation": {
                 "latitude": gare.latitude,
                 "longitude": gare.longitude
             },
-            #horaires d'ouverture de la gare sous forme de dictionnaire imbriqué (dict)
+            # horaires d'ouverture de la gare sous forme de dictionnaire imbriqué (dict)
             "horaires": {
                 h.jour: {
                 "horaires_jour_normal": h.horaire_jour_normal,
@@ -210,7 +217,7 @@ def trouver_objet():
                 for h in horaires if h.UIC == gare.UIC
             },
             "UIC": gare.UIC,
-            #nombre d'objets trouvés du type cherché entre date/heure approx perte et la fin des vacances pour la gare itérée (int)
+            # nombre d'objets trouvés du type cherché entre date/heure approx perte et la fin des vacances pour la gare itérée (int)
             "nb_objets_trouves_periode_perte_type": len([obj for obj in objets_trouves if obj.UIC == gare.UIC])
             }
             for gare in gares_result
@@ -229,23 +236,9 @@ def trouver_objet():
                 date_heure_recherche=datetime.now(),
                 requete_json=filtres_requetes
                )
+            flash("Recherche enregistrée dans l'historique", "info")
         
         # Ajout de la gare aux favoris si utilisateur connecté et activation du bouton "Ajouter aux favoris"
-        if request.method == "POST" and current_user.is_authenticated:
-            data = request.get_json()
-            UIC = data.get("UIC")
-
-            if UIC:
-                # Vérifier si la gare est déjà dans les favoris
-                favori_existant = Gares_favorites.query.filter_by(user_id=current_user.id, UIC=UIC).first()
-                if favori_existant:
-                    flash("Cette gare est déjà dans vos favoris.", "info")
-                    return jsonify({"status": "exists"}), 200
-                else:
-                    Gares_favorites.ajout_favoris(user_id=current_user.id, UIC=UIC)
-                    return jsonify({"status": "success"}), 200
-            else:
-                return jsonify({"status": "error", "message": "UIC manquant"}), 400
     
     return render_template("pages/trouver_objet.html",
                            form=form,
@@ -253,8 +246,45 @@ def trouver_objet():
                            #data_par_region=data_par_region,
                            #data_objets_par_types_gares=data_objets_par_types_gares
                            )
-    #La route doit renvoyer : 
-    #-> Les données de géolocalisations des deux gares max vers le script JS
-    #-> Les données de la gare (Nom complet + Adresse complète + horaires d'ouverture et potentiellement //
-    # le nb d'objets trouvés du type cherché entre date/heure approx perte et la fin des vacances)
-    # -> Données dataviz personnalisées pour script JS : ???
+
+
+@app.route("/ajouter-favori", methods=["POST"])
+def ajouter_favori():
+    """
+    Ajoute une gare aux favoris de l'utilisateur connecté.
+    Cette fonction est déclenchée par une requête POST à l'URL "/ajouter-favori".
+    Elle vérifie si la requête contient des données JSON et si l'utilisateur est authentifié.
+    Si les conditions sont remplies, elle ajoute la gare identifiée par l'UIC aux favoris de l'utilisateur.
+    Retourne:
+        Une redirection vers la route "trouver_objet" avec un message flash indiquant le résultat de l'opération.
+    Messages flash:
+        - "Requête invalide, veuillez utiliser JSON" (error): Si la requête n'est pas au format JSON.
+        - "UIC manquant" (error): Si l'UIC n'est pas fourni dans les données JSON.
+        - "Cette gare est déjà dans vos favoris" (info): Si la gare est déjà dans les favoris de l'utilisateur.
+        - "Gare ajoutée aux favoris avec succès" (success): Si la gare a été ajoutée aux favoris avec succès.
+        - "Utilisateur non connecté" (error): Si l'utilisateur n'est pas authentifié.
+    """
+    if not request.is_json:
+        flash("Requête invalide, veuillez utiliser JSON", "error")
+        return redirect(url_for("trouver_objet"))
+
+    data = request.get_json()
+
+    UIC = data.get("UIC")
+    if not UIC:
+        flash("UIC manquant", "error")
+        return redirect(url_for("trouver_objet"))
+
+    if current_user.is_authenticated:
+        favori_existant = Gares_favorites.query.filter_by(utilisateur_id=current_user.id, UIC=UIC).first()
+        if favori_existant:
+            flash("Cette gare est déjà dans vos favoris", "info")
+        else:
+            Gares_favorites.ajout_favoris(utilisateur_id=current_user.id, UIC=UIC)
+            db.session.commit()
+            flash("Gare ajoutée aux favoris avec succès", "success")
+    else:
+        flash("Utilisateur non connecté", "error")
+    
+    return redirect(url_for("trouver_objet"))
+

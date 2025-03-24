@@ -12,24 +12,24 @@ class TrouverObjet(FlaskForm):
     type_d_objet = SelectField(
         "Type d'objet",
         choices=[],
-        validators=[DataRequired(message="Veuillez sélectionner un type d'objet.")]
+        # validators=[DataRequired(message="Veuillez sélectionner un type d'objet.")]
     )
 
     # Champ autocomplété pour sélectionner une à deux gares
-    gares = FieldList(StringField("Gares"), min_entries=1, max_entries=2, validators=[DataRequired()])
+    gares = FieldList(StringField("Gares"), min_entries=1, max_entries=2) #validators=[DataRequired()])
 
     # Champ pour rentrer une date au format normé
     date_trajet = DateField(
         "Date du trajet",
         format="%Y-%m-%d",
-        validators=[DataRequired(message="Veuillez renseigner la date du trajet.")]
+        #validators=[DataRequired(message="Veuillez renseigner la date du trajet.")]
     )
 
     # Champ pour rentrer une heure au format normé
     heure_approx_perte = TimeField(
         "Heure approximative de perte",
         format="%H:%M",
-        validators=[DataRequired(message="Veuillez renseigner l'heure approximative.")]
+        #validators=[DataRequired(message="Veuillez renseigner l'heure approximative.")]
     )
 
     submit = SubmitField("Rechercher")
