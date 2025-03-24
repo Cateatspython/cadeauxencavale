@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% include '/partials/script_js_auto_completion.html' %}
+    {% include '/partials/script_js_boutons_gares_favorites.html' %}
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll("input").forEach(input => {
@@ -14,11 +15,22 @@
                 });
             });
         });
-        </script>
+    </script>
     <title>Recherche d'objets trouvés</title>
 </head>
 <body>
     <h1>Recherche d'objets trouvés</h1>
+
+    <!-- Affichage des messages flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
 
     <!-- Formulaire de recherche -->
     <form method="POST" action="{{ url_for('trouver_objet') }}">
@@ -27,63 +39,39 @@
         <!-- Type d'objet -->
         <label for="type_d_objet">Type d'objet :</label>
         {{ form.type_d_objet(class="form-control") }}
-        {% if form.type_d_objet.errors %}
-            <ul class="errors">
-                {% for error in form.type_d_objet.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-            <br/>
+        <br/>
+        
         <!-- Gares -->
+        <label for="gares">Gare.s :</label>
         <input type="text" id="gares" list="gares-list" placeholder="Rechercher une gare..." autocomplete="off">
         <datalist id="gares-list"></datalist>
 
         <div id="selected-gares"></div>
         <input type="hidden" id="hidden-gares" name="gares"> <!-- Stocker les valeurs pour le formulaire -->
-
                 
-        {% if form.gares.errors %}
-            <ul class="errors">
-                {% for error in form.gares.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    
         <!-- Date du trajet -->
         <label for="date_trajet">Date du trajet :</label>
         {{ form.date_trajet(class="form-control", id="date_trajet") }}
-        {% if form.date_trajet.errors %}
-            <ul class="errors">
-                {% for error in form.date_trajet.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
     
         <!-- Heure approximative de perte -->
         <label for="heure_approx_perte">Heure approximative de perte :</label>
         {{ form.heure_approx_perte(class="form-control", id="heure_approx_perte") }}
-        {% if form.heure_approx_perte.errors %}
-            <ul class="errors">
-                {% for error in form.heure_approx_perte.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
     
         <!-- Bouton de soumission -->
         {{ form.submit(class="btn btn-primary") }}
     </form>
-    
-    
+    <script>
+        document.querySelector("form").addEventListener("submit", function() {
+    console.log("Valeur des gares soumises :", document.getElementById("hidden-gares").value);
+});
 
+    </script>
     <!-- Affichage des résultats -->
     {% if donnees %}
         <h2>Résultats</h2>
         {% for gare in donnees %}
             <h3>{{ gare.nom }}</h3>
+            <button class="ajout-favoris-btn" data-uic="{{ gare.UIC }}">Ajouter aux favoris</button>
             <p>Adresse : {{ gare.adresse }}</p>
             <p>Nombre d'objets trouvés pendant la période : {{ gare.nb_objets_trouves_periode_perte_type }}</p>
             <h4>Horaires</h4>

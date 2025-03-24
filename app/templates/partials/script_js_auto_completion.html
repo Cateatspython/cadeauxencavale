@@ -24,20 +24,17 @@
         }
     });
 
-    // Ajout de la gare sélectionnée
+    // Ajout de la gare sélectionnée sans limite
     inputGares.addEventListener("change", function() {
         const selectedGare = inputGares.value.trim();
         
         if (selectedGare && !selectedGares.includes(selectedGare)) {
-            if (selectedGares.length < 2) {
-                selectedGares.push(selectedGare);
-                updateSelectedGares();
-            } else {
-                alert("Vous ne pouvez sélectionner que deux gares.");
-            }
+            selectedGares.push(selectedGare);
+            updateSelectedGares();
         }
         inputGares.value = ""; // Efface le champ après sélection
     });
+
 
     // Met à jour l'affichage des gares sélectionnées
     function updateSelectedGares() {
