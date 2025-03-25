@@ -25,9 +25,9 @@ class Horaires(db.Model):
     __tablename__="horaires"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     UIC=db.Column(db.Integer, ForeignKey('gares.UIC')) #Foreign Key UIC de Gares
-    jour_de_la_semaine=db.Column(db.String(10))
-    horaires_jour_normal=db.Column(db.String(30))
-    horaires_jour_ferie=db.Column(db.String(30))
+    jour=db.Column(db.String(10))
+    horaire_jour_normal=db.Column(db.String(30))
+    horaire_jour_ferie=db.Column(db.String(30))
 
 class Objets_trouves(db.Model):
     __tablename__="objets_trouves"
@@ -39,7 +39,7 @@ class Objets_trouves(db.Model):
     nature_objet=db.Column(db.Text)
 
 class Declaration_de_perte(db.Model):
-    __tablename__="declaration_perte"
+    __tablename__="declarations_de_perte"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     UIC=db.Column(db.Integer, ForeignKey('gares.UIC')) #Foreign Key UIC de Gares
     date_perte=db.Column(db.DateTime)
