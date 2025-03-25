@@ -85,11 +85,11 @@ def deconnexion():
 @app.route("/moncompte")
 @login_required
 def moncompte():
-    historique = Historique.query.filter_by(id=current_user.id).order_by(Historique.date_heure_recherche.desc()).all()
+    historique = Historique.query.filter_by(id_utilisateur=current_user.id).order_by(Historique.date_heure_recherche.desc()).all()
     
-    favoris = Gares_favorites.query.filter_by(id=current_user.id).all()
-
-    utilisateur = Utilisateur.query.filter_by(id=current_user.id).all()
+    favoris = Gares_favorites.query.filter_by(utilisateur_id=current_user.id).all()
+    
+    utilisateur = Utilisateur.query.filter_by(id=current_user.id).first()
 
     return render_template('pages/moncompte.html', historique=historique, favoris=favoris, utilisateur=utilisateur)
 
