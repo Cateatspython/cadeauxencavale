@@ -11,6 +11,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 def accueil():
     return render_template("/index.html")
 
+#inscription sur l'application 
 @app.route("/inscription", methods=['GET', 'POST'])
 def ajout_utilisateur():
     form = AjoutUtilisateur()
@@ -23,7 +24,6 @@ def ajout_utilisateur():
         )
 
         if statut is True:
-            flash("Ajout effectué", "success")
             return redirect(url_for("accueil"))
         else: 
             for erreur in donnees:
@@ -32,12 +32,12 @@ def ajout_utilisateur():
     return render_template("pages/inscription.html", form=form)
 
 
+#connexion + gestion des erreurs lors de la connexion
 @app.route("/connexion", methods=["GET", "POST"])
 def connexion():
     form = Connexion()
 
     if current_user.is_authenticated is True:
-        flash("Vous êtes déjà connecté", "info")
         return redirect(url_for("accueil"))
 
     if form.validate_on_submit():
@@ -50,6 +50,7 @@ def connexion():
             - vérification de l'email
             - vérification du pseudo
             - vérification du mdp
+        quand ce qui a été rentré dans le formulaire ne correspond pas à ce qui est dans la base de données
         """
 
         utilisateur = Utilisateur.query.filter_by(email=email).first()
@@ -67,32 +68,32 @@ def connexion():
             return render_template("pages/connexion.html", form=form, email=email, pseudo=pseudo, password=password)
 
         login_user(utilisateur)
-        flash("Connexion réussie", "success")
         return redirect(url_for("accueil"))
 
     return render_template("pages/connexion.html", form=form)
 
 login.login_view='connexion'
 
+#se déconnecter et être redirigé vers la page d'accueil
 @app.route("/deconnexion", methods=["POST","GET"])
 def deconnexion():
     if current_user.is_authenticated is True:
         logout_user()
-    flash("Vous êtes déconnecté.","info")
     return redirect(url_for("accueil"))
 
 #connexion obligatoire pour accéder à moncompte, l'historique et les gares favorites
 @app.route("/moncompte")
 @login_required
 def moncompte():
-    historique = Historique.query.filter_by(id=current_user.id).order_by(Historique.date_heure_recherche.desc()).all()
+    historique = Historique.query.filter_by(id_utilisateur=current_user.id).order_by(Historique.date_heure_recherche.desc()).all()
     
-    favoris = Gares_favorites.query.filter_by(id=current_user.id).all()
-
-    utilisateur = Utilisateur.query.filter_by(id=current_user.id).all()
+    favoris = Gares_favorites.query.filter_by(utilisateur_id=current_user.id).all()
+    
+    utilisateur = Utilisateur.query.filter_by(id=current_user.id).first()
 
     return render_template('pages/moncompte.html', historique=historique, favoris=favoris, utilisateur=utilisateur)
 
+#changement de mot de passe possible quand on est connecté
 @app.route("/changer-mot-de-passe", methods=["GET","POST"])
 @login_required
 def chgnt_mdp():
