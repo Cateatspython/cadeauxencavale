@@ -18,7 +18,7 @@ Retourne :
     - donnees_diff_perte_restitution : Liste de dictionnaires contenant le type d'objet, la nature d'objet et le délai moyen de restitution en jours.
     - donnees_perte_par_mois_region : Liste de dictionnaires contenant l'année, le mois, le type d'objet, la région et le nombre d'objets perdus.
 """
-# Requete pour récupérer le taux dobjet perdus par gare/frequentation pour 1000 personnes
+# Requete pour récupérer le taux d'objet perdus par gare/frequentation pour 1000 personnes
     requete_heatmap = (
     db.session.query(
             Gares.nom,
@@ -60,6 +60,7 @@ Retourne :
         }
         for objet in requete_diff_perte_restiution
     ]
+    
     #requete pour récupérer le nombre d'objets perdus par mois, par région et par nature/type d'objet
     requete_perte_par_mois_region = (
          db.session.query(
