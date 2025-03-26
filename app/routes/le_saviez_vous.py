@@ -3,7 +3,7 @@ from flask import render_template
 from sqlalchemy import func
 from ..models.gares import Gares, Objets_trouves
 
-@app.route("/le_saviez_vous", methods=["GET", "POST"])
+@app.route("/le-saviez-vous", methods=["GET", "POST"])
 def le_saviez_vous():
     """
 Route pour la page "Le Saviez-Vous".
@@ -18,30 +18,25 @@ Retourne :
     - donnees_diff_perte_restitution : Liste de dictionnaires contenant le type d'objet, la nature d'objet et le délai moyen de restitution en jours.
     - donnees_perte_par_mois_region : Liste de dictionnaires contenant l'année, le mois, le type d'objet, la région et le nombre d'objets perdus.
 """
-# Requete pour récupérer le taux dobjet perdus par gare/frequentation pour 1000 personnes
+# Requete pour récupérer le taux d'objet perdus par gare/frequentation pour 1000 personnes
     requete_heatmap = (
     db.session.query(
-        Gares.UIC,
-        Gares.nom,
-        Gares.latitude,
-        Gares.longitude,
-        func.count(Objets_trouves.date_perte).label("pourcentage_objets_perdus"),
-        ( 
-            (func.count(Objets_trouves.date_perte) / 
-             func.case((Gares.moyenne_frequentation_2021_2023 > 0, Gares.moyenne_frequentation_2021_2023), else_=1) 
-            ) * 1000
-        ).label("taux_objets_perdus")
-    )
-    .outerjoin(Objets_trouves, Gares.UIC == Objets_trouves.UIC)
-    .group_by(Gares.UIC, Gares.nom, Gares.latitude, Gares.longitude)
-    .all()
+            Gares.nom,
+            Gares.latitude,
+            Gares.longitude,
+            (func.count(Objets_trouves.date_perte) / 3.0 / func.nullif(Gares.moyenne_frequentation_2021_2023, 0) * 1000)
+            .label("taux_objets_perdus")
+        )
+        .join(Objets_trouves, Gares.UIC == Objets_trouves.UIC)
+        .group_by(Gares.nom, Gares.latitude, Gares.longitude, Gares.moyenne_frequentation_2021_2023)
+        .all()
     )
     donnees_heatmap = [
         {
             "nom": gare.nom,
             "latitude": gare.latitude,
             "longitude": gare.longitude,
-            "purcentage_objets_perdus": gare.pourcentage_objets_perdus,
+            "pourcentage_objets_perdus": gare.taux_objets_perdus,
         }
         for gare in requete_heatmap
     ]
@@ -65,6 +60,7 @@ Retourne :
         }
         for objet in requete_diff_perte_restiution
     ]
+    
     #requete pour récupérer le nombre d'objets perdus par mois, par région et par nature/type d'objet
     requete_perte_par_mois_region = (
          db.session.query(
@@ -91,4 +87,4 @@ Retourne :
     ]
 
 
-    return render_template("le_saviez_vous.html", donnees_heatmap=donnees_heatmap, donnees_diff_perte_restitution=donnees_diff_perte_restitution, donnees_perte_par_mois_region=donnees_perte_par_mois_region)    
+    return render_template("pages/le_saviez_vous.html", donnees_heatmap=donnees_heatmap, donnees_diff_perte_restitution=donnees_diff_perte_restitution, donnees_perte_par_mois_region=donnees_perte_par_mois_region)    

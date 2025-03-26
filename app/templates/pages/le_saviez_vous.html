@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heatmap des Objets Perdus</title>
+    <!-- Import biblio JS plotly-->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <!-- Import jquery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+    <h2>Carte du taux d'objet perdus par gare pour 100 voyageurs en moyenne sur 3 ans</h2>
+    <div id="heatmap" style="width: 80vw; height: 80vh;"></div>
+
+    <script>
+        // Récupération des données envoyées par Flask
+        let data = {{ donnees_heatmap | tojson }};
+
+        // Extraction des coordonnées et valeurs
+        let latitudes = data.map(gare => gare.latitude);
+        let longitudes = data.map(gare => gare.longitude);
+        let valeurs = data.map(gare => gare.pourcentage_objets_perdus);
+
+        let trace = {
+            type: 'scattermapbox',
+            lat: latitudes,
+            lon: longitudes,
+            mode: 'markers',
+            marker: {
+                size: valeurs.map(val => Math.sqrt(val) * 40), // Taille en fonction des objets perdus
+                color: valeurs,
+                colorscale: [[0, 'green'], [0.15, 'orange'], [1, 'red']],
+                cmin: Math.min(...valeurs),
+                cmax: Math.max(...valeurs),
+                showscale: true
+            },
+            text: data.map(gare => `${gare.nom}: ${gare.pourcentage_objets_perdus} objets perdus pour 1000 voyageurs en moyenne`)
+        };
+
+        let layout = {
+            title: 'Heatmap des objets perdus dans les gares',
+            mapbox: {
+                style: 'open-street-map',
+                center: { lat: 46.603354, lon: 1.888334 }, // Centre de la France
+                zoom: 5
+            },
+            margin: { t: 50, b: 20, l: 0, r: 0 }
+        };
+
+        Plotly.newPlot('heatmap', [trace], layout);
+    </script>
+
+<!--GRAPHIQUE TEMPS MOYEN RESTITUTION-->
+<h2>Délais moyens par type d'objet</h2>
+    <div id="graph_type"></div>
+
+    <h2>Délais moyens par nature d'objet</h2>
+    <div id="graph_nature"></div>
+
+    <script>
+        var donnees = {{ donnees_diff_perte_restitution | tojson }};
+
+        // Regrouper les données par type d'objet
+        var groupes = {};
+        donnees.forEach(d => {
+            if (!groupes[d.type_objet]) {
+                groupes[d.type_objet] = { total: 0, count: 0 };
+            }
+            groupes[d.type_objet].total += d.delai_moyen_jours;
+            groupes[d.type_objet].count += 1;
+        });
+
+        var types = Object.keys(groupes);
+        var delais = types.map(type => groupes[type].total / groupes[type].count);
+
+        var trace1 = {
+            x: types,
+            y: delais,
+            type: 'bar',
+            name: 'Types d\'objets'
+        };
+
+        var layout1 = {
+            title: 'Délai moyen de restitution par type d\'objet',
+            xaxis: { title: 'Type d\'objet' },
+            yaxis: { title: 'Délai moyen (jours)' }
+        };
+
+        Plotly.newPlot('graph_type', [trace1], layout1);
+
+        document.getElementById('graph_type').on('plotly_click', function(data) {
+            var type_objet = data.points[0].x;
+
+            $.getJSON(`/get_nature/${type_objet}`, function(natures) {
+                var natures_x = natures.map(n => n.nature_objet);
+                var delais_y = natures.map(n => n.delai_moyen_jours);
+
+                var trace2 = {
+                    x: natures_x,
+                    y: delais_y,
+                    type: 'bar',
+                    name: `Natures de ${type_objet}`
+                };
+
+                var layout2 = {
+                    title: `Délai moyen de restitution pour les natures de "${type_objet}"`,
+                    xaxis: { title: 'Nature d\'objet' },
+                    yaxis: { title: 'Délai moyen (jours)' }
+                };
+
+                Plotly.newPlot('graph_nature', [trace2], layout2);
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -65,6 +65,8 @@ def trouver_objet():
     """
     form = TrouverObjet()
     donnees = []
+    data_par_region = []
+    data_objets_par_types_gares = []
     
     if form.validate_on_submit():
         type_d_objet = request.form.get("type_d_objet", None)
@@ -174,7 +176,6 @@ def trouver_objet():
             }
             for region in regions
         ]
-        print(data_par_region)
         # #2. Nombre d'objets trouvés par types dans les gares sélectionnées, pendant la période des vacances de Noël
         nb_objets_par_type_par_gare = db.session.query(
             Objets_trouves.UIC, Objets_trouves.type_objet, func.count(Objets_trouves.id)
@@ -243,40 +244,27 @@ def trouver_objet():
     return render_template("pages/trouver_objet.html",
                            form=form,
                            donnees=donnees,
-                           #data_par_region=data_par_region,
-                           #data_objets_par_types_gares=data_objets_par_types_gares
+                           data_par_region=data_par_region,
+                           data_objets_par_types_gares=data_objets_par_types_gares
                            )
 
 
 @app.route("/ajouter-favori", methods=["POST"])
 def ajouter_favori():
-    """
-    Ajoute une gare aux favoris de l'utilisateur connecté.
-    Cette fonction est déclenchée par une requête POST à l'URL "/ajouter-favori".
-    Elle vérifie si la requête contient des données JSON et si l'utilisateur est authentifié.
-    Si les conditions sont remplies, elle ajoute la gare identifiée par l'UIC aux favoris de l'utilisateur.
-    Retourne:
-        Une redirection vers la route "trouver_objet" avec un message flash indiquant le résultat de l'opération.
-    Messages flash:
-        - "Requête invalide, veuillez utiliser JSON" (error): Si la requête n'est pas au format JSON.
-        - "UIC manquant" (error): Si l'UIC n'est pas fourni dans les données JSON.
-        - "Cette gare est déjà dans vos favoris" (info): Si la gare est déjà dans les favoris de l'utilisateur.
-        - "Gare ajoutée aux favoris avec succès" (success): Si la gare a été ajoutée aux favoris avec succès.
-        - "Utilisateur non connecté" (error): Si l'utilisateur n'est pas authentifié.
-    """
     if not request.is_json:
         flash("Requête invalide, veuillez utiliser JSON", "error")
         return redirect(url_for("trouver_objet"))
-
+    
     data = request.get_json()
-
     UIC = data.get("UIC")
+    
     if not UIC:
         flash("UIC manquant", "error")
         return redirect(url_for("trouver_objet"))
-
+    
     if current_user.is_authenticated:
         favori_existant = Gares_favorites.query.filter_by(utilisateur_id=current_user.id, UIC=UIC).first()
+        
         if favori_existant:
             flash("Cette gare est déjà dans vos favoris", "info")
         else:
@@ -287,4 +275,3 @@ def ajouter_favori():
         flash("Utilisateur non connecté", "error")
     
     return redirect(url_for("trouver_objet"))
-

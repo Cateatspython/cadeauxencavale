@@ -1,0 +1,30 @@
+<script>
+    var map = L.map('map').setView([46.603354, 1.888334], 5);
+ 
+    var tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        minZoom: 4,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    
+    var gares = [
+                {% if donnees %}
+                    {% for gare in donnees %}
+                        {
+                            nom: "{{ gare.nom }}",
+                            lat: {{ gare.geolocalisation.latitude or 0 }}, 
+                            lon: {{ gare.geolocalisation.longitude or 0 }}
+                        }{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                {% endif %}
+            ];
+    
+    // Ajout des marqueurs
+    gares.forEach(gare => {
+        L.marker([gare.lat, gare.lon])
+            .addTo(map)
+            .bindPopup(`<b>${gare.nom}</b>`);
+    });
+    
+    console.log("Liste des gares :", gares);
+ </script>

@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% include '/partials/script_js_auto_completion.html' %}
     {% include '/partials/script_js_boutons_gares_favorites.html' %}
+    {% include '/partials/script_leaflet.html' %}
+    
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll("input").forEach(input => {
@@ -32,40 +36,17 @@
         {% endif %}
     {% endwith %}
 
-    <!-- Formulaire de recherche -->
-    <form method="POST" action="{{ url_for('trouver_objet') }}">
-        {{ form.hidden_tag() }}
+    {% include '/partials/formulaires/form_trouver_objet.html' %}
     
-        <!-- Type d'objet -->
-        <label for="type_d_objet">Type d'objet :</label>
-        {{ form.type_d_objet(class="form-control") }}
-        <br/>
-        
-        <!-- Gares -->
-        <label for="gares">Gare.s :</label>
-        <input type="text" id="gares" list="gares-list" placeholder="Rechercher une gare..." autocomplete="off">
-        <datalist id="gares-list"></datalist>
-
-        <div id="selected-gares"></div>
-        <input type="hidden" id="hidden-gares" name="gares"> <!-- Stocker les valeurs pour le formulaire -->
-                
-        <!-- Date du trajet -->
-        <label for="date_trajet">Date du trajet :</label>
-        {{ form.date_trajet(class="form-control", id="date_trajet") }}
-    
-        <!-- Heure approximative de perte -->
-        <label for="heure_approx_perte">Heure approximative de perte :</label>
-        {{ form.heure_approx_perte(class="form-control", id="heure_approx_perte") }}
-    
-        <!-- Bouton de soumission -->
-        {{ form.submit(class="btn btn-primary") }}
-    </form>
     <script>
         document.querySelector("form").addEventListener("submit", function() {
     console.log("Valeur des gares soumises :", document.getElementById("hidden-gares").value);
 });
-
     </script>
+
+<div id="map" style="height: 400px; width: 100%;"></div>
+{% include '/partials/script_carte_leaflet.html' %}
+
     <!-- Affichage des résultats -->
     {% if donnees %}
         <h2>Résultats</h2>
@@ -74,12 +55,27 @@
             <button class="ajout-favoris-btn" data-uic="{{ gare.UIC }}">Ajouter aux favoris</button>
             <p>Adresse : {{ gare.adresse }}</p>
             <p>Nombre d'objets trouvés pendant la période : {{ gare.nb_objets_trouves_periode_perte_type }}</p>
+            {% if gare.horaires %}
             <h4>Horaires</h4>
-            <ul>
-                {% for jour, horaires in gare.horaires.items() %}
-                    <li>{{ jour }} : {{ horaires.horaires_jour_normal }} (jour férié : {{ horaires.horaires_jour_ferie }})</li>
-                {% endfor %}
-            </ul>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Jour</th>
+                        <th>Horaires (Jour Normal)</th>
+                        <th>Horaires (Jour Férié)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for jour, horaires in gare.horaires.items() %}
+                        <tr>
+                            <td>{{ jour }}</td>
+                            <td>{{ horaires.horaires_jour_normal }}</td>
+                            <td>{{ horaires.horaires_jour_ferie }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
         {% endfor %}
     {% endif %}
 </body>

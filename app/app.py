@@ -13,5 +13,5 @@ db = SQLAlchemy(app)
 
 login = LoginManager(app)
 
-from .routes import trouver_objet, generales
+from .routes import trouver_objet, generales, le_saviez_vous
 #ne pas oublier d'ajouter les autres .py de /routes lorsque complétés
