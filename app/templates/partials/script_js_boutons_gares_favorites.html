@@ -5,7 +5,7 @@
             let UIC = this.getAttribute("data-uic");
             console.log("UIC récupéré :", UIC); // Vérifier que l'UIC est bien récupéré
 
-            fetch("/ajouter-favori", {  // 🔹 Change l'URL pour une route distincte
+            fetch("/ajouter-favori", {  // Change l'URL pour une route distincte
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

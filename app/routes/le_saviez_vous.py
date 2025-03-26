@@ -3,7 +3,7 @@ from flask import render_template
 from sqlalchemy import func
 from ..models.gares import Gares, Objets_trouves
 
-@app.route("/le_saviez_vous", methods=["GET", "POST"])
+@app.route("/le-saviez-vous", methods=["GET", "POST"])
 def le_saviez_vous():
     """
 Route pour la page "Le Saviez-Vous".
@@ -26,11 +26,11 @@ Retourne :
         Gares.latitude,
         Gares.longitude,
         func.count(Objets_trouves.date_perte).label("pourcentage_objets_perdus"),
-        ( 
-            (func.count(Objets_trouves.date_perte) / 
-             func.case((Gares.moyenne_frequentation_2021_2023 > 0, Gares.moyenne_frequentation_2021_2023), else_=1) 
-            ) * 1000
+        (
+            func.count(Objets_trouves.date_perte) / 
+            func.coalesce(Gares.moyenne_frequentation_2021_2023, 1) * 1000
         ).label("taux_objets_perdus")
+
     )
     .outerjoin(Objets_trouves, Gares.UIC == Objets_trouves.UIC)
     .group_by(Gares.UIC, Gares.nom, Gares.latitude, Gares.longitude)
@@ -41,7 +41,7 @@ Retourne :
             "nom": gare.nom,
             "latitude": gare.latitude,
             "longitude": gare.longitude,
-            "purcentage_objets_perdus": gare.pourcentage_objets_perdus,
+            "pourcentage_objets_perdus": gare.taux_objets_perdus,
         }
         for gare in requete_heatmap
     ]
@@ -91,4 +91,4 @@ Retourne :
     ]
 
 
-    return render_template("le_saviez_vous.html", donnees_heatmap=donnees_heatmap, donnees_diff_perte_restitution=donnees_diff_perte_restitution, donnees_perte_par_mois_region=donnees_perte_par_mois_region)    
+    return render_template("pages/le_saviez_vous.html", donnees_heatmap=donnees_heatmap, donnees_diff_perte_restitution=donnees_diff_perte_restitution, donnees_perte_par_mois_region=donnees_perte_par_mois_region)    
