@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="title">
+  Welcome, Anthony!
+</h1>
+
+<div class="container">
+
+  <section id="formulaire">
+      {% include 'partials/formulaire_mon_compte.html' %}
+  </section>
+
+  <section id="dataviz1">
+      <h2>Visualisation des données</h2>
+      <div id="chart1"></div> <!-- Cette div contiendra la dataviz -->
+  </section>
+
+  <!-- Onglet des gares -->
+  <section id="onglet-gares">
+      <div class="tabs">
+          <button class="tab-button active" onclick="showGare('gare1')">Gare 1</button>
+          <button class="tab-button" onclick="showGare('gare2')">Gare 2</button>
+      </div>
+
+      <div class="gare-info">
+          <div id="gare1" class="gare-content">
+              <h3>Informations sur la Gare 1</h3>
+              <p>Détails sur la gare sélectionnée...</p>
+          </div>
+          <div id="gare2" class="gare-content hidden">
+              <h3>Informations sur la Gare 2</h3>
+              <p>Détails sur la deuxième gare...</p>
+          </div>
+      </div>
+  </section>
+
+  <section id="dataviz-bottom">
+      <div class="dataviz-container">
+          <div class="dataviz-box">
+              <h3>Dataviz 1</h3>
+              <div id="dataviz2"></div>
+          </div>
+          <div class="dataviz-box">
+              <h3>Dataviz 2</h3>
+              <div id="dataviz3"></div>
+          </div>
+      </div>
+  </section>

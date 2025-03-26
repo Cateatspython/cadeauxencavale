@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Page d'accueil{% endblock %}</title>
+</head>
+
+    <body>
+        
+    {% include 'partials/header.html' %}
+    {% include 'partials/nav.html' %}
+    
+    <section class="hero is-primary is-fullheight">
+
+        <div class="hero-head">
+            <nav class="navbar">
+                <div class="container">
+
+                    <div id="navbarMenuHeroA" class="navbar-menu">
+                        <div class="navbar-end">
+                            <a href="{{ url_for('accueil') }}" class="navbar-item">
+                                Home
+                            </a>
+                            <a href="{{ url_for('moncompte') }}" class="navbar-item">
+                                Profile
+                            </a>
+                            <a href="{{ url_for('connexion') }}" class="navbar-item">
+                                Login
+                            </a>
+                            <a href="{{ url_for('ajout_utilisateur') }}" class="navbar-item">
+                                Sign Up
+                            </a>
+                            <a href="{{ url_for('deconnexion') }}" class="navbar-item">
+                                Logout
+                            </a>
+                            <a href="{{ url_for('chgnt_mdp') }}" class="navbar-item">
+                                Changer de mot de passe
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <div class="hero-body">
+            <div class="container has-text-centered">
+               {% block content %}
+               {% endblock %}
+            </div>
+        </div>
+    </section>
+
+    {% include 'partials/footer.html' %}
+    {% include 'partials/scripts.html' %}
+    
+    </body>
+    </html>
