@@ -21,20 +21,15 @@ Retourne :
 # Requete pour récupérer le taux dobjet perdus par gare/frequentation pour 1000 personnes
     requete_heatmap = (
     db.session.query(
-        Gares.UIC,
-        Gares.nom,
-        Gares.latitude,
-        Gares.longitude,
-        func.count(Objets_trouves.date_perte).label("pourcentage_objets_perdus"),
-        (
-            func.count(Objets_trouves.date_perte) / 
-            func.coalesce(Gares.moyenne_frequentation_2021_2023, 1) * 1000
-        ).label("taux_objets_perdus")
-
-    )
-    .outerjoin(Objets_trouves, Gares.UIC == Objets_trouves.UIC)
-    .group_by(Gares.UIC, Gares.nom, Gares.latitude, Gares.longitude)
-    .all()
+            Gares.nom,
+            Gares.latitude,
+            Gares.longitude,
+            (func.count(Objets_trouves.date_perte) / 3.0 / func.nullif(Gares.moyenne_frequentation_2021_2023, 0) * 1000)
+            .label("taux_objets_perdus")
+        )
+        .join(Objets_trouves, Gares.UIC == Objets_trouves.UIC)
+        .group_by(Gares.nom, Gares.latitude, Gares.longitude, Gares.moyenne_frequentation_2021_2023)
+        .all()
     )
     donnees_heatmap = [
         {

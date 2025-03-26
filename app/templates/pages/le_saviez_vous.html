@@ -26,9 +26,9 @@
             lon: longitudes,
             mode: 'markers',
             marker: {
-                size: valeurs.map(val => Math.sqrt(val) * 5), // Taille en fonction des objets perdus
+                size: valeurs.map(val => Math.sqrt(val) * 40), // Taille en fonction des objets perdus
                 color: valeurs,
-                colorscale: [[0, 'white'], [1, 'red']],
+                colorscale: [[0, 'green'], [0.5, 'orange'], [1, 'red']],
                 cmin: Math.min(...valeurs),
                 cmax: Math.max(...valeurs),
                 showscale: true
