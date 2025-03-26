@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Trouver un objet{% endblock %}
+
+{% block content %}
+    <!-- Inclusion du formulaire -->
+    {% include 'form_trouver_objet.html' %}
+
+    <!-- Affichage des gares sous forme de tableau -->
+    <div class="gares-table">
+        <h3>Gares trouvées</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nom de la gare</th>
+                    <th>Horaires</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for gare in donnees %}
+                    <tr>
+                        <td>{{ gare.nom }}</td>
+                        <td>{{ gare.horaires }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Première dataviz -->
+    <div class="dataviz-container">
+        <h2>{{ titre_dataviz_1 }}</h2>
+        <!-- Place ici le code pour la première dataviz -->
+    </div>
+
+    <!-- Deuxième dataviz -->
+    <div class="dataviz-container">
+        <h2>{{ titre_dataviz_2 }}</h2>
+        <!-- Place ici le code pour la deuxième dataviz -->
+    </div>
+{% endblock %}
