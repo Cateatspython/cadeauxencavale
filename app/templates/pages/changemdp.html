@@ -3,33 +3,26 @@
 {% block content %}
 <div class="">
     <h3 class="">Changer de mot de passe</h3>
-    <div class="">
+    <div class="form-group">
 
         <!---Affichage dans la box des erreurs dans le formulaire-->
         {% for field, errors in form.errors.items() %}
             <div class="">
                 {% for error in errors %}
-                    <p>{{ error }}</p>
+                    <p class="alert alert-danger">{{ error }}</p>
                 {% endfor %}
             </div>
         {% endfor %}
 
         <form method="POST">
             {{ form.hidden_tag() }}
-            
-            <div class="">
-                <div class="">
-                    <input class="" type="password" name="new_password" placeholder="Votre mot de passe">
-                </div>
+            <div class="form-group">
+                <input class="form-control" type="password" name="new_password" placeholder="Votre nouveau mot de passe">
             </div>
-
-            <div class="">
-                <div class="">
-                    <input class="" type="password" name="confirmation_mdp" placeholder="Votre mot de passe">
-                </div>
+            <div class="form-group">
+                <input class="form-control" type="password" name="confirmation_mdp" placeholder="Confirmation de votre mot de passe">
             </div>
-
-            <button class="">Changer</button>
+            <button class="btn btn-primary">Changer</button>
         </form>
     </div>
 </div>
