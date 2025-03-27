@@ -6,6 +6,7 @@
     {% include '/partials/script_js_auto_completion.html' %}
     {% include '/partials/script_js_boutons_gares_favorites.html' %}
     {% include '/partials/script_leaflet.html' %}
+    {% include '/partials/graphique_header.html' %}
     
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     
@@ -77,6 +78,15 @@
             </table>
             {% endif %}
         {% endfor %}
+        <div class="container">
+            <div class="row">
+                <h1>Répartition des objets trouvés par type</h1>
+                <div>
+                    <canvas id="graphique" style="width: 800px; height: 600px;"></canvas>
+                </div>
+            </div>
+        </div>
+        {% include '/partials/graphique_1_radar.html' %}
     {% endif %}
 </body>
 </html>

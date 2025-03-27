@@ -3,32 +3,23 @@
 {% block title %}Mon compte{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1 class="title">Mon compte</h1>
+<div class="">
+    <h1 class="">Mon compte</h1>
 
-    <h2 class="subtitle">Historique des recherches</h2>
-    {% if historique %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Requête</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for h in historique %}
-                <tr>
-                    <td>{{ h.date_heure_recherche.strftime('%d/%m/%Y %H:%M') }}</td>
-                    <td>{{ h.requete_json }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>Aucune recherche enregistrée.</p>
-    {% endif %}
+    <div>
 
-    <h2 class="subtitle">Informations</h2>
+        <!---Affichage des erreurs flash-->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="">
+                    {% for category, message in messages %}
+                        <p class="alert alert-success">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <h2 class="">Informations</h2>
         <table class="table">
             <thead>
                 <tr>
@@ -38,27 +29,96 @@
                 </tr>
             </thead>
             <tbody>
-                {% for i in utilisateur %}
                 <tr>
-                    <td>{{ i.pseudo }}</td>
-                    <td>{{ i.email }}</td>
+                    <td>{{ utilisateur.pseudo }}</td>
+                    <td>{{ utilisateur.email }}</td>
                     <td>●●●●●</td>
                 </tr>
+            </tbody>
+        </table>
+        <a class="btn btn-primary" href="{{ url_for('chgnt_mdp') }}">Changer de mot de passe</a>
+    </div>
+
+    <div>
+        <h2 class="">Gares favorites</h2>
+        {% if favoris %}
+            <ul>
+                {% for f, nom_gare in favoris %}
+                    <li>{{ nom_gare }}</li>
+                {% endfor %}
+            </ul>
+            <a href="{{ url_for('export_favoris') }}" class="btn btn-primary">Exporter en PDF</a>
+        {% else %}
+            <p>Vous n'avez pas encore de gares favorites.</p>
+        {% endif %}
+    </div>
+
+    <div>
+        <h2 class="">Historique des recherches</h2>
+        
+        <!--Pagination de l'historique-->
+        <div class="pagination">
+            {% if pagination.has_prev %}
+                <li class="page-item"><a class="page-link" href="{{ url_for('moncompte', page=pagination.prev_num) }}">Précédent</a></li>
+            {% endif %}
+
+            {% for page_num in pagination.iter_pages(left_edge=1, left_current=1, right_current=2, right_edge=1) %}
+                {% if page_num %}
+                    {% if page_num == pagination.page %}
+                        <li class="page-item active"><strong class="page-link">{{ page_num }}</strong></li>
+                    {% else %}
+                        <!--Faire en sorte que l'url de la page un de l'historique soit simplement moncompte : -->
+                        <li class="page-item"><a class="page-link" href="{{ url_for('moncompte', page=page_num) if page_num != 1 else url_for('moncompte') }}">{{ page_num }}</a></li>
+                    {% endif %}
+                {% else %}
+                    ...
+                {% endif %}
+            {% endfor %}
+
+            {% if pagination.has_next %}
+                <li class="page-item"><a class="page-link" href="{{ url_for('moncompte', page=pagination.next_num) }}">Suivant</a></li>
+            {% endif %}
+        </div>
+
+        <!--Affichage de l'historique-->
+        {% if historique %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date de la recherche</th>
+                    <th>Type d'objet</th>
+                    <th>Gare.s sélectionnée.s</th>
+                    <th>Date sélectionnée</th>
+                    <th>Heure sélectionnée</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for h in historique %}
+                    <tr>
+                        <td>{{ h.date_heure_recherche.strftime('%d/%m/%Y %H:%M') }}</td>
+                        <td>{{ h.requete.get('type_d_objet') }}</td>
+                        <td>
+                            {% if h.requete.get('gares') %}
+                                <ul>
+                                    {% for gare in h.requete['gares'] %}
+                                        <li>{{ gare }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                Non renseigné
+                            {% endif %}
+                        </td>
+                        <td>{{ h.requete.get('date_trajet') }}</td>
+                        <td>{{ h.requete.get('heure_approx_perte') }}</td>
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>
 
-        <a href="{{ url_for('chgnt_mdp') }}">Changer de mot de passe</a>
-
-    <h2 class="subtitle">Gares favorites</h2>
-    {% if favoris %}
-        <ul>
-            {% for f in favoris %}
-                <li>Gare UIC : {{ f.UIC }}</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Vous n'avez pas encore de gares favorites.</p>
-    {% endif %}
+        {% else %}
+        <p>Aucune recherche enregistrée.</p>
+        {% endif %}
+    </div>
 </div>
+
 {% endblock %}

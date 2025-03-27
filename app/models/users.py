@@ -27,24 +27,25 @@ class Utilisateur(UserMixin, db.Model):
             return utilisateur
         return None
 
+    #Méthode pour ajouter un utilisateur et erreurs soulevées quand des données existent déjà dans la base de données
     @staticmethod
     def ajout(pseudo, email, password):
         erreurs = []
-        if not pseudo:
-            erreurs.append("Le pseudo est vide")
-        if not email:
-            erreurs.append("L'email est vide")
-        if not password or len(password) < 6:
-            erreurs.append("Le mot de passe est vide ou trop court")
 
-        unique = Utilisateur.query.filter(
-            db.or_(Utilisateur.pseudo == pseudo, Utilisateur.email == email)
+        unique_pseud = Utilisateur.query.filter(
+            db.or_(Utilisateur.pseudo == pseudo)
         ).count()
-        if unique > 0:
-            erreurs.append("Le pseudo ou l'email existe déjà")
+        if unique_pseud > 0:
+            erreurs.append("Le pseudo existe déjà")
+        
+        unique_mail = Utilisateur.query.filter(
+            db.or_(Utilisateur.email == email)
+        ).count()
+        if unique_mail > 0:
+            erreurs.append("Cette adresse email a déjà été utilisée")
 
         if len(erreurs) > 0:
-            print(f"Erreurs rencontrées : {erreurs}")
+            print(f"Erreur.s rencontrée.s : {erreurs}")
             return False, erreurs
         utilisateur = Utilisateur(
             pseudo=pseudo,

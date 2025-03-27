@@ -12,3 +12,4 @@ class Config():
     #PAYS_PER_PAGE = int(os.environ.get("PAYS_PER_PAGE")) -- inutile
     SECRET_KEY = os.environ.get("SECRET_KEY")
     WTF_CSRF_ENABLE = os.environ.get("WTF_CSRF_ENABLE")
+    IMG_DIR = os.path.join(BASE_DIR, 'app/static', 'img')

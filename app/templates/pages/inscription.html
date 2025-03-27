@@ -14,7 +14,7 @@
             {% if messages %}
                 <div class="">
                     {% for category, message in messages %}
-                        <p class="{{ 'has-text-danger' if category == 'error' else 'has-text-success' }}">{{ message }}</p>
+                        <p class="{{ 'alert alert-danger' if category == 'error' else 'alert alert-secondary' }}">{{ message }}</p>
                     {% endfor %}
                 </div>
             {% endif %}
@@ -24,32 +24,26 @@
         {% for field, errors in form.errors.items() %}
             <div class="">
                 {% for error in errors %}
-                    <p>{{ error }}</p>
+                <p class="alert alert-danger">{{ error }}</p>
                 {% endfor %}
             </div>
         {% endfor %}
 
         <form method="POST" action="{{ url_for('ajout_utilisateur') }}">
             {{ form.hidden_tag() }}
-            <div class="">
-                <div class="">
-                    <input class="" type="email" name="email" placeholder="Votre adresse email" autofocus="">
+                <div class="form-group">
+                    <input class="form-control" type="email" name="email" placeholder="Votre adresse email" autofocus="">
                 </div>
-            </div>
 
-            <div class="">
-                <div class="">
-                    <input class="" type="text" name="pseudo" placeholder="Votre pseudo" autofocus="">
+                <div class="form-group">
+                    <input class="form-control" type="text" name="pseudo" placeholder="Votre pseudo" autofocus="">
                 </div>
-            </div>
 
-            <div class="">
-                <div class="">
-                    <input class="" type="password" name="password" placeholder="Votre mot de passe">
+                <div class="form-group">
+                    <input class="form-control" type="password" name="password" placeholder="Votre mot de passe">
                 </div>
-            </div>
 
-            <button class="button">S'inscrire</button>
+            <button class="btn btn-primary">S'inscrire</button>
         </form>
     </div>
 </div>
