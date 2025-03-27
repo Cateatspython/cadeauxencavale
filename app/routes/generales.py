@@ -63,15 +63,15 @@ def connexion():
 
         if not utilisateur:
             flash("Cet email n'est pas reconnu.", "error")
-            return render_template("pages/connexion.html", form=form, email=email, pseudo=pseudo, password=password)
+            return render_template("partials/formulaires/connexion.html", form=form, email=email, pseudo=pseudo, password=password)
 
         if utilisateur.pseudo != pseudo:
             flash("Ce pseudo n'est pas reconnu.", "error")
-            return render_template("pages/connexion.html", form=form, email=email, pseudo=pseudo, password=password)
+            return render_template("partials/formulaires/connexion.html", form=form, email=email, pseudo=pseudo, password=password)
 
         if not check_password_hash(utilisateur.password, password):
             flash("Ce mot de passe n'est pas reconnu.", "error")
-            return render_template("pages/connexion.html", form=form, email=email, pseudo=pseudo, password=password)
+            return render_template("partials/formulaires/connexion.html", form=form, email=email, pseudo=pseudo, password=password)
 
         login_user(utilisateur)
         return redirect(url_for("moncompte"))

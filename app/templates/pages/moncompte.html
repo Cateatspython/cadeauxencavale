@@ -3,19 +3,17 @@
 {% block title %}Mon compte{% endblock %}
 
 {% block content %}
-<div class="">
-    <h1 class="">Mon compte</h1>
+<div class="container">
+    <h1 class="mb-3 mt-3 text-center">Mon compte</h1>
 
     <div>
 
         <!---Affichage des erreurs flash-->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <div class="">
                     {% for category, message in messages %}
                         <p class="alert alert-success">{{ message }}</p>
                     {% endfor %}
-                </div>
             {% endif %}
         {% endwith %}
         
