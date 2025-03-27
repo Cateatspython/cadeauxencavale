@@ -253,25 +253,26 @@ def trouver_objet():
 def ajouter_favori():
     if not request.is_json:
         flash("Requête invalide, veuillez utiliser JSON", "error")
-        return redirect(url_for("trouver_objet"))
+        return jsonify({"status": "error", "message": "Requête invalide, veuillez utiliser JSON"})
     
     data = request.get_json()
     UIC = data.get("UIC")
     
     if not UIC:
         flash("UIC manquant", "error")
-        return redirect(url_for("trouver_objet"))
+        return jsonify({"status": "error", "message": "UIC manquant"})
     
     if current_user.is_authenticated:
         favori_existant = Gares_favorites.query.filter_by(utilisateur_id=current_user.id, UIC=UIC).first()
         
         if favori_existant:
             flash("Cette gare est déjà dans vos favoris", "info")
+            return jsonify({"status": "exists", "message": "Cette gare est déjà dans vos favoris"})
         else:
             Gares_favorites.ajout_favoris(utilisateur_id=current_user.id, UIC=UIC)
             db.session.commit()
             flash("Gare ajoutée aux favoris avec succès", "success")
+            return jsonify({"status": "success", "message": "Gare ajoutée aux favoris avec succès"})
     else:
         flash("Utilisateur non connecté", "error")
-    
-    return redirect(url_for("trouver_objet"))
+        return jsonify({"status": "error", "message": "Utilisateur non connecté"})
