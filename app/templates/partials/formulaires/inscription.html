@@ -1,13 +1,14 @@
-{% extends 'base.html' %}
+{% extends 'pages/base.html' %}
 
-{% block title %}Connexion{% endblock %}
+{% block title %}Inscription{% endblock %}
 
 {% block content %}
 <div class="">
-    <h3 class="">Connexion</h3>
+    <h3 class="">S'inscrire</h3>
+
     <div class="">
 
-        <!--Affichage des erreurs dans la box-->
+        <!--Affichage de l'erreur dans la box-->
         <!---Affichage des erreurs flash-->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
@@ -28,9 +29,8 @@
             </div>
         {% endfor %}
 
-        <form method="POST" action="{{ url_for('connexion') }}">
+        <form method="POST" action="{{ url_for('ajout_utilisateur') }}">
             {{ form.hidden_tag() }}
-
                 <div class="form-group">
                     <input class="form-control" type="email" name="email" placeholder="Votre adresse email" autofocus="">
                 </div>
@@ -39,14 +39,12 @@
                     <input class="form-control" type="text" name="pseudo" placeholder="Votre pseudo" autofocus="">
                 </div>
 
-
                 <div class="form-group">
                     <input class="form-control" type="password" name="password" placeholder="Votre mot de passe">
                 </div>
 
-            <button class="btn btn-primary">Connexion</button>
+            <button class="btn btn-primary">S'inscrire</button>
         </form>
-        <p>Vous n'avez pas de compte ? <a href="{{url_for('ajout_utilisateur')}}">Inscrivez-vous</a> !</p>
     </div>
 </div>
 {% endblock %}
