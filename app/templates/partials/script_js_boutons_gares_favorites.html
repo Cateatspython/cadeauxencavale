@@ -1,31 +1,43 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".ajout-favoris-btn").forEach(button => {
-        button.addEventListener("click", function () {
-            let UIC = this.getAttribute("data-uic");
-            console.log("UIC récupéré :", UIC); // Vérifier que l'UIC est bien récupéré
-
-            fetch("/ajouter-favori", {  // Change l'URL pour une route distincte
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ UIC: UIC })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Réponse Flask :", data); // Vérifier la réponse de Flask
-                if (data.status === "success") {
-                    alert("Gare ajoutée aux favoris !");
-                } else if (data.status === "exists") {
-                    alert("Cette gare est déjà dans vos favoris.");
-                } else {
-                    alert("Erreur : " + data.message);
-                }
-            })
-            .catch(error => console.error("Erreur :", error));
-        });
-    });
-});
-    </script>
+        document.querySelectorAll(".ajout-favoris-btn").forEach(button => {
+            button.addEventListener("click", function () {
+                let UIC = this.getAttribute("data-uic");
     
+                fetch("/ajouter-favori", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ UIC: UIC })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    afficherMessageFlash(data.message, data.status);
+                })
+                .catch(error => console.error("Erreur :", error));
+            });
+        });
+    
+        function afficherMessageFlash(message, category) {
+            let flashContainer = document.querySelector(".flash-messages");
+            
+            if (!flashContainer) {
+                flashContainer = document.createElement("div");
+                flashContainer.className = "flash-messages";
+                document.body.insertBefore(flashContainer, document.body.firstChild);
+            }
+    
+            let flashMessage = document.createElement("div");
+            flashMessage.className = `alert alert-${category}`;
+            flashMessage.textContent = message;
+    
+            flashContainer.appendChild(flashMessage);
+    
+            setTimeout(() => {
+                flashMessage.remove();
+            }, 5000);
+        }
+    });
+        </script>
+        
