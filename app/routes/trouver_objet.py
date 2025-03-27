@@ -245,7 +245,9 @@ def trouver_objet():
                            form=form,
                            donnees=donnees,
                            data_par_region=data_par_region,
-                           data_objets_par_types_gares=data_objets_par_types_gares
+                           data_objets_par_types_gares=data_objets_par_types_gares,
+                           type_d_objet=type_d_objet,
+                           date_trajet=date_trajet
                            )
 
 

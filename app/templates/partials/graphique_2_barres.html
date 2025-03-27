@@ -1,0 +1,59 @@
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('graphique1Barres');
+    const rawData = {{ data_par_region | tojson | safe }};
+    
+    // Filtrer les données pour exclure la région "null"
+    const filteredData = rawData.filter(item => item.region !== null && item.region !== "null");
+    
+    if (filteredData && filteredData.length > 0) {
+        // Préparation des labels et données avec les données filtrées
+        const labels = filteredData.map(item => item.region);
+        const dataPerdus = filteredData.map(item => item.nb_objets_perdus);
+        const dataTrouves = filteredData.map(item => item.nb_objets_trouves);
+        const dataRestitues = filteredData.map(item => item.nb_objets_restitues);
+
+        // Création du graphique (le reste du code reste identique)
+        let graphe = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Déclarations de perte',
+                        data: dataPerdus,
+                        backgroundColor: 'rgba(255, 99, 132, 0.7)'
+                    },
+                    {
+                        label: 'Objets trouvés en gare',
+                        data: dataTrouves,
+                        backgroundColor: 'rgba(54, 162, 235, 0.7)'
+                    },
+                    {
+                        label: 'Objets restitués',
+                        data: dataRestitues,
+                        backgroundColor: 'rgba(255, 206, 86, 0.7)'
+                    }
+                ]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: [' Répartition des objets déclarés perdus, trouvés et restitués par régions à la date du {{ date_trajet }} pour le type suivant :', '{{ type_d_objet }}'],
+                    fontSize: 16
+                },
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { stacked: true },
+                    y: { stacked: true }
+                }
+            }
+        });
+    } else {
+        console.log("Aucune donnée disponible pour le graphique");
+        ctx.parentElement.innerHTML = 
+            '<p class="text-muted">Aucune donnée disponible pour afficher le graphique.</p>';
+    }
+});
+</script>
