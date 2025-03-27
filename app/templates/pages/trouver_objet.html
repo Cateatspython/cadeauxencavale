@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% include '/partials/script_js_auto_completion.html' %}
+    {% include '/partials/script_js_boutons_gares_favorites.html' %}
+    {% include '/partials/script_leaflet.html' %}
+    {% include '/partials/graphique_header.html' %}
+    
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll("input").forEach(input => {
+                input.addEventListener("keydown", function(event) {
+                    if (event.key === "Enter") {
+                        event.preventDefault(); // Empêche la soumission du formulaire
+                    }
+                });
+            });
+        });
+    </script>
+    <title>Recherche d'objets trouvés</title>
+</head>
+<body>
+    <h1>Recherche d'objets trouvés</h1>
+
+    <!-- Affichage des messages flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    {% include '/partials/formulaires/form_trouver_objet.html' %}
+    
+    <script>
+        document.querySelector("form").addEventListener("submit", function() {
+    console.log("Valeur des gares soumises :", document.getElementById("hidden-gares").value);
+});
+    </script>
+
+<div id="map" style="height: 400px; width: 100%;"></div>
+{% include '/partials/script_carte_leaflet.html' %}
+
+    <!-- Affichage des résultats -->
+    {% if donnees %}
+        <h2>Résultats</h2>
+        {% for gare in donnees %}
+            <h3>{{ gare.nom }}</h3>
+            <button class="ajout-favoris-btn" data-uic="{{ gare.UIC }}">Ajouter aux favoris</button>
+            <p>Adresse : {{ gare.adresse }}</p>
+            <p>Nombre d'objets trouvés pendant la période : {{ gare.nb_objets_trouves_periode_perte_type }}</p>
+            {% if gare.horaires %}
+            <h4>Horaires</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Jour</th>
+                        <th>Horaires (Jour Normal)</th>
+                        <th>Horaires (Jour Férié)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for jour, horaires in gare.horaires.items() %}
+                        <tr>
+                            <td>{{ jour }}</td>
+                            <td>{{ horaires.horaires_jour_normal }}</td>
+                            <td>{{ horaires.horaires_jour_ferie }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+        {% endfor %}
+        <div class="container">
+            <div class="row">
+                <h1>Répartition des objets trouvés par type</h1>
+                <div>
+                    <canvas id="graphique" style="width: 800px; height: 600px;"></canvas>
+                </div>
+            </div>
+        </div>
+        {% include '/partials/graphique_1_radar.html' %}
+    {% endif %}
+</body>
+</html>

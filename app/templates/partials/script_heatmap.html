@@ -1,0 +1,22 @@
+<div id="heatmap-container"></div>
+
+    <script>
+        // Exemple avec Plotly (le plus facile à utiliser)
+        const data = {{ data|tojson }};
+        
+        const heatmapData = [{
+            x: data.map(item => item.x),
+            y: data.map(item => item.y),
+            z: data.map(item => item.value),
+            type: 'heatmap',
+            colorscale: 'Viridis'
+        }];
+
+        const layout = {
+            title: 'Heatmap Dynamique',
+            xaxis: {title: 'Axe X'},
+            yaxis: {title: 'Axe Y'}
+        };
+
+        Plotly.newPlot('heatmap-container', heatmapData, layout);
+    </script>
