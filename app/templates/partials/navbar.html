@@ -1,10 +1,29 @@
-<nav>
-    <div class="nav-left">
-        <a href="/">Cadeaux en cavales</a>
-        <a href="/trouver-objet">Trouver un objet</a>
-        <a href="/le-saviez-vous">Le saviez-vous ?</a>
-    </div>
-    <div class="nav-right">
-        <a href="/connexion">Connexion/Inscription</a>
+<link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/simplex/bootstrap.min.css" rel="stylesheet">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('accueil') }}">Cadeaux en cavale</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link active" href="{{ url_for('accueil') }}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('trouver_objet') }}">Trouver un objet</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('le_saviez_vous') }}">Le saviez-vous ?</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('connexion') }}">Connexion/Inscription</a>
+                </li>
+            </ul>
+        </div>
     </div>
 </nav>
+

@@ -1,17 +1,29 @@
 {% extends 'base.html' %}
 
+<link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/simplex/bootstrap.min.css" rel="stylesheet">
 {% block content %}
-<div class="main-block">
-    <h2>Bienvenue sur Cadeaux en cavale !</h2>
-    <p><!--Insérer le contenu textuel--></p>
-</div>
-
-<div class="row">
-    <div class="small-block">
-        <h3>Trouver un objet</h3>
+<div class="container mt-5">
+    <div class="main-block text-center">
+        <h2>Bienvenue sur Cadeaux en cavale !</h2>
+        <p><!-- Insérer le contenu textuel ici --></p>
     </div>
-    <div class="small-block">
-        <h3>Le saviez-vous ?</h3>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="small-block text-center p-4 border">
+                <h3>Trouver un objet</h3>
+                <p>Découvrez notre large sélection d'objets et trouvez ce que vous cherchez !</p>
+                <a href="{{ url_for('trouver_objet') }}" class="btn btn-primary">Explorer</a>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="small-block text-center p-4 border">
+                <h3>Le saviez-vous ?</h3>
+                <p>Des anecdotes fascinantes vous attendent !</p>
+                <a href="{{ url_for('le_saviez_vous') }}" class="btn btn-secondary">En savoir plus</a>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

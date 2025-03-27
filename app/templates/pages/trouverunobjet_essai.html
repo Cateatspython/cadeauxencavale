@@ -3,39 +3,40 @@
 {% block title %}Trouver un objet{% endblock %}
 
 {% block content %}
-    <!-- Inclusion du formulaire -->
-    {% include 'form_trouver_objet.html' %}
+<!-- Inclusion du formulaire -->
+{% include 'form_trouver_objet.html' %}
 
-    <!-- Affichage des gares sous forme de tableau -->
-    <div class="gares-table">
-        <h3>Gares trouvées</h3>
-        <table class="table">
-            <thead>
+<link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/simplex/bootstrap.min.css" rel="stylesheet">
+<!-- Affichage des gares sous forme de tableau -->
+<div class="gares-table mt-4">
+    <h3 class="text-center">Gares trouvées</h3>
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+            <tr>
+                <th>Nom de la gare</th>
+                <th>Horaires</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for gare in donnees %}
                 <tr>
-                    <th>Nom de la gare</th>
-                    <th>Horaires</th>
+                    <td>{{ gare.nom }}</td>
+                    <td>{{ gare.horaires }}</td>
                 </tr>
-            </thead>
-            <tbody>
-                {% for gare in donnees %}
-                    <tr>
-                        <td>{{ gare.nom }}</td>
-                        <td>{{ gare.horaires }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
-    <!-- Première dataviz -->
-    <div class="dataviz-container">
-        <h2>{{ titre_dataviz_1 }}</h2>
-        <!-- Place ici le code pour la première dataviz -->
-    </div>
+<!-- Première dataviz -->
+<div class="dataviz-container mt-4">
+    <h2>{{ titre_dataviz_1 }}</h2>
+    <!-- Place ici le code pour la première dataviz -->
+</div>
 
-    <!-- Deuxième dataviz -->
-    <div class="dataviz-container">
-        <h2>{{ titre_dataviz_2 }}</h2>
-        <!-- Place ici le code pour la deuxième dataviz -->
-    </div>
+<!-- Deuxième dataviz -->
+<div class="dataviz-container mt-4">
+    <h2>{{ titre_dataviz_2 }}</h2>
+    <!-- Place ici le code pour la deuxième dataviz -->
+</div>
 {% endblock %}

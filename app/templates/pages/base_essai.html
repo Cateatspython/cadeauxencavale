@@ -5,49 +5,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Page d'accueil{% endblock %}</title>
+
+    <!-- Lien vers le thème Simplex de Bootswatch -->
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/simplex/bootstrap.min.css" rel="stylesheet">
+    <!-- Lien vers Bootstrap 5 est-ce nécessaire ? -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
-    <body>
-        
-    {% include 'partials/header.html' %}
-    {% include 'partials/nav.html' %}
+<body>
     
+    {% include 'partials/header.html' %}
+    {% include 'partials/navbar.html' %}  <!-- Inclusion de la navbar ici -->
+    
+    <!-- Hero section -->
     <section class="hero is-primary is-fullheight">
-
-        <div class="hero-head">
-            <nav class="navbar">
-                <div class="container">
-
-                    <div id="navbarMenuHeroA" class="navbar-menu">
-                        <div class="navbar-end">
-                            <a href="{{ url_for('accueil') }}" class="navbar-item">
-                                Home
-                            </a>
-                            <a href="{{ url_for('moncompte') }}" class="navbar-item">
-                                Profile
-                            </a>
-                            <a href="{{ url_for('connexion') }}" class="navbar-item">
-                                Login
-                            </a>
-                            <a href="{{ url_for('ajout_utilisateur') }}" class="navbar-item">
-                                Sign Up
-                            </a>
-                            <a href="{{ url_for('deconnexion') }}" class="navbar-item">
-                                Logout
-                            </a>
-                            <a href="{{ url_for('chgnt_mdp') }}" class="navbar-item">
-                                Changer de mot de passe
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-        </div>
-
         <div class="hero-body">
             <div class="container has-text-centered">
-               {% block content %}
-               {% endblock %}
+                {% block content %}
+                {% endblock %}
             </div>
         </div>
     </section>
@@ -55,5 +30,5 @@
     {% include 'partials/footer.html' %}
     {% include 'partials/scripts.html' %}
     
-    </body>
-    </html>
+</body>
+</html>
