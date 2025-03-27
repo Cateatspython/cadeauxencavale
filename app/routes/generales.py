@@ -4,7 +4,7 @@ from sqlalchemy import or_, desc
 from ..models.users import Utilisateur, Historique, Gares_favorites
 from ..models.gares import Gares
 from ..models.formulaires import AjoutUtilisateur, Connexion, ChangerMdp
-from flask_login import current_user,logout_user, login_required, login_user
+from flask_login import current_user,logout_user, login_required, login_user, login_manager
 from flask_wtf import FlaskForm
 import json
 from werkzeug.security import generate_password_hash, check_password_hash
