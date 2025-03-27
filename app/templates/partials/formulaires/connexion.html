@@ -3,9 +3,9 @@
 {% block title %}Connexion{% endblock %}
 
 {% block content %}
-<div class="">
-    <h3 class="">Connexion</h3>
-    <div class="">
+<div class="container">
+    <div class="card">
+        <h3 class="mb-3 mt-3 text-center">Connexion</h3>
 
         <!--Affichage des erreurs dans la box-->
         <!---Affichage des erreurs flash-->
@@ -21,11 +21,9 @@
 
         <!-- Affichage des erreurs liées au formulaire -->
         {% for field, errors in form.errors.items() %}
-            <div class="">
                 {% for error in errors %}
                 <p class="alert alert-danger">{{ error }}</p>
                 {% endfor %}
-            </div>
         {% endfor %}
 
         <form method="POST" action="{{ url_for('connexion') }}">
