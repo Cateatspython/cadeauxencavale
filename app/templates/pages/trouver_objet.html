@@ -80,13 +80,22 @@
         {% endfor %}
         <div class="container">
             <div class="row">
-                <h1>Répartition des objets trouvés par type</h1>
+                <h1>Répartition des objets trouvés par type {{ data_objets_par_types_gares.gare }}</h1>
                 <div>
-                    <canvas id="graphique" style="width: 800px; height: 600px;"></canvas>
+                    <canvas id="graphique1Camembert" style="width: 800px; height: 600px;"></canvas>
                 </div>
             </div>
         </div>
-        {% include '/partials/graphique_1_radar.html' %}
+        {% include '/partials/graphique_1_camembert.html' %}
+        <div class="container">
+            <div class="row">
+                <h1>Répartition des objets trouvés par type {{ data_objets_par_types_gares.gare }}</h1>
+                <div>
+                    <canvas id="graphique1Barres" style="width: 800px; height: 600px;"></canvas>
+                </div>
+            </div>
+        </div>
+        {% include '/partials/graphique_2_barres.html' %}
     {% endif %}
 </body>
 </html>
