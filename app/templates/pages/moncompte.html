@@ -4,11 +4,10 @@
 
 {% block content %}
 <div class="container">
-    <h1 class="mb-3 mt-3 text-center">Mon compte</h1>
+    <h1 class="my-3 text-center">Mon compte</h1>
 
-    <div>
-
-        <!---Affichage des erreurs flash-->
+    <div class="card my-3">
+        <!--Affichage du message de succès quand on a changé son mot de passe-->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                     {% for category, message in messages %}
@@ -17,8 +16,8 @@
             {% endif %}
         {% endwith %}
         
-        <h2 class="">Informations</h2>
-        <table class="table">
+        <h2 class="my-3 ms-5">Informations</h2>
+        <table class="table ms-3 me-3">
             <thead>
                 <tr>
                     <th>Pseudo</th>
@@ -34,28 +33,32 @@
                 </tr>
             </tbody>
         </table>
-        <a class="btn btn-primary" href="{{ url_for('chgnt_mdp') }}">Changer de mot de passe</a>
+        <div class="text-center">
+            <a class="btn btn-primary mb-3" href="{{ url_for('chgnt_mdp') }}">Changer de mot de passe</a>
+        </div>        
     </div>
 
-    <div>
-        <h2 class="">Gares favorites</h2>
+    <div class="card my-3">
+        <h2 class="my-3 ms-5">Gares favorites</h2>
         {% if favoris %}
             <ul>
                 {% for f, nom_gare in favoris %}
                     <li>{{ nom_gare }}</li>
                 {% endfor %}
             </ul>
-            <a href="{{ url_for('export_favoris') }}" class="btn btn-primary">Exporter en PDF</a>
+            <div class="text-center">
+                <a class="btn btn-primary mb-3" href="{{ url_for('export_favoris') }}">Exporter en PDF</a>
+            </div>   
         {% else %}
             <p>Vous n'avez pas encore de gares favorites.</p>
         {% endif %}
     </div>
 
-    <div>
-        <h2 class="">Historique des recherches</h2>
+    <div class="card my-3">
+        <h2 class="my-3 ms-5">Historique des recherches</h2>
         
         <!--Pagination de l'historique-->
-        <div class="pagination">
+        <div class="pagination mb-3">
             {% if pagination.has_prev %}
                 <li class="page-item"><a class="page-link" href="{{ url_for('moncompte', page=pagination.prev_num) }}">Précédent</a></li>
             {% endif %}
