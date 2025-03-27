@@ -1,0 +1,37 @@
+<script>
+    // Récupération des données envoyées par Flask
+    let data = {{ donnees_heatmap | tojson }};
+
+    // Extraction des coordonnées et valeurs
+    let latitudes = data.map(gare => gare.latitude);
+    let longitudes = data.map(gare => gare.longitude);
+    let valeurs = data.map(gare => gare.pourcentage_objets_perdus);
+
+    let trace = {
+        type: 'scattermapbox',
+        lat: latitudes,
+        lon: longitudes,
+        mode: 'markers',
+        marker: {
+            size: valeurs.map(val => Math.sqrt(val) * 40), // Taille en fonction des objets perdus
+            color: valeurs,
+            colorscale: [[0, 'green'], [0.15, 'orange'], [1, 'red']],
+            cmin: Math.min(...valeurs),
+            cmax: Math.max(...valeurs),
+            showscale: true
+        },
+        text: data.map(gare => `${gare.nom}: ${gare.pourcentage_objets_perdus} objets perdus pour 1000 voyageurs en moyenne`)
+    };
+
+    let layout = {
+        title: 'Heatmap des objets perdus dans les gares',
+        mapbox: {
+            style: 'open-street-map',
+            center: { lat: 46.603354, lon: 1.888334 }, // Centre de la France
+            zoom: 5
+        },
+        margin: { t: 50, b: 20, l: 0, r: 0 }
+    };
+
+    Plotly.newPlot('heatmap', [trace], layout);
+</script>

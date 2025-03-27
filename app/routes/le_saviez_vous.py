@@ -63,28 +63,27 @@ Retourne :
     
     #requete pour récupérer le nombre d'objets perdus par mois, par région et par nature/type d'objet
     requete_perte_par_mois_region = (
-         db.session.query(
+    db.session.query(
         func.extract('year', Objets_trouves.date_perte).label("annee"),
         func.extract('month', Objets_trouves.date_perte).label("mois"),
         Objets_trouves.type_objet,
         Gares.region,
         func.count(Objets_trouves.date_perte).label("nombre_perdus")
     )
-    .join(Gares, Gares.UIC == Objets_trouves.UIC)  # Lien avec la table Gares pour récupérer la région
+    .join(Gares, Gares.UIC == Objets_trouves.UIC)
     .group_by("annee", "mois", Objets_trouves.type_objet, Gares.region)
     .order_by("annee", "mois")
     .all()
-)
+    )
+
     donnees_perte_par_mois_region = [
         {
-            "annee": perte.annee,
-            "mois": perte.mois,
+            "mois": f'{perte.mois:02d}/{perte.annee}',  # Formater le mois sur 2 chiffres
             "type_objet": perte.type_objet,
             "region": perte.region,
             "nombre_perdus": perte.nombre_perdus,
         }
         for perte in requete_perte_par_mois_region
     ]
-
 
     return render_template("pages/le_saviez_vous.html", donnees_heatmap=donnees_heatmap, donnees_diff_perte_restitution=donnees_diff_perte_restitution, donnees_perte_par_mois_region=donnees_perte_par_mois_region)    

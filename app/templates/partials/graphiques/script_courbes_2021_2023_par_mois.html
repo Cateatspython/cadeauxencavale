@@ -1,0 +1,111 @@
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Vos données de pertes
+    const donnees_perte_par_mois_region = {{ donnees_perte_par_mois_region | tojson }};
+    
+    console.log("Données reçues :", donnees_perte_par_mois_region);
+
+    // Fonction pour générer des couleurs distinctes
+    function genererPaletteCouleurs(nombreCouleurs) {
+        const couleurBase = [
+            '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
+            '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf',
+            '#3498db', '#e74c3c', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c'
+        ];
+        return couleurBase.slice(0, nombreCouleurs);
+    }
+
+    // Fonction pour créer le graphique pour une région spécifique
+    function creerGraphique(region) {
+        // Filtrer les données par région si spécifiée
+        const donneesFiltrees = region 
+            ? donnees_perte_par_mois_region.filter(item => item.region === region)
+            : donnees_perte_par_mois_region;
+        
+        // Extraire et trier les mois
+        const mois = [...new Set(donnees_perte_par_mois_region.map(item => item.mois))]
+            .sort((a, b) => {
+                const [moisA, anneeA] = a.split('/').map(Number);
+                const [moisB, anneeB] = b.split('/').map(Number);
+                return new Date(anneeA, moisA-1) - new Date(anneeB, moisB-1);
+            });
+        
+        // Extraire les types d'objets uniques
+        const types_objets = [...new Set(donneesFiltrees.map(item => item.type_objet))];
+        const paletteCouleurs = genererPaletteCouleurs(types_objets.length);
+
+        // Préparer les datasets
+        const datasets = types_objets.map((type, index) => ({
+            label: type,
+            data: mois.map(m => {
+                const donnee = donneesFiltrees.find(
+                    item => item.type_objet === type && item.mois === m
+                );
+                return donnee ? donnee.nombre_perdus : 0;
+            }),
+            borderColor: paletteCouleurs[index],
+            backgroundColor: paletteCouleurs[index] + '33', // Ajoute de la transparence
+            borderWidth: 2,
+            fill: false,
+            tension: 0.1
+        }));
+
+        // Configuration du graphique
+        const config = {
+            type: 'line',
+            data: {
+                labels: mois,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `Nombre d'Objets Perdus par Type${region ? ' - ' + region : ''}`
+                    },
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            boxWidth: 20,
+                            font: {
+                                size: 10
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Nombre d\'Objets Perdus'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Mois'
+                        },
+                        ticks: {
+                            autoSkip: false
+                        }
+                    }
+                }
+            }
+        };
+
+        // Créer ou mettre à jour le graphique
+        const ctx = document.getElementById('graphique').getContext('2d');
+        if (window.myChart) {
+            window.myChart.destroy(); // Détruire l'ancien graphique si existe
+        }
+        window.myChart = new Chart(ctx, config);
+    }
+
+    // Créer le graphique initial (toutes régions ou une région par défaut)
+    creerGraphique(/* Vous pourriez passer une région spécifique ici */);
+});
+console.log("Données complètes:", donnees_perte_par_mois_region);
+console.log("Mois extraits:", [...new Set(donnees_perte_par_mois_region.map(item => item.mois))]);
+</script>
