@@ -12,6 +12,11 @@ import json
 def autocomplete_gares():
     """
     Renvoie les noms des gares pour l'autocomplétion, filtrés selon la saisie de l'utilisateur.
+
+    Retourne
+    --------
+        gares_noms : list
+            Liste des noms de gares correspondant à la saisie de l'utilisateur.
     """
     query = request.args.get("query", "").lower()
     gares = Gares.query.filter(Gares.nom.ilike(f"%{query}%")).with_entities(Gares.nom).all()
@@ -30,7 +35,8 @@ def trouver_objet():
     - Date du trajet
     - Heure approximative de perte
 
-    Fonctionnalités :
+    Fonctionnalités
+    ---------------
     1. Validation du formulaire :
        - Tous les champs doivent être remplis
        - Limitation à 2 gares maximum
@@ -43,21 +49,30 @@ def trouver_objet():
        - Comptage des objets trouvés le jour donné et par type d'objet
        
     3. Données renvoyées au template :
-       - Géolocalisations des gares sélectionnées
        - Informations sur chaque gare (nom, adresse, horaires, nombre d'objets trouvés)
        - Statistiques pour la datavisualisation :
          - Nombre total d'objets trouvés le jour sélectionné
          - Répartition des objets trouvés par type dans les gares sélectionnées
          - Nombre d'objets perdus, trouvés et restitués par région le jour sélectionné
 
-    Renvoie :
+    Retourne
+    --------
         Render_template vers "trouver_objet.html" avec les données nécessaires pour l'affichage :
-        - form : le formulaire validé ou vide
-        - donnees : détails des gares (nom, adresse, horaires, etc.)
-        - data_par_region : statistiques des objets perdus, trouvés et restitués par région
-        - data_objets_par_types_gares : nombre d'objets trouvés par type dans les gares sélectionnées
+        - form : instance du formulaire TrouverObjet
+            Le formulaire validé ou vide
+        - donnees : list
+            Détails des gares (nom, adresse, horaires, etc.)
+        - data_par_region : list
+            Statistiques des objets perdus, trouvés et restitués par région
+        - data_objets_par_types_gares : list
+            Nombre d'objets trouvés par type dans les gares sélectionnées
+        - type_d_objet : str
+            Type d'objet recherché
+        - date_trajet : str
+            Date du trajet sélectionnée
 
-    Redirige vers la même page avec un message d'erreur si :
+    Exceptions gérées
+    -----------------
         - Un champ du formulaire est vide
         - Plus de 2 gares sont sélectionnées
         - Les formats de date/heure sont invalides
@@ -128,7 +143,8 @@ def trouver_objet():
         # Horaires des gares sélectionnées
         horaires = Horaires.query.filter(Horaires.UIC.in_([gare.UIC for gare in gares_result])).all()
 
-        # Statistiques pour dataviz :
+        ### RECUPERATION DES DONNEES POUR LES DATAVISUALISATIONS PERSONNALISEES ###
+        
         # 1. Tous les objets perdus, objets_trouvés.date_perte, objets_trouvés.date_restitution en France par Région, du type sélectionné, pendant toute la journée de perte.
         datetime_debut_journee_perte = datetime.fromisoformat(f"{date_trajet}T00:00:00")
         datetime_fin_journee_perte = datetime.fromisoformat(f"{date_trajet}T23:59:59")
@@ -253,6 +269,18 @@ def trouver_objet():
 
 @app.route("/ajouter-favori", methods=["POST"])
 def ajouter_favori():
+    """
+    Une route permettant de gérer l'ajout d'une gare aux favoris de l'utilisateur connecté.
+    Cette route est appelée par une requête AJAX lorsque l'utilisateur clique sur le bouton "Ajouter aux favoris".
+    Elle vérifie si l'utilisateur est connecté et si la gare n'est pas déjà dans ses favoris.
+    Si la gare est déjà dans les favoris, un message d'information est affiché.
+    Sinon, la gare est ajoutée aux favoris et un message de succès est affiché.
+
+    Retourne
+    --------
+        JSON
+            Un message de succès ou d'erreur selon le résultat de l'opération.
+    """
     if not request.is_json:
         flash("Requête invalide, veuillez utiliser JSON", "error")
         return jsonify({"status": "error", "message": "Requête invalide, veuillez utiliser JSON"})
