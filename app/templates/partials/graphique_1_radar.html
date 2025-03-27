@@ -1,0 +1,77 @@
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('graphique');
+        const rawData = {{ data_objets_par_types_gares | safe }};
+        
+        if (rawData && rawData.length > 0) {
+            // Regroupement des données par type d'objet
+            const dataByType = {};
+            
+            rawData.forEach(item => {
+                if (!dataByType[item.type_objet]) {
+                    dataByType[item.type_objet] = 0;
+                }
+                dataByType[item.type_objet] += item.nb_objets_trouves;
+            });
+            
+            // Préparation des labels et données
+            const labels = Object.keys(dataByType);
+            const data = Object.values(dataByType);
+            
+            // Création du graphique
+            let graphe = new Chart(ctx, {
+                type: 'polarArea',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.7)',   // Rouge rosé
+                            'rgba(54, 162, 235, 0.7)',   // Bleu
+                            'rgba(255, 206, 86, 0.7)',   // Jaune
+                            'rgba(75, 192, 192, 0.7)',   // Turquoise
+                            'rgba(153, 102, 255, 0.7)',  // Violet
+                            'rgba(255, 159, 64, 0.7)',   // Orange
+                            'rgba(199, 199, 199, 0.7)',  // Gris
+                            'rgba(83, 102, 255, 0.7)',   // Bleu foncé
+                            'rgba(255, 99, 255, 0.7)',   // Rose
+                            'rgba(99, 255, 132, 0.7)',   // Vert clair
+                            'rgba(255, 50, 50, 0.7)',    // Rouge vif
+                            'rgba(50, 255, 255, 0.7)',   // Cyan
+                            'rgba(200, 50, 255, 0.7)',   // Magenta
+                            'rgba(255, 220, 185, 0.7)',  // Beige
+                            'rgba(0, 191, 255, 0.7)',    // Bleu ciel
+                            'rgba(184, 134, 11, 0.7)'    // Bronze
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        deferred: {
+                            delay: 500
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Répartition des objets trouvés par type',
+                        fontSize: 16
+                    },
+                    legend: {
+                        position: 'right'
+                    },
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true
+                    }
+                }
+            });
+        } else {
+            console.log("Aucune donnée disponible pour le graphique");
+            ctx.parentElement.innerHTML = 
+                '<p class="text-muted">Aucune donnée disponible pour afficher le graphique.</p>';
+        }
+    });
+</script>
