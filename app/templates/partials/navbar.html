@@ -1,11 +1,10 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <span class="navbar-brand mb-0 h1">
-        <p>{{ url_for('static', filename='img/train.png') }}</p>
         <img src="{{ url_for('static', filename='img/train.png') }}" width="30" height="30" class="d-inline-block align-top" alt="Train">
         Cadeaux en cavale
     </span>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+      <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav">
@@ -14,7 +13,7 @@
             <li class="nav-item"><a href="/le-saviez-vous" class="nav-link">Le saviez-vous ?</a></li>
         </ul>
 
-        <!--Affichage des liens en fonction de si l'utilisateur est connecté ou non-->
+            <!--Affichage des liens en fonction de si l'utilisateur est connecté ou non-->
         <ul class="navbar-nav ml-auto">
             {% if current_user.is_authenticated %}
             <li class="nav-item"><a href="{{ url_for('moncompte') }}" class="nav-link">Mon compte</a></li>

@@ -15,7 +15,7 @@ import io
 
 @app.route("/accueil")
 def accueil():
-    return render_template("/index.html")
+    return render_template("pages/accueil.html")
 
 #inscription sur l'application 
 @app.route("/inscription", methods=['GET', 'POST'])
@@ -35,7 +35,7 @@ def ajout_utilisateur():
             for erreur in donnees:
                 flash(erreur, "error")
 
-    return render_template("pages/inscription.html", form=form)
+    return render_template("partials/formulaires/inscription.html", form=form)
 
 
 #connexion + gestion des erreurs lors de la connexion
@@ -44,7 +44,7 @@ def connexion():
     form = Connexion()
 
     if current_user.is_authenticated is True:
-        return redirect(url_for("accueil"))
+        return redirect(url_for("moncompte"))
 
     if form.validate_on_submit():
         pseudo = request.form.get("pseudo", None)
@@ -63,20 +63,20 @@ def connexion():
 
         if not utilisateur:
             flash("Cet email n'est pas reconnu.", "error")
-            return render_template("pages/connexion.html", form=form, email=email, pseudo=pseudo, password=password)
+            return render_template("partials/formulaires/connexion.html", form=form, email=email, pseudo=pseudo, password=password)
 
         if utilisateur.pseudo != pseudo:
             flash("Ce pseudo n'est pas reconnu.", "error")
-            return render_template("pages/connexion.html", form=form, email=email, pseudo=pseudo, password=password)
+            return render_template("partials/formulaires/connexion.html", form=form, email=email, pseudo=pseudo, password=password)
 
         if not check_password_hash(utilisateur.password, password):
             flash("Ce mot de passe n'est pas reconnu.", "error")
-            return render_template("pages/connexion.html", form=form, email=email, pseudo=pseudo, password=password)
+            return render_template("partials/formulaires/connexion.html", form=form, email=email, pseudo=pseudo, password=password)
 
         login_user(utilisateur)
-        return redirect(url_for("accueil"))
+        return redirect(url_for("moncompte"))
 
-    return render_template("pages/connexion.html", form=form)
+    return render_template("partials/formulaires/connexion.html", form=form)
 
 login.login_view='connexion'
 
@@ -85,6 +85,7 @@ login.login_view='connexion'
 def deconnexion():
     if current_user.is_authenticated is True:
         logout_user()
+    flash("Vous avez été déconnecté.", "success")
     return redirect(url_for("accueil"))
 
 #Connexion obligatoire pour accéder à moncompte, l'historique et les gares favorites
@@ -201,4 +202,4 @@ def chgnt_mdp():
 
         return redirect(url_for("moncompte"))
 
-    return render_template('pages/changemdp.html', form=form)
+    return render_template('partials/formulaires/changemdp.html', form=form)
