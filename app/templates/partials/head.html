@@ -9,4 +9,25 @@
     {% if request.path=="/le-saviez-vous" %}
         {% include 'partials/graphiques/script_js_le_saviez_vous_head.html'%}
     {% endif %}
+    
+    {% if request.path=="/trouver-objet" %}
+        {% include '/partials/scripts/script_js_auto_completion.html' %}
+        {% include '/partials/scripts/script_js_boutons_gares_favorites.html' %}
+        {% include '/partials/scripts/script_leaflet.html' %}
+        {% include '/partials/graphiques/graphique_header.html' %}
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                document.querySelectorAll("input").forEach(input => {
+                    input.addEventListener("keydown", function(event) {
+                        if (event.key === "Enter") {
+                            event.preventDefault(); // Empêche la soumission du formulaire
+                        }
+                    });
+                });
+            });
+        </script>
+    {% endif %}
+
 </head>
