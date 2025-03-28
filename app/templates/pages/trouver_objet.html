@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% include '/partials/script_js_auto_completion.html' %}
-    {% include '/partials/script_js_boutons_gares_favorites.html' %}
-    {% include '/partials/script_leaflet.html' %}
-    {% include '/partials/graphique_header.html' %}
+    {% include '/partials/scripts/script_js_auto_completion.html' %}
+    {% include '/partials/scripts/script_js_boutons_gares_favorites.html' %}
+    {% include '/partials/scripts/script_leaflet.html' %}
+    {% include '/partials/graphiques/graphique_header.html' %}
     
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     
@@ -46,7 +46,7 @@
     </script>
 
 <div id="map" style="height: 400px; width: 100%;"></div>
-{% include '/partials/script_carte_leaflet.html' %}
+{% include '/partials/scripts/script_carte_leaflet.html' %}
 
     <!-- Affichage des résultats -->
     {% if donnees %}
@@ -86,7 +86,7 @@
                 </div>
             </div>
         </div>
-        {% include '/partials/graphique_1_camembert.html' %}
+        {% include '/partials/graphiques/graphique_1_camembert.html' %}
         <div class="container">
             <div class="row">
                 <h1>Répartition des objets trouvés par type {{ data_objets_par_types_gares.gare }}</h1>
@@ -95,7 +95,7 @@
                 </div>
             </div>
         </div>
-        {% include '/partials/graphique_2_barres.html' %}
+        {% include '/partials/graphiques/graphique_2_barres.html' %}
     {% endif %}
 </body>
 </html>
