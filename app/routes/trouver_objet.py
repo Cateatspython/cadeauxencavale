@@ -203,16 +203,18 @@ def trouver_objet():
             Objets_trouves.UIC.in_([gare.UIC for gare in gares_result])
         ).group_by(Objets_trouves.UIC, Objets_trouves.type_objet).all()
 
-        data_objets_par_types_gares = [
-            {
-                "gare": gare.nom,
-                "type_objet": type_objet,
-                "nb_objets_trouves": nb
-            }
-            for UIC, type_objet, nb in nb_objets_par_type_par_gare
-            for gare in gares_result if gare.UIC == UIC
-        ]
-        print(data_objets_par_types_gares)
+        # Transformation en dictionnaire structuré
+        data_objets_par_types_gares = {}
+        for UIC, type_objet, nb in nb_objets_par_type_par_gare:
+            gare = next((gare for gare in gares_result if gare.UIC == UIC), None)
+            if gare:
+                if gare.nom not in data_objets_par_types_gares:
+                    data_objets_par_types_gares[gare.nom] = []
+                
+                data_objets_par_types_gares[gare.nom].append({
+                    "type_objet": type_objet,
+                    "nb_objets_trouves": nb
+                })
 
 
         # Infos pour les gares sélectionnées (liste de dictionnaires)
