@@ -52,6 +52,7 @@
     {% if donnees %}
         <h2>Résultats</h2>
         {% for gare in donnees %}
+            <div>
             <h3>{{ gare.nom }}</h3>
             <button class="ajout-favoris-btn" data-uic="{{ gare.UIC }}">Ajouter aux favoris</button>
             <p>Adresse : {{ gare.adresse }}</p>
@@ -77,15 +78,18 @@
                 </tbody>
             </table>
             {% endif %}
-        {% endfor %}
-        <div class="container">
-            <div class="row">
-                <h1>Répartition des objets trouvés par type {{ data_objets_par_types_gares.gare }}</h1>
-                <div>
-                    <canvas id="graphique1Camembert" style="width: 800px; height: 600px;"></canvas>
+            <div class="container">
+                <div class="row">
+                    <h4>Répartition des objets trouvés par type - {{ gare.nom }}</h4>
+                    <div>
+                        <canvas id="graphiqueCamembert_{{ gare.UIC }}" style="width: 100%; max-width: 800px; height: 400px;"></canvas>
+                    </div>
                 </div>
             </div>
-        </div>
+            </div>
+
+        {% endfor %}
+
         {% include '/partials/graphiques/graphique_1_camembert.html' %}
         <div class="container">
             <div class="row">
