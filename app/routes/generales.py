@@ -5,7 +5,6 @@ from ..models.users import Utilisateur, Historique, Gares_favorites
 from ..models.gares import Gares
 from ..models.formulaires import AjoutUtilisateur, Connexion, ChangerMdp
 from flask_login import current_user,logout_user, login_required, login_user
-#from flask_wtf import FlaskForm
 import json
 from werkzeug.security import generate_password_hash, check_password_hash
 from fpdf import FPDF
@@ -61,7 +60,7 @@ def ajout_utilisateur():
     return render_template("partials/formulaires/inscription.html", form=form)
 
 
-#connexion + gestion des erreurs lors de la connexion
+#Connexion et gestion des erreurs lors de la connexion
 @app.route("/connexion", methods=["GET", "POST"])
 def connexion():
     """ Gère la connexion d'un utilisateur.
