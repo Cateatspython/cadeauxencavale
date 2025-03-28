@@ -1,28 +1,42 @@
-<form method="POST" action="{{ url_for('trouver_objet') }}">
+<form method="POST" action="{{ url_for('trouver_objet') }}" class="card m-5 p-4">
     {{ form.hidden_tag() }}
     
+    
         <!-- Type d'objet -->
-        <label for="type_d_objet">Type d'objet :</label>
-        {{ form.type_d_objet(class="form-control") }}
-        <br/>
+        <div class="mb-3">
+            <label for="type_d_objet">Type d'objet :</label>
+            {{ form.type_d_objet(class="form-control") }}
+        </div>
         
         <!-- Gares -->
-        <label for="gares">Gare.s :</label>
-        <input type="text" id="gares" list="gares-list" placeholder="Rechercher une gare..." autocomplete="off">
+            <label for="gares">Gare.s :</label>
+            <input type="text" id="gares" list="gares-list" placeholder="Rechercher une gare..." autocomplete="off">
+
         <datalist id="gares-list"></datalist>
+        
+        <div class="mb-3"></div>
 
         <div id="selected-gares"></div>
         <input type="hidden" id="hidden-gares" name="gares"> <!-- Stocker les valeurs pour le formulaire -->
                 
-        <!-- Date du trajet -->
-        <label for="date_trajet">Date du trajet :</label>
-        {{ form.date_trajet(class="form-control", id="date_trajet") }}
-    
-        <!-- Heure approximative de perte -->
-        <label for="heure_approx_perte">Heure approximative de perte :</label>
-        {{ form.heure_approx_perte(class="form-control", id="heure_approx_perte") }}
-    
+        <div class="form-inline">
+            <!-- Date du trajet -->
+             <div class="form-group">
+                    <label for="date_trajet" class="col-auto">Date du trajet :</label>
+                    {{ form.date_trajet(class="form-control col-auto", id="date_trajet") }}
+            </div>
+
+            <div class="form-group">
+            <!-- Heure approximative de perte -->
+                <label for="heure_approx_perte" class="col-auto">Heure approximative de perte :</label>
+                {{ form.heure_approx_perte(class="form-control col-auto", id="heure_approx_perte") }}
+            </div>
+        </div>
+
         <!-- Bouton de soumission -->
-        {{ form.submit(class="btn btn-primary") }}
+        <div class="text-center m-3">
+            {{ form.submit(class="btn") }}
+        </div>
+        
 </form>
 
