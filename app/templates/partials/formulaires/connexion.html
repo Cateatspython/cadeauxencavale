@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container" style="display:flex; justify-content:center; align-items:center; height: 100%; width:70%;">
     <div class="card p-4" style="width:70%">
-        <h3 class="my-3 text-center">Connexion</h3>
+        <h1 class="my-3 text-center">Connexion</h1>
 
         <!--Affichage des erreurs dans la box-->
         <!---Affichage des erreurs flash-->
@@ -44,12 +44,12 @@
             </div>
 
             <div class="text-center">
-                <button class="btn btn-primary mb-3">Connexion</button>
+                <button class="btn mb-3">Connexion</button>
             </div>
 
         </form>
 
-        <p class="text-center">Vous n'avez pas de compte ? <a href="{{url_for('ajout_utilisateur')}}">Inscrivez-vous</a> !</p>
+        <p class="text-center">Vous n'avez pas de compte ? <a href="{{url_for('ajout_utilisateur')}}" id="lien_inscrip">Inscrivez-vous</a> !</p>
 
     </div>
 </div>
