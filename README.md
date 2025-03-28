@@ -41,14 +41,14 @@
     <li><a href="#contributing">Contributeurs</a>
     </li>
     <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="#contact">Lien</a></li>
   </ol>
 </details>
 
 
 
 <!-- ABOUT THE PROJECT -->
-## À propos de ce projet
+## 🎁 À propos de ce projet
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
@@ -56,7 +56,7 @@ Retrouvez les cadeaux de Noël que vous avez perdus dans le train, localisez les
 
 <p align="right">(<a href="#readme-top">retour en haut</a>)</p>
 
-## Utilisation
+## 🎄 Utilisation
 
 <!--description des fonctionnalités-->
 
@@ -70,27 +70,14 @@ Dans cette application, vous pouvez :
 
 
 <!-- GETTING STARTED -->
-## Se lancer
+## 🧑‍🎄 Se lancer
 
 ### Prérequis
 
 Pour pouvoir fonctionner, l'application doit fonctionner dans un environnement virtuel disposant des modules python Flask, Flask-Login, Flask-SQLAlchemy, Flask-WTF, itsdangerous, Jinja2, python-dotenv, SQLAlchemy, Werkzeug et WTForms.
 
-Les modules sont dans le requirements.txt :
-
-
 
 ### Installation
-Des exemples d'étapes:
-
-cloner le dépôt
-installer Python 3.X
-installer une base de données
-installer en environnement virtuel, le lancer
-quelles variables dans le .env?
-installer les requirements
-lancer run.py
-
 1. Créer un dossier pour y stocker les fichiers de l'application, par exemple Application_cadeaux
 1. Dans ce dossier, clôner à l'intérieur le dépôt github  :
 ```sh
@@ -137,7 +124,7 @@ Vous pouvez maintenant utiliser l'application !
 
 
 <!-- CONTRIBUTING -->
-## Contributeurs
+## 🚂 Contributeurs
 
 Les contributeurs à cette application sont :
 * Mélina Conter
@@ -169,7 +156,7 @@ du master 2 Technologies Appliquées à l'Histoire de l'École Nationale des Cha
 
 
 <!-- LICENSE -->
-## License
+## 👼 License
 
 Distributed under the project_license. See `LICENSE.txt` for more information.
 
@@ -178,10 +165,8 @@ Distributed under the project_license. See `LICENSE.txt` for more information.
 
 
 <!-- CONTACT -->
-## Contact
+## 🦌 Lien
 
 Lien du projet : [https://github.com/Cateatspython/cadeauxencavale](https://github.com/Cateatspython/cadeauxencavale)
 
 <p align="right">(<a href="#readme-top">retour en haut</a>)</p>
-
-<marquee><img src="app/static/img/train.png" alt="Logo" width="80" height="80"></marquee>
