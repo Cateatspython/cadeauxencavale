@@ -1,59 +1,67 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-    const ctx = document.getElementById('graphique1Barres');
-    const rawData = {{ data_par_region | tojson | safe }};
-    
-    // Filtrer les données pour exclure la région "null"
-    const filteredData = rawData.filter(item => item.region !== null && item.region !== "null");
-    
-    if (filteredData && filteredData.length > 0) {
-        // Préparation des labels et données avec les données filtrées
-        const labels = filteredData.map(item => item.region);
-        const dataPerdus = filteredData.map(item => item.nb_objets_perdus);
-        const dataTrouves = filteredData.map(item => item.nb_objets_trouves);
-        const dataRestitues = filteredData.map(item => item.nb_objets_restitues);
+        // Récupération de l'élément canvas pour le graphique
+        const ctx = document.getElementById('graphique1Barres');
+        
+        // Récupération des données brutes passées depuis le backend
+        const rawData = {{ data_par_region | tojson | safe }};
+        
+        // Filtrer les données pour exclure les entrées où la région est "null"
+        const filteredData = rawData.filter(item => item.region !== null && item.region !== "null");
+        
+        // Vérification si des données valides sont disponibles après le filtrage
+        if (filteredData && filteredData.length > 0) {
+            // Préparation des labels (régions) et des données (objets perdus, trouvés, restitués)
+            const labels = filteredData.map(item => item.region);
+            const dataPerdus = filteredData.map(item => item.nb_objets_perdus);
+            const dataTrouves = filteredData.map(item => item.nb_objets_trouves);
+            const dataRestitues = filteredData.map(item => item.nb_objets_restitues);
 
-        // Création du graphique (le reste du code reste identique)
-        let graphe = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [
-                    {
-                        label: 'Déclarations de perte',
-                        data: dataPerdus,
-                        backgroundColor: 'rgba(255, 99, 132, 0.7)'
-                    },
-                    {
-                        label: 'Objets trouvés en gare',
-                        data: dataTrouves,
-                        backgroundColor: 'rgba(54, 162, 235, 0.7)'
-                    },
-                    {
-                        label: 'Objets restitués',
-                        data: dataRestitues,
-                        backgroundColor: 'rgba(255, 206, 86, 0.7)'
-                    }
-                ]
-            },
-            options: {
-                title: {
-                    display: true,
-                    text: [' Répartition des objets déclarés perdus, trouvés et restitués par régions à la date du {{ date_trajet }} pour le type suivant :', '{{ type_d_objet }}'],
-                    fontSize: 16
+            // Création du graphique à barres empilées avec Chart.js
+            let graphe = new Chart(ctx, {
+                type: 'bar', // Type de graphique
+                data: {
+                    labels: labels, // Noms des régions
+                    datasets: [
+                        {
+                            label: 'Déclarations de perte', // Légende pour les objets perdus
+                            data: dataPerdus, // Données pour les objets perdus
+                            backgroundColor: 'rgba(255, 99, 132, 0.7)' // Couleur des barres
+                        },
+                        {
+                            label: 'Objets trouvés en gare', // Légende pour les objets trouvés
+                            data: dataTrouves, // Données pour les objets trouvés
+                            backgroundColor: 'rgba(54, 162, 235, 0.7)' // Couleur des barres
+                        },
+                        {
+                            label: 'Objets restitués', // Légende pour les objets restitués
+                            data: dataRestitues, // Données pour les objets restitués
+                            backgroundColor: 'rgba(255, 206, 86, 0.7)' // Couleur des barres
+                        }
+                    ]
                 },
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: { stacked: true },
-                    y: { stacked: true }
+                options: {
+                    title: {
+                        display: true, // Afficher le titre du graphique
+                        text: [
+                            ' Répartition des objets déclarés perdus, trouvés et restitués par régions à la date du {{ date_trajet }} pour le type suivant :',
+                            '{{ type_d_objet }}'
+                        ], // Texte du titre
+                        fontSize: 16 // Taille de la police du titre
+                    },
+                    responsive: true, // Rendre le graphique responsive
+                    maintainAspectRatio: false, // Ne pas maintenir le ratio d'aspect
+                    scales: {
+                        x: { stacked: true }, // Empiler les barres sur l'axe X
+                        y: { stacked: true }  // Empiler les barres sur l'axe Y
+                    }
                 }
-            }
-        });
-    } else {
-        console.log("Aucune donnée disponible pour le graphique");
-        ctx.parentElement.innerHTML = 
-            '<p class="text-muted">Aucune donnée disponible pour afficher le graphique.</p>';
-    }
-});
+            });
+        } else {
+            // Si aucune donnée n'est disponible, afficher un message dans l'élément parent
+            console.log("Aucune donnée disponible pour le graphique");
+            ctx.parentElement.innerHTML = 
+                '<p class="text-muted">Aucune donnée disponible pour afficher le graphique.</p>';
+        }
+    });
 </script>

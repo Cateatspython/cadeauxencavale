@@ -3,6 +3,7 @@
 {% block title %}Inscription{% endblock %}
 
 {% block content %}
+<!--CONTENU DU FORMULAIRE POUR L'INSCRIPTION-->
 <div class="container" style="display:flex; justify-content:center; align-items:center; height: 100%; width:70%;">
     <div class="card p-4" style="width:70%">
         <h1 class="my-3 text-center">S'inscrire</h1>
@@ -24,6 +25,7 @@
                 {% endfor %}
         {% endfor %}
 
+        <!--Formulaire d'inscription-->
         <form method="POST" action="{{ url_for('ajout_utilisateur') }}">
 
             {{ form.hidden_tag() }}
@@ -38,7 +40,7 @@
             <div class="form-group">
                 <input class="form-control" type="password" name="password" placeholder="Votre mot de passe">
             </div>
-
+            <!--Bouton de validation-->
             <div class="text-center">
                 <button class="btn mb-3">S'inscrire</button>
             </div>

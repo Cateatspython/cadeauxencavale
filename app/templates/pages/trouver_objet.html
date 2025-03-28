@@ -48,15 +48,17 @@
 <div id="map" style="height: 400px; width: 100%;"></div>
 {% include '/partials/scripts/script_carte_leaflet.html' %}
 
-    <!-- Affichage des résultats -->
+    <!-- Affichage des données des gares -->
     {% if donnees %}
         <h2>Résultats</h2>
+        <!-- Itération sur la liste de dictionnaires donnees -->
         {% for gare in donnees %}
             <div>
             <h3>{{ gare.nom }}</h3>
             <button class="ajout-favoris-btn" data-uic="{{ gare.UIC }}">Ajouter aux favoris</button>
             <p>Adresse : {{ gare.adresse }}</p>
             <p>Nombre d'objets trouvés pendant la période : {{ gare.nb_objets_trouves_periode_perte_type }}</p>
+            <!-- Affichage des horaires seulement si la gare en a -->
             {% if gare.horaires %}
             <h4>Horaires</h4>
             <table>
@@ -78,6 +80,7 @@
                 </tbody>
             </table>
             {% endif %}
+            <!-- Graphique de répartition des objets trouvés par type pour la gare itérée-->
             <div class="container">
                 <div class="row">
                     <h4>Répartition des objets trouvés par type - {{ gare.nom }}</h4>
@@ -89,8 +92,10 @@
             </div>
 
         {% endfor %}
-
+        <!-- Inclusion du script pour le graphique camembert -->
         {% include '/partials/graphiques/graphique_1_camembert.html' %}
+
+        <!-- Graphique des objets trouvés par type, par région -->
         <div class="container">
             <div class="row">
                 <h1>Répartition des objets trouvés par type {{ data_objets_par_types_gares.gare }}</h1>

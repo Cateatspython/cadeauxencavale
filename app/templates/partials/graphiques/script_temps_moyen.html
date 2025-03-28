@@ -1,8 +1,9 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Récupération des données JSON passées depuis le backend
         var donnees = {{ donnees_diff_perte_restitution | tojson }};
         
-        // Palette de couleurs principales pour les types
+        // Palette de couleurs principales pour les types d'objets
         var couleurs_types = [
             '#1f77b4',  // Bleu profond
             '#ff7f0e',  // Orange
@@ -22,11 +23,11 @@
             '#1abc9c'   // Turquoise
         ];
         
-        // Fonction pour générer un dégradé de couleurs
+        // Fonction pour générer un dégradé de couleurs à partir d'une couleur de base
         function genererDegrade(couleurBase, nombreNuances) {
-            let r = parseInt(couleurBase.slice(1, 3), 16);
-            let g = parseInt(couleurBase.slice(3, 5), 16);
-            let b = parseInt(couleurBase.slice(5, 7), 16);
+            let r = parseInt(couleurBase.slice(1, 3), 16); // Extraction de la composante rouge
+            let g = parseInt(couleurBase.slice(3, 5), 16); // Extraction de la composante verte
+            let b = parseInt(couleurBase.slice(5, 7), 16); // Extraction de la composante bleue
             
             let nuances = [];
             for (let i = 0; i < nombreNuances; i++) {
@@ -42,75 +43,82 @@
             return nuances;
         }
         
-        // Regrouper les données par type d'objet
+        // Regrouper les données par type d'objet pour calculer les délais moyens
         var groupes = {};
         donnees.forEach(d => {
             if (!groupes[d.type_objet]) {
                 groupes[d.type_objet] = { total: 0, count: 0 };
             }
-            groupes[d.type_objet].total += d.delai_moyen_jours;
-            groupes[d.type_objet].count += 1;
+            groupes[d.type_objet].total += d.delai_moyen_jours; // Somme des délais
+            groupes[d.type_objet].count += 1; // Nombre d'éléments
         });
         
+        // Extraire les types d'objets et leurs délais moyens
         var types = Object.keys(groupes);
         var delais = types.map(type => groupes[type].total / groupes[type].count);
         
+        // Configuration du graphique principal (par type d'objet)
         var trace1 = {
-            x: types,
-            y: delais,
-            type: 'bar',
+            x: types, // Types d'objets
+            y: delais, // Délais moyens
+            type: 'bar', // Type de graphique : barres
             name: 'Types d\'objets',
             marker: {
-                color: couleurs_types.slice(0, types.length),
-                opacity: 0.8
+                color: couleurs_types.slice(0, types.length), // Couleurs associées aux types
+                opacity: 0.8 // Opacité des barres
             }
         };
         
         var layout1 = {
-            title: 'Délai moyen de restitution par type d\'objet',
-            xaxis: { title: 'Type d\'objet' },
-            yaxis: { title: 'Délai moyen (jours)' },
-            bargap: 0.2
+            title: 'Délai moyen de restitution par type d\'objet', // Titre du graphique
+            xaxis: { title: 'Type d\'objet' }, // Titre de l'axe X
+            yaxis: { title: 'Délai moyen (jours)' }, // Titre de l'axe Y
+            bargap: 0.2 // Espacement entre les barres
         };
         
+        // Affichage du graphique principal
         Plotly.newPlot('graph_type', [trace1], layout1);
         
-        // Ajout de l'événement de clic
+        // Ajout d'un événement de clic sur le graphique principal
         var graphType = document.getElementById('graph_type');
         graphType.on('plotly_click', function(data) {
+            // Récupération du type d'objet cliqué
             var type_objet_clique = data.points[0].x;
             var couleur_type = data.points[0].fullData.marker.color;
             
-            // Filtrer les natures pour le type d'objet cliqué
+            // Filtrer les données pour ne garder que celles du type cliqué
             var natures_filtrees = donnees.filter(d => d.type_objet === type_objet_clique);
             
             // Regrouper les données par nature d'objet
-            var natures_x = natures_filtrees.map(n => n.nature_objet);
-            var delais_y = natures_filtrees.map(n => n.delai_moyen_jours);
+            var natures_x = natures_filtrees.map(n => n.nature_objet); // Natures d'objets
+            var delais_y = natures_filtrees.map(n => n.delai_moyen_jours); // Délais moyens
             
-            // Générer un dégradé de la couleur du type
+            // Générer un dégradé de couleurs pour les natures
             var couleurs_natures = genererDegrade(couleur_type, natures_x.length);
             
+            // Configuration du graphique secondaire (par nature d'objet)
             var trace2 = {
-                x: natures_x,
-                y: delais_y,
-                type: 'bar',
+                x: natures_x, // Natures d'objets
+                y: delais_y, // Délais moyens
+                type: 'bar', // Type de graphique : barres
                 name: `Natures de ${type_objet_clique}`,
                 marker: {
-                    color: couleurs_natures,
-                    opacity: 0.8
+                    color: couleurs_natures, // Couleurs associées aux natures
+                    opacity: 0.8 // Opacité des barres
                 }
             };
             
             var layout2 = {
-                title: `Délai moyen de restitution pour les natures de "${type_objet_clique}"`,
-                xaxis: { title: 'Nature d\'objet' },
-                yaxis: { title: 'Délai moyen (jours)' },
-                bargap: 0.2
+                title: `Délai moyen de restitution pour les natures de "${type_objet_clique}"`, // Titre du graphique
+                xaxis: { title: 'Nature d\'objet' }, // Titre de l'axe X
+                yaxis: { title: 'Délai moyen (jours)' }, // Titre de l'axe Y
+                bargap: 0.2 // Espacement entre les barres
             };
             
+            // Affichage du graphique secondaire
             Plotly.newPlot('graph_nature', [trace2], layout2);
 
+            // Afficher les éléments associés au graphique secondaire
             document.getElementById('graph_nature').style.display = 'block';
             document.getElementById('nature_graph_title').style.display = 'block';
             document.getElementById('nature_graph_text').style.display = 'block';

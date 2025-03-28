@@ -1,58 +1,78 @@
 <script>
+    // Attendre que le DOM soit complètement chargé avant d'exécuter le script
     document.addEventListener('DOMContentLoaded', function() {
+        // Boucle sur les données des gares passées depuis le backend
         {% for gare in donnees %}
-            (function() {  // IIFE pour isoler les variables par itération
+            (function() {  // IIFE (Immediately Invoked Function Expression) pour isoler les variables par itération
+                // Récupérer le nom et l'UIC de la gare actuelle
                 var nomGare = "{{ gare.nom }}";
                 var uicGare = "{{ gare.UIC }}";
+                
+                // Obtenir les données des objets trouvés par type pour toutes les gares
                 var donneesGare = {{ data_objets_par_types_gares | tojson }};
                 
-                // Trouver le canvas spécifique à cette gare
+                // Trouver le canvas HTML correspondant à cette gare via son ID
                 var canvas = document.getElementById('graphiqueCamembert_' + uicGare);
                 
+                // Vérifier si le canvas existe et si des données sont disponibles pour cette gare
                 if (canvas && donneesGare[nomGare]) {
-                    var ctx = canvas.getContext('2d');
-                    var objetsGare = donneesGare[nomGare];
+                    var ctx = canvas.getContext('2d'); // Obtenir le contexte 2D pour dessiner le graphique
+                    var objetsGare = donneesGare[nomGare]; // Récupérer les données spécifiques à cette gare
                     
+                    // Extraire les labels (types d'objets) et les valeurs (nombre d'objets trouvés)
                     var labels = objetsGare.map(item => item.type_objet);
                     var valeurs = objetsGare.map(item => item.nb_objets_trouves);
                     
+                    // Créer un graphique en camembert avec Chart.js
                     new Chart(ctx, {
-                        type: 'pie',
+                        type: 'pie', // Type de graphique : camembert
                         data: {
-                            labels: labels,
+                            labels: labels, // Types d'objets
                             datasets: [{
-                                data: valeurs,
-                                backgroundColor: [
-                                    'rgba(255, 99, 132, 0.8)',
-                                    'rgba(54, 162, 235, 0.8)',
-                                    'rgba(255, 206, 86, 0.8)',
-                                    'rgba(75, 192, 192, 0.8)',
-                                    'rgba(153, 102, 255, 0.8)'
+                                data: valeurs, // Nombre d'objets trouvés
+                                backgroundColor: [ // Couleurs pour chaque segment
+                                    'rgba(255, 99, 132, 0.7)',   // Rouge rosé
+                                    'rgba(54, 162, 235, 0.7)',   // Bleu
+                                    'rgba(255, 206, 86, 0.7)',   // Jaune
+                                    'rgba(75, 192, 192, 0.7)',   // Turquoise
+                                    'rgba(153, 102, 255, 0.7)',  // Violet
+                                    'rgba(255, 159, 64, 0.7)',   // Orange
+                                    'rgba(199, 199, 199, 0.7)',  // Gris
+                                    'rgba(83, 102, 255, 0.7)',   // Bleu foncé
+                                    'rgba(255, 99, 255, 0.7)',   // Rose
+                                    'rgba(99, 255, 132, 0.7)',   // Vert clair
+                                    'rgba(255, 50, 50, 0.7)',    // Rouge vif
+                                    'rgba(50, 255, 255, 0.7)',   // Cyan
+                                    'rgba(200, 50, 255, 0.7)',   // Magenta
+                                    'rgba(255, 220, 185, 0.7)',  // Beige
+                                    'rgba(0, 191, 255, 0.7)',    // Bleu ciel
+                                    'rgba(184, 134, 11, 0.7)'    // Bronze
                                 ],
-                                borderWidth: 1
+                                borderWidth: 1 // Épaisseur des bordures des segments
                             }]
                         },
                         options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
+                            responsive: true, // Rendre le graphique réactif
+                            maintainAspectRatio: false, // Ne pas maintenir le ratio d'aspect
                             plugins: {
                                 title: {
-                                    display: true,
-                                    text: 'Répartition par type d\'objet - ' + nomGare,
+                                    display: true, // Afficher un titre au-dessus du graphique
+                                    text: 'Répartition par type d\'objet - ' + nomGare, // Texte du titre
                                     font: {
-                                        size: 16
+                                        size: 16 // Taille de la police du titre
                                     }
                                 },
                                 legend: {
-                                    position: 'right'
+                                    position: 'right' // Positionner la légende à droite
                                 }
                             }
                         }
                     });
                 } else {
+                    // Afficher une erreur dans la console si le canvas ou les données sont introuvables
                     console.error('Canvas ou données non trouvés pour la gare:', nomGare);
                 }
-            })();
+            })(); // Fin de l'IIFE
         {% endfor %}
     });
 </script>

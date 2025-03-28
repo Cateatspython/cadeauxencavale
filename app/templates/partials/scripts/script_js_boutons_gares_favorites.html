@@ -1,25 +1,33 @@
 <script>
+    // Attendre que le DOM soit complètement chargé
     document.addEventListener("DOMContentLoaded", function () {
+        // Sélectionner tous les boutons avec la classe "ajout-favoris-btn"
         document.querySelectorAll(".ajout-favoris-btn").forEach(button => {
+            // Ajouter un écouteur d'événement "click" à chaque bouton
             button.addEventListener("click", function () {
+                // Récupérer l'attribut UIC du bouton cliqué
                 let UIC = this.getAttribute("data-uic");
     
+                // Envoyer une requête POST au serveur pour ajouter le favori
                 fetch("/ajouter-favori", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json" // Spécifier le type de contenu comme JSON
                     },
-                    body: JSON.stringify({ UIC: UIC })
+                    body: JSON.stringify({ UIC: UIC }) // Envoyer les données UIC dans le corps de la requête
                 })
-                .then(response => response.json())
+                .then(response => response.json()) // Analyser la réponse JSON
                 .then(data => {
+                    // Afficher un message flash avec les données de la réponse
                     afficherMessageFlash(data.message, data.status);
                 })
-                .catch(error => console.error("Erreur :", error));
+                .catch(error => console.error("Erreur :", error)); // Afficher les erreurs dans la console
             });
         });
     
+        // Fonction pour afficher un message flash
         function afficherMessageFlash(message, category) {
+            // Trouver le conteneur des messages flash, ou en créer un s'il n'existe pas
             let flashContainer = document.querySelector(".flash-messages");
             
             if (!flashContainer) {
@@ -28,16 +36,18 @@
                 document.body.insertBefore(flashContainer, document.body.firstChild);
             }
     
+            // Créer un nouvel élément de message flash
             let flashMessage = document.createElement("div");
-            flashMessage.className = `alert alert-${category}`;
-            flashMessage.textContent = message;
+            flashMessage.className = `alert alert-${category}`; // Ajouter la classe d'alerte appropriée en fonction de la catégorie
+            flashMessage.textContent = message; // Définir le texte du message
     
+            // Ajouter le message flash au conteneur
             flashContainer.appendChild(flashMessage);
     
+            // Supprimer automatiquement le message flash après 5 secondes
             setTimeout(() => {
                 flashMessage.remove();
             }, 5000);
         }
     });
-        </script>
-        
+</script>

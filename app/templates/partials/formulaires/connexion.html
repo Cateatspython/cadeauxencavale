@@ -3,6 +3,7 @@
 {% block title %}Connexion{% endblock %}
 
 {% block content %}
+<!-- CONTENU DU FORMULAIRE POUR LA CONNEXION -->
 <div class="container" style="display:flex; justify-content:center; align-items:center; height: 100%; width:70%;">
     <div class="card p-4" style="width:70%">
         <h1 class="my-3 text-center">Connexion</h1>
@@ -26,6 +27,7 @@
                 {% endfor %}
         {% endfor %}
 
+        <!-- Formulaire de connexion -->
         <form method="POST" action="{{ url_for('connexion') }}">
             
             {{ form.hidden_tag() }}
@@ -42,13 +44,13 @@
             <div class="form-group">
                 <input class="form-control" type="password" name="password" placeholder="Votre mot de passe">
             </div>
-
+            <!--Bouton de validation-->
             <div class="text-center">
                 <button class="btn mb-3">Connexion</button>
             </div>
 
         </form>
-
+        <!-- Bouton pour s'inscrire-->
         <p class="text-center">Vous n'avez pas de compte ? <a href="{{url_for('ajout_utilisateur')}}" id="lien_inscrip">Inscrivez-vous</a> !</p>
 
     </div>
