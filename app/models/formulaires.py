@@ -47,9 +47,9 @@ class TrouverObjet(FlaskForm):
 
 class Connexion(FlaskForm):
     #Formulaire pour pouvoir se connecter -- comprend les messages à afficher en cas d'erreur dans le formulaire
-    pseudo=StringField("pseudo", validators=[DataRequired(message="Aucun pseudo n'a été renseigné."), Length(min=3, max=20)])
+    pseudo=StringField("pseudo", validators=[DataRequired(message="Aucun pseudo n'a été renseigné."), Length(min=3, max=20, message="Le pseudo doit contenir entre 3 et 20 caractères.")])
     email=StringField("email", validators=[DataRequired(message="Aucune adresse email n'a été renseignée."), Email()])
-    password=PasswordField("password", validators=[DataRequired(message="Aucun mot de passe n'a été renseigné."), Length(min=6)])
+    password=PasswordField("password", validators=[DataRequired(message="Aucun mot de passe n'a été renseigné."), Length(min=6, message="Le mot de passe doit contenir au moins 6 caractères.")])
 
 class AjoutUtilisateur(FlaskForm):
     #Formulaire pour pouvoir ajouter un utilisateur -- comprend les messages à afficher en cas d'erreur dans le formulaire

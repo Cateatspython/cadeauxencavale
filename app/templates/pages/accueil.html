@@ -2,13 +2,11 @@
 
 {% block title %}Accueil{% endblock %}
 
-
-
 {% block content %}
 
 {% with messages = get_flashed_messages(with_categories=true) %}
 {% if messages %}
-    <div class="alert-container">
+    <div class="alert-container mt-3 center-text" style="display:inline-block">
         {% for category, message in messages %}
             <div class="alert alert-{{ category }}">
                 {{ message }}
@@ -18,17 +16,29 @@
 {% endif %}
 {% endwith %}
 
-<div class="main-block">
-    <h2>Description du site</h2>
-    <p><!--Insérer le contenu textuel--></p>
-</div>
-
-<div class="row">
-    <div class="small-block">
-        <h3>Trouver un objet</h3>
+<div class="container min-vh-100 d-flex flex-column justify-content-center" id="cont_accueil">
+    <div class="row justify-content-md-center">
+        <div class="card p-4 mb-3 w-50">
+            <h1 class="text-center card-title">Description du site</h1>
+            <p class="card-text">Paragraphe explicatif</p>
+        </div>
     </div>
-    <div class="small-block">
-        <h3>Le saviez-vous ?</h3>
+
+    <div class="row justify-content-around w-100">
+        <div class="col-6">
+            <div class="card p-4">
+                <h2 class="text-center card-title">Trouver un objet</h2>
+                <p class="card-text">Paragraphe explicatif</p>
+                <a href="{{ url_for('trouver_objet') }}" class="btn mb-3">Faire une recherche</a>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card p-4">
+                <h2 class="text-center card-title">Le saviez-vous ?</h2>
+                <p class="card-text">Paragraphe explicatif</p>
+                <a href="/le-saviez-vous" class="btn mb-3">Je suis curieux</a>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -3,18 +3,17 @@
 
     {% include '/partials/head.html' %}
 
-    <body class="container-fluid">
+    <body class="d-flex flex-column min-vh-100">
 
     {% include '/partials/navbar.html' %}
     
-    <main>
+    <main class="flex-grow-1">
     {% block content %}
     {% endblock %}
     </main>
     
 
     {% include '/partials/footer.html' %}
-    {% include '/partials/scripts.html' %}
-    
+    {% include '/partials/scripts_bootstrap.html' %}
     </body>
 </html>
