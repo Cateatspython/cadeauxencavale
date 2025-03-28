@@ -7,7 +7,7 @@
     <h1 class="my-3 text-center">Mon compte</h1>
 
     <div class="card my-3 p-4">
-        <!--Affichage du message de succès quand on a changé son mot de passe-->
+        <!--Affichage du message des messages d'erreur et de succès -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                     {% for category, message in messages %}
@@ -16,6 +16,7 @@
             {% endif %}
         {% endwith %}
         
+        <!-- Affichage des informations du compte de l'utilisateur -->
         <h2 class="my-3 ms-5 p-4">Informations</h2>
         <table class="table ms-3 me-3">
             <thead>
@@ -33,11 +34,13 @@
                 </tr>
             </tbody>
         </table>
+        <!-- Bouton pour changer de mot de passe -->
         <div class="text-center">
             <a class="btn mb-3" href="{{ url_for('chgnt_mdp') }}">Changer de mot de passe</a>
         </div>        
     </div>
 
+    <!-- Affichage des Gares favorties de l'utilisateur -->
     <div class="card my-3 p-4">
         <h2 class="my-3 ms-5">Gares favorites</h2>
         {% if favoris %}
@@ -54,6 +57,7 @@
         {% endif %}
     </div>
 
+    <!-- Affichage de l'historique de recherche de l'utilisateur -->
     <div class="card my-3 p-4">
         <h2 class="my-3 ms-5">Historique des recherches</h2>
         
@@ -81,7 +85,6 @@
             {% endif %}
         </div>
 
-        <!--Affichage de l'historique-->
         {% if historique %}
         <table class="table table-striped">
             <thead>

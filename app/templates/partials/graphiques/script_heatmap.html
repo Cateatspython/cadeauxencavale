@@ -1,22 +1,25 @@
 <div id="heatmap-container"></div>
 
-    <script>
-        // Exemple avec Plotly (le plus facile à utiliser)
-        const data = {{ data|tojson }};
-        
-        const heatmapData = [{
-            x: data.map(item => item.x),
-            y: data.map(item => item.y),
-            z: data.map(item => item.value),
-            type: 'heatmap',
-            colorscale: 'Viridis'
-        }];
+<script>
+    // Récupération des données passées depuis le backend (converties en JSON)
+    const data = {{ data|tojson }};
+    
+    // Préparation des données pour la heatmap
+    const heatmapData = [{
+        x: data.map(item => item.x), // Extraction des valeurs pour l'axe X
+        y: data.map(item => item.y), // Extraction des valeurs pour l'axe Y
+        z: data.map(item => item.value), // Extraction des valeurs pour l'intensité (z)
+        type: 'heatmap', // Type de graphique : heatmap
+        colorscale: 'Viridis' // Palette de couleurs utilisée
+    }];
 
-        const layout = {
-            title: 'Heatmap Dynamique',
-            xaxis: {title: 'Axe X'},
-            yaxis: {title: 'Axe Y'}
-        };
+    // Configuration de la mise en page du graphique
+    const layout = {
+        title: 'Heatmap Dynamique', // Titre du graphique
+        xaxis: {title: 'Axe X'}, // Titre de l'axe X
+        yaxis: {title: 'Axe Y'}  // Titre de l'axe Y
+    };
 
-        Plotly.newPlot('heatmap-container', heatmapData, layout);
-    </script>
+    // Génération du graphique avec Plotly
+    Plotly.newPlot('heatmap-container', heatmapData, layout);
+</script>

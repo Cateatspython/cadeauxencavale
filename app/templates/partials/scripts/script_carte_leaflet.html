@@ -1,30 +1,34 @@
 <script>
+    // Initialisation de la carte Leaflet avec une vue centrée sur la France
     var map = L.map('map').setView([46.603354, 1.888334], 5);
  
+    // Ajout des tuiles OpenStreetMap à la carte
     var tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        minZoom: 4,
+        maxZoom: 19, // Zoom maximum
+        minZoom: 4,  // Zoom minimum
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
     
+    // Définition de la liste des gares à partir des données passées au template
     var gares = [
                 {% if donnees %}
                     {% for gare in donnees %}
                         {
-                            nom: "{{ gare.nom }}",
-                            lat: {{ gare.geolocalisation.latitude or 0 }}, 
-                            lon: {{ gare.geolocalisation.longitude or 0 }}
+                            nom: "{{ gare.nom }}", // Nom de la gare
+                            lat: {{ gare.geolocalisation.latitude or 0 }}, // Latitude de la gare
+                            lon: {{ gare.geolocalisation.longitude or 0 }} // Longitude de la gare
                         }{% if not loop.last %},{% endif %}
                     {% endfor %}
                 {% endif %}
             ];
     
-    // Ajout des marqueurs
+    // Ajout des marqueurs pour chaque gare sur la carte
     gares.forEach(gare => {
-        L.marker([gare.lat, gare.lon])
-            .addTo(map)
-            .bindPopup(`<b>${gare.nom}</b>`);
+        L.marker([gare.lat, gare.lon]) // Création d'un marqueur à la position de la gare
+            .addTo(map) // Ajout du marqueur à la carte
+            .bindPopup(`<b>${gare.nom}</b>`); // Ajout d'une popup affichant le nom de la gare
     });
     
+    // Affichage de la liste des gares dans la console pour débogage
     console.log("Liste des gares :", gares);
  </script>

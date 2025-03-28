@@ -46,17 +46,20 @@ def ajout_utilisateur():
     form = AjoutUtilisateur()
 
     if form.validate_on_submit():
-        statut, donnees = Utilisateur.ajout(
-            pseudo=request.form.get("pseudo", None),
-            email=request.form.get("email", None),
-            password=request.form.get("password", None)
-        )
+        try:
+            statut, donnees = Utilisateur.ajout(
+                pseudo=request.form.get("pseudo", None),
+                email=request.form.get("email", None),
+                password=request.form.get("password", None)
+            )
 
-        if statut is True:
-            return redirect(url_for("accueil"))
-        else: 
-            for erreur in donnees:
-                flash(erreur, "error")
+            if statut is True:
+                return redirect(url_for("accueil"))
+            else: 
+                for erreur in donnees:
+                    flash(erreur, "error")
+        except Exception as e:
+            db.session.rollback()
 
     return render_template("partials/formulaires/inscription.html", form=form)
 
@@ -338,12 +341,15 @@ def chgnt_mdp():
     """
     form = ChangerMdp()
 
-    if form.validate_on_submit():
-        current_user.password = generate_password_hash(form.new_password.data)
-        db.session.commit()
-        
-        flash("Votre mot de passe a été changé avec succès !", "success")
+    try:
+        if form.validate_on_submit():
+            current_user.password = generate_password_hash(form.new_password.data)
+            db.session.commit()
+            
+            flash("Votre mot de passe a été changé avec succès !", "success")
 
-        return redirect(url_for("moncompte"))
+            return redirect(url_for("moncompte"))
+    except Exception as e:
+            db.session.rollback()
 
     return render_template('partials/formulaires/changemdp.html', form=form)

@@ -6,21 +6,24 @@ from ..models.gares import Gares, Objets_trouves
 @app.route("/le-saviez-vous", methods=["GET", "POST"])
 def le_saviez_vous():
     """
-Route pour la page "Le Saviez-Vous".
-Cette route gère les requêtes GET et POST pour afficher des statistiques sur les objets perdus et retrouvés dans les gares.
-Requêtes effectuées :
-1. Calcul du pourcentage et du taux d'objets perdus par gare.
-2. Calcul du délai moyen de restitution des objets perdus par type et nature d'objet.
-3. Calcul du nombre d'objets perdus par mois et par région.
-Retourne :
+    Route pour la page "Le Saviez-Vous".
+    Cette route gère les requêtes GET et POST pour afficher des statistiques sur les objets perdus et retrouvés dans les gares.
+
+    Requêtes effectuées :
+    1. Calcul du taux d'objets perdus par gare, basé sur la fréquentation moyenne (pour 1000 personnes).
+    2. Calcul du délai moyen de restitution des objets perdus, par type et nature d'objet.
+    3. Calcul du nombre d'objets perdus par mois et par type d'objet.
+
+    Retourne
+    --------
     Un rendu du template "le_saviez_vous.html" avec les données suivantes :
-    - donnees_heatmap : Liste de dictionnaires contenant le nom, la latitude, la longitude et le pourcentage d'objets perdus par gare.
+    - donnees_heatmap : Liste de dictionnaires contenant le nom, la latitude, la longitude et le taux d'objets perdus par gare.
     - donnees_diff_perte_restitution : Liste de dictionnaires contenant le type d'objet, la nature d'objet et le délai moyen de restitution en jours.
-    - donnees_perte_par_mois_region : Liste de dictionnaires contenant l'année, le mois, le type d'objet, la région et le nombre d'objets perdus.
-"""
-# Requete pour récupérer le taux d'objet perdus par gare/frequentation pour 1000 personnes
+    - donnees_perte_mois : Dictionnaire contenant les mois comme clés, et pour chaque mois, un sous-dictionnaire avec le type d'objet et le nombre d'objets perdus.
+    """
+    # Requete pour récupérer le taux d'objet perdus par gare/frequentation pour 1000 personnes
     requete_heatmap = (
-    db.session.query(
+        db.session.query(
             Gares.nom,
             Gares.latitude,
             Gares.longitude,
@@ -41,16 +44,16 @@ Retourne :
         for gare in requete_heatmap
     ]
 
-#requete pour récupérer le délai moyen de restitution des objets perdus par type et nature d'objet
+    # Requete pour récupérer le délai moyen de restitution des objets perdus par type et nature d'objet
     requete_diff_perte_restiution = (
-    db.session.query(
-        Objets_trouves.type_objet,
-        Objets_trouves.nature_objet,
-        func.avg(func.julianday(Objets_trouves.date_restitution) - func.julianday(Objets_trouves.date_perte)).label("delai_moyen_jours")
-    )
-    .filter(Objets_trouves.date_restitution.isnot(None))  # Exclure les objets non encore restitués
-    .group_by(Objets_trouves.type_objet, Objets_trouves.nature_objet)
-    .all()
+        db.session.query(
+            Objets_trouves.type_objet,
+            Objets_trouves.nature_objet,
+            func.avg(func.julianday(Objets_trouves.date_restitution) - func.julianday(Objets_trouves.date_perte)).label("delai_moyen_jours")
+        )
+        .filter(Objets_trouves.date_restitution.isnot(None))  # Exclure les objets non encore restitués
+        .group_by(Objets_trouves.type_objet, Objets_trouves.nature_objet)
+        .all()
     )
     donnees_diff_perte_restitution = [
         {
@@ -61,7 +64,7 @@ Retourne :
         for objet in requete_diff_perte_restiution
     ]
     
-    #requete pour récupérer le nombre d'objets perdus par mois, par région et par nature/type d'objet
+    # Requete pour récupérer le nombre d'objets perdus par mois, par type d'objet
     requete_perte_par_mois = (
         db.session.query(
             func.extract('month', Objets_trouves.date_perte).label("mois"),
@@ -76,13 +79,13 @@ Retourne :
         .all()
     )
 
-# Convertir les résultats de la requête en un dictionnaire de moyennes
+    # Convertir les résultats de la requête en un dictionnaire de moyennes
     donnees_perte_mois = {}
-    for resultat in requete_perte_par_mois :
+    for resultat in requete_perte_par_mois:
         mois = f'{resultat.mois:02d}'
         type_objet = resultat.type_objet
         
-        if mois not in donnees_perte_mois :
+        if mois not in donnees_perte_mois:
             donnees_perte_mois[mois] = {}
         
         donnees_perte_mois[mois][type_objet] = resultat.nombre_perdus

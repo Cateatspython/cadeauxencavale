@@ -2,11 +2,29 @@ from ..app import app, db
 from flask_wtf import FlaskForm
 from wtforms import SelectField, FieldList, DateField, TimeField, SubmitField, StringField, PasswordField
 from wtforms.validators import DataRequired, Email, Length, EqualTo
-from ..models.gares import Objets_trouves, Gares
+from ..models.gares import Objets_trouves
 
 class TrouverObjet(FlaskForm):
     """
-    Formulaire pour rechercher un objet trouvé dans une gare.
+    Une classe héritant de FlaskForm pour créer un formulaire de recherche d'objets trouvés dans les gares.
+
+    Attributs
+    ---------
+    type_d_objet : SelectField
+        Champ pour sélectionner le type d'objet dans une liste déroulante.
+    gares : FieldList
+        Champ autocomplété pour sélectionner une à deux gares.
+    date_trajet : DateField
+        Champ pour rentrer une date au format normé.
+    heure_approx_perte : TimeField
+        Champ pour rentrer une heure au format normé.
+    submit : SubmitField
+        Champ pour soumettre le formulaire.
+
+    Méthodes
+    --------
+    __init__(self, *args, **kwargs)
+        Constructeur de la classe. Initialise le champ type_d_objet avec les types d'objets uniques depuis la base de données.
     """
     # Champ pour sélectionner le type d'objet dans une liste déroulante
     type_d_objet = SelectField(
@@ -46,18 +64,67 @@ class TrouverObjet(FlaskForm):
         
 
 class Connexion(FlaskForm):
-    #Formulaire pour pouvoir se connecter -- comprend les messages à afficher en cas d'erreur dans le formulaire
+    """
+    Une classe héritant de FlaskForm pour créer un formulaire de connexion pour les utilisateurs déjà inscrit.
+
+    Attributs 
+    ---------
+    pseudo : Stringfield
+        Champ pour soumettre le pseudo de l'utilisateur.
+    email : Stringfield
+        Champ pour soumettre l'email de l'utilisateur.
+    password : PasswordField
+        Champ pour soumettre le mot de passe de l'utilisateur.
+
+    Exceptions
+    ----------
+    - Si le pseudo, l'email ou le mot de passe n'a pas été renseigné
+    - Si le pseudo fait moins de trois lettres ou s'il en contient plus de vingt
+    - Si le mot de passe contient moins de 6 caractères
+    """
     pseudo=StringField("pseudo", validators=[DataRequired(message="Aucun pseudo n'a été renseigné."), Length(min=3, max=20, message="Le pseudo doit contenir entre 3 et 20 caractères.")])
     email=StringField("email", validators=[DataRequired(message="Aucune adresse email n'a été renseignée."), Email()])
     password=PasswordField("password", validators=[DataRequired(message="Aucun mot de passe n'a été renseigné."), Length(min=6, message="Le mot de passe doit contenir au moins 6 caractères.")])
 
 class AjoutUtilisateur(FlaskForm):
-    #Formulaire pour pouvoir ajouter un utilisateur -- comprend les messages à afficher en cas d'erreur dans le formulaire
+    """
+    Une classe héritant de FlaskForm pour créer un formulaire d'inscription pour les utilisateurs qui ne se sont pas encore inscrit.
+
+    Attributs 
+    ---------
+    pseudo : Stringfield
+        Champ pour soumettre le pseudo de l'utilisateur.
+    email : Stringfield
+        Champ pour soumettre l'email de l'utilisateur.
+    password : PasswordField
+        Champ pour soumettre le mot de passe de l'utilisateur.
+    
+        Exceptions
+    ----------
+    - Si le pseudo, l'email ou le mot de passe n'a pas été renseigné
+    - Si le pseudo fait moins de trois lettres ou s'il en contient plus de vingt
+    - Si le mot de passe contient moins de 6 caractères
+    """
     pseudo = StringField("pseudo", validators=[DataRequired(message="Aucun pseudo n'a été renseigné."), Length(min=3, max=20, message="Le pseudo peut contenir entre 3 et 20 caractères.")])
     password = PasswordField("password", validators=[DataRequired(message="Aucun mot de passe n'a été renseigné."), Length(min=6, message="Le mot de passe doit contenir au moins 6 caractères.")])
     email=StringField("email", validators=[DataRequired(message="Aucune adresse email n'a été renseignée."), Email(message="Veuillez entrer un email valide.")])
 
 class ChangerMdp(FlaskForm):
-    #Formulaire pour pouvoir changer de mot de passe -- comprend les messages à afficher en cas d'erreur dans le formulaire
+    """
+    Une classe héritant de FlaskForm pour créer un formulaire de changement de mot de passe pour les utilisateurs qui se sont déjà inscrits. 
+
+    Attributs 
+    ---------
+    new_password : PasswordField
+        Champ pour soumettre le nouveau mot de passe de l'utilisateur.
+    confirmation_mdp : PasswordField
+        Champ pour soumettre la confirmation du nouveau mot de passe de l'utilisateur.
+    
+    Exceptions
+    ----------
+    - Si le new_password ou le confirmation_mdp ne sont pas renseignés.
+    - Si le new_password contient moins de six caractères
+    - Si le confirmation_mdp n'est pas identique au new_password
+    """
     new_password = PasswordField("password", validators=[DataRequired(message="Aucun mot de passe n'a été renseigné."), Length(min=6, message="Le mot de passe doit contenir au moins 6 caractères.")])
     confirmation_mdp = PasswordField("conf_password", validators=[DataRequired(message="Aucun mot de passe n'a été renseigné."), EqualTo("new_password", message="Les mots de passe ne correspondent pas")])

@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="fr">
-
+    <!--Inclusion des éléments nécessaire pour le head -->
     {% include '/partials/head.html' %}
 
     <body class="d-flex flex-column min-vh-100">
-
+    <!-- Inclusion de la navbar -->
     {% include '/partials/navbar.html' %}
     
+    <!--Bloc du contenu des pages-->
     <main class="flex-grow-1">
     {% block content %}
     {% endblock %}
     </main>
     
-
+    <!-- Inclusion du footer et des scripts bootstrap -->
     {% include '/partials/footer.html' %}
     {% include '/partials/scripts_bootstrap.html' %}
     </body>

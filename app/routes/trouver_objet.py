@@ -245,20 +245,22 @@ def trouver_objet():
         ]
 
         # Enregistrement de l'historique de recherche automatique si utilisateur connecté
-        if current_user.is_authenticated:
-            filtres_requetes = json.dumps({
-                "type_d_objet": type_d_objet,
-                "gares": gares,
-                "date_trajet": date_trajet,
-                "heure_approx_perte": heure_approx_perte
-            })
-            Historique.enregistrement_historique(
-                id_utilisateur=current_user.get_id(),
-                date_heure_recherche=datetime.now(),
-                requete_json=filtres_requetes
-               )
-            flash("Recherche enregistrée dans l'historique", "info")
-        
+        try :    
+            if current_user.is_authenticated:
+                filtres_requetes = json.dumps({
+                    "type_d_objet": type_d_objet,
+                    "gares": gares,
+                    "date_trajet": date_trajet,
+                    "heure_approx_perte": heure_approx_perte
+                })
+                Historique.enregistrement_historique(
+                    id_utilisateur=current_user.get_id(),
+                    date_heure_recherche=datetime.now(),
+                    requete_json=filtres_requetes
+                )
+                flash("Recherche enregistrée dans l'historique", "info")
+        except Exception as e:
+            db.session.rollback()
         # Ajout de la gare aux favoris si utilisateur connecté et activation du bouton "Ajouter aux favoris"
     
     return render_template("pages/trouver_objet.html",
@@ -296,17 +298,21 @@ def ajouter_favori():
         flash("UIC manquant", "error")
         return jsonify({"status": "error", "message": "UIC manquant"})
     
-    if current_user.is_authenticated:
-        favori_existant = Gares_favorites.query.filter_by(utilisateur_id=current_user.id, UIC=UIC).first()
-        
-        if favori_existant:
-            flash("Cette gare est déjà dans vos favoris", "info")
-            return jsonify({"status": "exists", "message": "Cette gare est déjà dans vos favoris"})
+    try :
+        if current_user.is_authenticated:
+            favori_existant = Gares_favorites.query.filter_by(utilisateur_id=current_user.id, UIC=UIC).first()
+            
+            if favori_existant:
+                flash("Cette gare est déjà dans vos favoris", "info")
+                return jsonify({"status": "exists", "message": "Cette gare est déjà dans vos favoris"})
+            else:
+                Gares_favorites.ajout_favoris(utilisateur_id=current_user.id, UIC=UIC)
+                db.session.commit()
+                flash("Gare ajoutée aux favoris avec succès", "success")
+                return jsonify({"status": "success", "message": "Gare ajoutée aux favoris avec succès"})
         else:
-            Gares_favorites.ajout_favoris(utilisateur_id=current_user.id, UIC=UIC)
-            db.session.commit()
-            flash("Gare ajoutée aux favoris avec succès", "success")
-            return jsonify({"status": "success", "message": "Gare ajoutée aux favoris avec succès"})
-    else:
-        flash("Utilisateur non connecté", "error")
-        return jsonify({"status": "error", "message": "Utilisateur non connecté"})
+            flash("Utilisateur non connecté", "error")
+            return jsonify({"status": "error", "message": "Utilisateur non connecté"})
+    except Exception as e:
+            db.session.rollback()    
+    
