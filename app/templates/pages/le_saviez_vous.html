@@ -1,32 +1,56 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Le saviez-vous</title>
-    {% include 'partials/graphiques/script_js_le_saviez_vous_head.html'%}
-</head>
-<body>
+{% extends 'pages/base.html' %}
 
-    <h2>Carte du taux d'objet perdus par gare pour 100 voyageurs en moyenne sur 3 ans</h2>
-    <div id="heatmap" style="width: 80vw; height: 80vh;"></div>
+{% block title %}Le saviez-vous{% endblock %}
 
-    {% include 'partials/graphiques/script_carte_taux_objets_perdus.html' %}
+{% block content %}
 
-<div style="width: 100%; margin: auto;">
-    <canvas id="graphique"></canvas>
+<div style="margin-left:30px; margin-right:30px">
+
+    <h1 class="my-3 text-center">Le saviez-vous ?</h1>
+
+    <h2 class="mx-3 mt-5">Carte du taux d'objet perdus par gare pour 100 voyageurs en moyenne sur 3 ans</h2>
+    <div class="container-fluid" style="width: 100%;">
+        <div class="row">
+            <div class="col-md-8">
+                <div id="heatmap" style="height: 80vh;"></div>
+                {% include 'partials/graphiques/script_carte_taux_objets_perdus.html' %}
+            </div>
+            <div class="col-md-4 card">
+                <p>Explication but de cette page<br>Explication de la carte</p>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="mx-3 mt-5">Titre pour seconde visu</h2>
+    <div style="width: 100%; margin: auto;">
+        <canvas id="graphique"></canvas>
+    </div>
+    <div class="d-flex justify-content-center card mt-2 mb-3" style="width:80%;" id="texte-grah1">
+        <p>Explication de ce qu'on voit</p>
+    </div>
+
+    {% include 'partials/graphiques/script_courbes_2021_2023_par_mois.html' %}
+
+    <!--GRAPHIQUE TEMPS MOYEN RESTITUTION-->
+        <div id="graph1">
+            <h2 class="mx-3 mt-5">Délais moyens par type d'objet</h2>
+            <div id="graph_type"></div>
+            <div class="d-flex justify-content-center card mt-2 mb-3" style="width:80%;" id="texte-graph2">
+                <p>Explication de ce qu'on voit</p>
+                <p>Cliquez sur le graphique et décendez pour une surprise !</p>
+            </div>
+        </div>
+        
+        <div>
+            <h2 id="nature_graph_title" style="display: none;" class="mx-3 mt-5">Délai moyen par nature d'objet</h2>
+            <div id="graph_nature" style="display: none;"></div>
+            <div class="d-flex justify-content-center">
+                <p id="nature_graph_text" style="display: none; width:80%;" class="card mt-2 mb-3">Ce graphique montre les délais moyens de restitution selon la nature des objets.</p>
+            </div>
+        </div>
+
 </div>
 
-{% include 'partials/graphiques/script_courbes_2021_2023_par_mois.html' %}
+{% include 'partials/graphiques/script_temps_moyen.html'%}
 
-<!--GRAPHIQUE TEMPS MOYEN RESTITUTION-->
-<h2>Délais moyens par type d'objet</h2>
-    <div id="graph_type"></div>
-
-    <h2>Délais moyens par nature d'objet</h2>
-    <div id="graph_nature"></div>
-
-   {% include 'partials/graphiques/script_temps_moyen.html' %}
-
-</body>
-</html>
+{% endblock %}

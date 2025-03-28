@@ -11,6 +11,7 @@ from fpdf import FPDF
 from ..config import Config
 import os
 import io
+from dotenv import load_dotenv
 
 @app.route("/accueil")
 def accueil():
@@ -202,9 +203,10 @@ def moncompte():
 
 ###GESTION DE L'EXPORT DES FAVORIS EN PDF###
 #Récupération du logo
-train_image_path = os.path.join(Config.IMG_DIR, 'train.png')
 
 #Création de la classe PDF pour pouvoir exporter les favoris
+load_dotenv()
+
 class PDF(FPDF):
     def header(self):
         """
@@ -224,7 +226,11 @@ class PDF(FPDF):
         self.set_font('Arial', 'B', 18)
         
         # Ajout de l'image dans le header
-        self.image(train_image_path, x=10, y=7, w=15)
+        chemin_relatif_image = os.getenv('TRAIN_IMAGE_PATH')
+
+        # Transformer le chemin relatif en chemin absolu
+        chemin_absolu_image = os.path.join(os.getcwd(), chemin_relatif_image)
+        self.image(chemin_absolu_image, x=10, y=7, w=15)
         
         # Positionnement du texte
         self.set_xy(15, 10)

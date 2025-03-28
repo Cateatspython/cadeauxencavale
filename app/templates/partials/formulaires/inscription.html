@@ -3,46 +3,47 @@
 {% block title %}Inscription{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="card">
-        <h3 class="mb-3 mt-3 text-center">S'inscrire</h3>
+<div class="container" style="display:flex; justify-content:center; align-items:center; height: 100%; width:70%;">
+    <div class="card p-4" style="width:70%">
+        <h1 class="my-3 text-center">S'inscrire</h1>
 
-        <div class="">
-
-            <!--Affichage de l'erreur dans la box-->
-            <!---Affichage des erreurs flash-->
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                        {% for category, message in messages %}
-                            <p class="{{ 'alert alert-danger' if category == 'error' else 'alert alert-secondary' }}">{{ message }}</p>
-                        {% endfor %}
-                {% endif %}
-            {% endwith %}
-
-            <!-- Affichage des erreurs liées au formulaire -->
-            {% for field, errors in form.errors.items() %}
-                    {% for error in errors %}
-                    <p class="alert alert-danger">{{ error }}</p>
+        <!--Affichage de l'erreur dans la box-->
+        <!---Affichage des erreurs flash-->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                    {% for category, message in messages %}
+                        <p class="{{ 'alert alert-danger' if category == 'error' else 'alert alert-secondary' }}">{{ message }}</p>
                     {% endfor %}
-            {% endfor %}
+            {% endif %}
+        {% endwith %}
 
-            <form method="POST" action="{{ url_for('ajout_utilisateur') }}">
-                {{ form.hidden_tag() }}
-                    <div class="form-group">
-                        <input class="form-control" type="email" name="email" placeholder="Votre adresse email" autofocus="">
-                    </div>
+        <!-- Affichage des erreurs liées au formulaire -->
+        {% for field, errors in form.errors.items() %}
+                {% for error in errors %}
+                <p class="alert alert-danger">{{ error }}</p>
+                {% endfor %}
+        {% endfor %}
 
-                    <div class="form-group">
-                        <input class="form-control" type="text" name="pseudo" placeholder="Votre pseudo" autofocus="">
-                    </div>
+        <form method="POST" action="{{ url_for('ajout_utilisateur') }}">
 
-                    <div class="form-group">
-                        <input class="form-control" type="password" name="password" placeholder="Votre mot de passe">
-                    </div>
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                <input class="form-control" type="email" name="email" placeholder="Votre adresse email" autofocus="">
+            </div>
 
-                <button class="btn btn-primary">S'inscrire</button>
-            </form>
-        </div>
+            <div class="form-group">
+                <input class="form-control" type="text" name="pseudo" placeholder="Votre pseudo" autofocus="">
+            </div>
+
+            <div class="form-group">
+                <input class="form-control" type="password" name="password" placeholder="Votre mot de passe">
+            </div>
+
+            <div class="text-center">
+                <button class="btn mb-3">S'inscrire</button>
+            </div>
+
+        </form>
     </div>
 </div>
 {% endblock %}

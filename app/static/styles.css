@@ -1,0 +1,82 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    flex: 1;
+}
+
+.footer {
+    padding: 10px 0;
+    width: 100%;
+}
+
+.footer a, #lien_inscrip{
+    color:#d52b1e;
+}
+
+.footer a:hover, #lien_inscrip:hover{
+    color:#d52b1e;
+    
+}
+
+#nature_graph_text, #texte-grah1, #texte-graph2 {
+    display: none;
+    width: 80%;
+    margin: 0 auto;
+}
+
+#cont_accueil{
+    padding-top: 10%;
+    padding-bottom: 10%;
+}
+
+.btn{
+    background-color: #d52b1e;
+    color: white;
+}
+
+.btn:hover{
+    border-color: #d52b1e;
+    border-width: 1px;
+    color:#d52b1e;
+    background-color: white;
+}
+
+.btn:focus {
+    outline: #ffb612 !important;
+    box-shadow: 0 0 5px #ffb612 !important; 
+}
+
+.navbar{
+    background-color: #d52b1e;
+}
+
+.navbar a, .navbar-brand, .nom{
+    color:white
+}
+
+.nom{
+    font-weight: 300;
+}
+
+.navbar a:hover{
+    color:#ffb612;
+}
+
+.page-item a, .page-item a:hover{
+    color:#d52b1e;
+}
+
+.page-item a:focus {
+    outline: #ffb612 !important;
+    box-shadow: 0 0 5px #ffb612 !important; 
+}
+
+
+.page-item.active .page-link {  
+    background-color:#ffb612 !important;  
+    border-color: #ffb612 !important;  
+}
