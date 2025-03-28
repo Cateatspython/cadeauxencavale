@@ -144,7 +144,7 @@ def trouver_objet():
 
         # Horaires des gares sélectionnées
         horaires = Horaires.query.filter(Horaires.UIC.in_([gare.UIC for gare in gares_result])).all()
-
+        
         ### RECUPERATION DES DONNEES POUR LES DATAVISUALISATIONS PERSONNALISEES ###
         
         # 1. Tous les objets perdus, objets_trouvés.date_perte, objets_trouvés.date_restitution en France par Région, du type sélectionné, pendant toute la journée de perte.

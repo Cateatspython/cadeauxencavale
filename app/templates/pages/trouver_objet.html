@@ -46,9 +46,9 @@
             <table>
                 <thead>
                     <tr>
-                        <td>{{ jour }}</td>
-                        <td>{{ horaires.horaires_jour_normal }}</td>
-                        <td>{{ horaires.horaires_jour_ferie }}</td>
+                        <th>Jour</th>
+                        <th>Horaires (Jour Normal)</th>
+                        <th>Horaires (Jour Férié)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -63,6 +63,8 @@
             </table>
             {% endif %}
             <!-- Graphique de répartition des objets trouvés par type pour la gare itérée-->
+            
+            {% if gare.nb_objets_trouves_periode_perte_type > 0 %}
             <div class="container">
                 <div class="row">
                     <h4>Répartition des objets trouvés par type - {{ gare.nom }}</h4>
@@ -71,26 +73,14 @@
                     </div>
                 </div>
             </div>
-            </div>
+            {% endif %}
 
         {% endfor %}
         <!-- Inclusion du script pour le graphique camembert -->
         {% include '/partials/graphiques/graphique_1_camembert.html' %}
 
         <!-- Graphique des objets trouvés par type, par région -->
-        <div class="container">
-            <div class="row">
-                <h4>Répartition des objets trouvés par type - {{ gare.nom }}</h4>
-                <div>
-                    <canvas id="graphiqueCamembert_{{ gare.UIC }}" style="width: 100%; max-width: 800px; height: 400px;"></canvas>
-                </div>
-            </div>
-        </div>
-        </div>
-
-    {% endfor %}
-
-    {% include '/partials/graphiques/graphique_1_camembert.html' %}
+        
     <div class="container">
         <div class="row">
             <h1>Répartition des objets trouvés par type {{ data_objets_par_types_gares.gare }}</h1>
