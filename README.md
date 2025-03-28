@@ -11,7 +11,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/Cateatspython/cadeauxencavale">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="app/static/img/train.png" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">Cadeaux en cavale</h3>
@@ -39,9 +39,6 @@
       </ul>
     </li>
     <li><a href="#contributing">Contributeurs</a>
-        <ul>
-        <li><a href="#built-with">Fait avec</a></li>
-      </ul>
     </li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -63,6 +60,12 @@ Retrouvez les cadeaux de Noël que vous avez perdus dans le train, localisez les
 
 <!--description des fonctionnalités-->
 
+Dans cette application, vous pouvez : 
+* rechercher les objets perdus dans des gares choisies
+* consulter les statistiques de pertes des objets dans les gares de France
+* créer un compte pour enregistrer des gares favorites et son historique
+* exporter sa liste de gares favorites !
+
 <p align="right">(<a href="#readme-top">retour en haut</a>)</p>
 
 
@@ -75,33 +78,75 @@ Pour pouvoir fonctionner, l'application doit fonctionner dans un environnement v
 
 Les modules sont dans le requirements.txt :
 
+
+
+### Installation
+Des exemples d'étapes:
+
+cloner le dépôt
+installer Python 3.X
+installer une base de données
+installer en environnement virtuel, le lancer
+quelles variables dans le .env?
+installer les requirements
+lancer run.py
+
+1. Créer un dossier pour y stocker les fichiers de l'application, par exemple Application_cadeaux
+1. Dans ce dossier, clôner à l'intérieur le dépôt github  :
+```sh
+git clone git@github.com:Cateatspython/cadeauxencavale.git
+```
+2. Télécharger la base de données en .db et la mettre dans le dossier de l'application (ici Application_cadeaux)
+3. Installer virtualenv
+  ```sh
+  python -m pip install --user virtualenv
+  ```
+5. Dans le dossier de l'application (ici Application_cadeaux), créer un environnement virtuel avec virtualenv, en le nommant par exemple env_cadeaux :
+  ```sh
+  virtualenv env_cadeaux
+  ```
+7. Lancer l'environnement virtuel :
+  ```sh
+  source env_cadeaux/bin/activate
+  ```
+9. Dans le dossier du dépôt git cadeauxencavale, créer le fichier .env et y coller le contenu suivant :
+  ```sh
+  RESOURCES_PER_PAGE=10
+  SQLALCHEMY_DATABASE_URI=sqlite:////chemin/de/sa/base/de/donnees.db
+  DEBUG=True
+  SECRET_KEY = inserer_clef_secrete_choisie
+  SQLALCHEMY_ECHO=False
+  WTF_CSRF_ENABLE=True
+  TRAIN_IMAGE_PATH=app/static/img/train.png
+  ```
+Il faut donner à SQLALCHEMY_DATABASE_URI le chemin absolu de la base de données, et à SECRET_KEY une clef qui servira à chiffrer les mots de passe utilisateur.
+
+10. Installer les modules nécessaires au fonctionnement de l'application, en lançant cette commande en étant situé dans le dossier cadeauxencavale : 
   ```sh
   pip install -r requirements.txt
   ```
-
-### Installation
-
-1. 
-
-Le .env devra contenir ces variables :
-
+11. Et enfin lancer l'application en copiant dans le terminal :
   ```sh
-  //
-```
+  python3 run.py
+  ```
 
+Vous pouvez maintenant utiliser l'application ! 
 
 <p align="right">(<a href="#readme-top">retour en haut</a>)</p>
 
 
 
 <!-- CONTRIBUTING -->
-## Cadre de travail
+## Contributeurs
 
-Cette application est développée dans le cadre du master 2 Technologies Appliquées à l'Histoire de l'École Nationale des Chartes.
+Les contributeurs à cette application sont :
+* Mélina Conter
+* Pierre Husson
+* Lucie Ledieu
+* Alice Guerin
 
-<p align="right">(<a href="#readme-top">retour en haut</a>)</p>
+du master 2 Technologies Appliquées à l'Histoire de l'École Nationale des Chartes.
 
-### Contributeurs :
 
 <a href="https://github.com/Cateatspython/cadeauxencavale/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=Cateatspython/cadeauxencavale" alt="contrib.rocks image" />
@@ -138,3 +183,5 @@ Distributed under the project_license. See `LICENSE.txt` for more information.
 Lien du projet : [https://github.com/Cateatspython/cadeauxencavale](https://github.com/Cateatspython/cadeauxencavale)
 
 <p align="right">(<a href="#readme-top">retour en haut</a>)</p>
+
+<marquee><img src="app/static/img/train.png" alt="Logo" width="80" height="80"></marquee>
