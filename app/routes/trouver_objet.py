@@ -82,6 +82,8 @@ def trouver_objet():
     donnees = []
     data_par_region = []
     data_objets_par_types_gares = []
+    type_d_objet = []
+    date_trajet = []
     
     if form.validate_on_submit():
         type_d_objet = request.form.get("type_d_objet", None)
