@@ -31,16 +31,8 @@
       <a href="#about-the-project">À propos de ce projet</a>
     </li>
     <li><a href="#usage">Utilisation</a></li>
-    <li>
-      <a href="#getting-started">Se lancer</a>
-      <ul>
-        <li><a href="#prerequisites">Prérequis</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#contributing">Contributeurs</a>
-    </li>
-    <li><a href="#license">License</a></li>
+    <li><a href="#getting-started">Installation</a></li>
+    <li><a href="#contributing">Contributeurs</a></li>
     <li><a href="#contact">Lien</a></li>
   </ol>
 </details>
@@ -48,6 +40,7 @@
 
 
 <!-- ABOUT THE PROJECT -->
+<span id="about-the-project"></a>
 ## 🎁 À propos de ce projet
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
@@ -56,6 +49,7 @@ Retrouvez les cadeaux de Noël que vous avez perdus dans le train, localisez les
 
 <p align="right">(<a href="#readme-top">retour en haut</a>)</p>
 
+<span id="usage"></a>
 ## 🎄 Utilisation
 
 <!--description des fonctionnalités-->
@@ -66,18 +60,20 @@ Dans cette application, vous pouvez :
 * créer un compte pour enregistrer des gares favorites et son historique
 * exporter sa liste de gares favorites !
 
+![Image](./app/static/img/page_moncompte.png)
+![Image](./app/static/img/page_recherche.png)
+![Image](./app/static/img/page_saviez-vous.png)
+
 <p align="right">(<a href="#readme-top">retour en haut</a>)</p>
 
 
 <!-- GETTING STARTED -->
-## 🧑‍🎄 Se lancer
+<span id="getting-started"></a>
+## 🧑‍🎄 Installation
 
-### Prérequis
-
-Pour pouvoir fonctionner, l'application doit fonctionner dans un environnement virtuel disposant des modules python Flask, Flask-Login, Flask-SQLAlchemy, Flask-WTF, itsdangerous, Jinja2, python-dotenv, SQLAlchemy, Werkzeug et WTForms.
-
-
-### Installation
+1. D'abord, si vous n'avez pas python : 
+    - installer python en suivant <a href="https://www.docstring.fr/formations/faq/configuration/comment-installer-python-sur-mon-ordinateur/">ce tutoriel</a>
+    - puis installer pip en suivant <a href="https://docs.python.org/fr/dev/installing/index.html">ce tutoriel</a>
 1. Créer un dossier pour y stocker les fichiers de l'application, par exemple Application_cadeaux
 1. Dans ce dossier, clôner à l'intérieur le dépôt github  :
 ```sh
@@ -88,7 +84,7 @@ git clone git@github.com:Cateatspython/cadeauxencavale.git
   ```sh
   python -m pip install --user virtualenv
   ```
-5. Dans le dossier de l'application (ici Application_cadeaux), créer un environnement virtuel avec virtualenv, en le nommant par exemple env_cadeaux :
+5. Dans le terminal, créer un environnement virtuel avec virtualenv dabs le dossier de l'application (ici Application_cadeaux), en le nommant par exemple env_cadeaux :
   ```sh
   virtualenv env_cadeaux
   ```
@@ -100,7 +96,6 @@ git clone git@github.com:Cateatspython/cadeauxencavale.git
   ```sh
   RESOURCES_PER_PAGE=10
   SQLALCHEMY_DATABASE_URI=sqlite:////chemin/de/sa/base/de/donnees.db
-  DEBUG=True
   SECRET_KEY = inserer_clef_secrete_choisie
   SQLALCHEMY_ECHO=False
   WTF_CSRF_ENABLE=True
@@ -108,7 +103,7 @@ git clone git@github.com:Cateatspython/cadeauxencavale.git
   ```
 Il faut donner à SQLALCHEMY_DATABASE_URI le chemin absolu de la base de données, et à SECRET_KEY une clef qui servira à chiffrer les mots de passe utilisateur.
 
-10. Installer les modules nécessaires au fonctionnement de l'application, en lançant cette commande en étant situé dans le dossier cadeauxencavale : 
+10. Installer les modules nécessaires au fonctionnement de l'application, en lançant cette commande en étant situé dans le dossier cadeauxencavale dans le terminal : 
   ```sh
   pip install -r requirements.txt
   ```
@@ -124,6 +119,7 @@ Vous pouvez maintenant utiliser l'application !
 
 
 <!-- CONTRIBUTING -->
+<span id="contributing"></a>
 ## 🚂 Contributeurs
 
 Les contributeurs à cette application sont :
@@ -139,7 +135,7 @@ du master 2 Technologies Appliquées à l'Histoire de l'École Nationale des Cha
   <img src="https://contrib.rocks/image?repo=Cateatspython/cadeauxencavale" alt="contrib.rocks image" />
 </a>
 
-
+<span id="about-the-project"></a>
 ### Fait avec
 
 * [![Flask](https://img.shields.io/badge/Flask-000?logo=flask&logoColor=fff)](#)
@@ -154,17 +150,8 @@ du master 2 Technologies Appliquées à l'Histoire de l'École Nationale des Cha
 <p align="right">(<a href="#readme-top">retour en haut</a>)</p>
 
 
-
-<!-- LICENSE -->
-## 👼 License
-
-Distributed under the project_license. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#readme-top">retour en haut</a>)</p>
-
-
-
 <!-- CONTACT -->
+<span id="contact"></a>
 ## 🦌 Lien
 
 Lien du projet : [https://github.com/Cateatspython/cadeauxencavale](https://github.com/Cateatspython/cadeauxencavale)
