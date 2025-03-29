@@ -5,26 +5,39 @@
 {% block content %}
 
 <h1 class="my-3 text-center">Recherche d'objets trouvés</h1>
-<p class="my-3">
-    Vous avez égaré quelque chose en gare ou durant un trajet ? Pas de panique, ce formulaire est là pour vous aider !<br/>    
-    👜 Type d’objet<br/>
-    Commencez par sélectionner le type d’objet perdu dans la liste déroulante.<br/>
-    
-    🚉 Gare(s) concernée(s)<br/>
-    
-        Si vous savez où vous avez perdu votre objet, choisissez une seule gare.<br/>
-    
-        Si vous l’avez perdu en voyage, sélectionnez la gare de départ et celle d’arrivée.<br/>
-        Tapez le nom d’une gare, laissez-vous guider par l’autocomplétion, et cliquez dessus pour la valider. Elle s’affichera en dessous avec une croix pour la retirer si besoin.<br/>
-    
-    📅 Date du trajet<br/>
-    Indiquez la date à laquelle vous avez perdu votre objet.<br/>
-    
-    ⏳ Heure approximative de perte<br/>
-    Pas besoin d’être précis à la minute près ! Une estimation suffira.<br/>
-    
-    💡 Une fois le formulaire soumis, vous pourrez voir combien d’objets du type sélectionné ont été retrouvés dans la ou les gares choisies, depuis la date et l’heure indiquées jusqu’à la fin des vacances de Noël 2024. Bonne recherche ! 🎄🔎
-</p>
+
+<div class="card m-5 p-4">
+    <h5 class="card-header">
+        <a data-toggle="collapse" href="#collapse-example" aria-expanded="true" aria-controls="collapse-example" id="heading-example" class="d-block">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"/>
+            </svg>
+            Présentation
+        </a>
+    </h5>
+    <div id="collapse-example" class="collapse show" aria-labelledby="heading-example">
+        <div class="card-body">
+            <p>Vous avez égaré quelque chose en gare ou durant un trajet ? Pas de panique, ce formulaire est là pour vous aider !<br/>    
+            <span class="font-weight-bold">👜 Type d’objet</span><br/>
+            Commencez par sélectionner le type d’objet perdu dans la liste déroulante.<br/>
+            
+            <span class="font-weight-bold">🚉 Gare(s) concernée(s)</span><br/>
+            
+                Si vous savez où vous avez perdu votre objet, choisissez une seule gare.<br/>
+            
+                Si vous l’avez perdu en voyage, sélectionnez la gare de départ et celle d’arrivée.<br/>
+                Tapez le nom d’une gare, laissez-vous guider par l’autocomplétion, et cliquez dessus pour la valider. Elle s’affichera en dessous avec une croix pour la retirer si besoin.<br/>
+            
+            <span class="font-weight-bold">📅 Date du trajet</span><br/>
+            Indiquez la date à laquelle vous avez perdu votre objet.<br/>
+            
+            <span class="font-weight-bold">⏳ Heure approximative de perte</span><br/>
+            Pas besoin d’être précis à la minute près ! Une estimation suffira.<br/>
+            
+            💡 Une fois le formulaire soumis, vous pourrez voir combien d’objets du type sélectionné ont été retrouvés dans la ou les gares choisies, depuis la date et l’heure indiquées jusqu’à la fin des vacances de Noël 2024. Bonne recherche ! 🎄🔎</p>
+        </div>
+    </div>
+</div>
 
 <!-- Affichage des messages flash -->
 {% with messages = get_flashed_messages(with_categories=true) %}
@@ -50,26 +63,24 @@
     {% include '/partials/scripts/script_carte_leaflet.html' %}
 </div>
 
-<div class="m-5 container-fluid justify-content-around w-100">
+<div class="m-5 mx-auto container justify-content-around w-100">
 
-    <!-- Affichage des données des gares -->
-    
-    {% if donnees %}
+<!-- Affichage des données des gares -->
+{% if donnees %}
         <div class="text-center">
             <h1>Résultats</h1>
         </div>
-        <div class="row">
-            <div class="col-6"></div>
-                <!-- Itération sur la liste de dictionnaires donnees -->
-                {% for gare in donnees %}
-                <div>
+        <!-- Itération sur la liste de dictionnaires donnees -->
+        {% for gare in donnees %}
+        <div class="row mb-5 align-items-start">
+            <div class="col-md-6">
                 <h2>{{ gare.nom }}</h2>
-                <button class="ajout-favoris-btn btn" data-uic="{{ gare.UIC }}">Ajouter aux favoris</button>
+                <button class="ajout-favoris-btn btn mb-3" data-uic="{{ gare.UIC }}">Ajouter la gare aux favoris</button>
                 <p><strong>Adresse</strong> : {{ gare.adresse }}</p>
                 <p><strong>Nombre d'objets trouvés pendant la période</strong> : {{ gare.nb_objets_trouves_periode_perte_type }}</p>
             </div>
-            
-            <div class="col-6">
+                
+            <div class="col-md-6">
                 <!-- Affichage des horaires seulement si la gare en a -->
                 {% if gare.horaires %}
                 <h3>Horaires</h3>
@@ -93,34 +104,34 @@
                 </table>
                 {% endif %}
             </div>
-        </div>
+    </div>
 
-            <!-- Graphique de répartition des objets trouvés par type pour la gare itérée-->
-        <div class="row" style="width:90%">
+        <!-- Graphique de répartition des objets trouvés par type pour la gare itérée-->
+        <div class="row justify-content-center mb-4">
             {% if gare.nb_objets_trouves_periode_perte_type > 0 %}
-            <div class="col-6">
-                <h3>Répartition des objets trouvés par type - {{ gare.nom }}</h3>
-                <div>
-                    <canvas id="graphiqueCamembert_{{ gare.UIC }}" style="width: 100%; max-width: 800px; height: 400px;"></canvas>
+                <div class="col-6">
+                    <h3>Répartition des objets trouvés par type - {{ gare.nom }}</h3>
+                    <canvas id="graphiqueCamembert_{{ gare.UIC }}" style="width: 100%; max-width: 800px; max-height: 600px;"></canvas>
                 </div>
-            </div>
             {% endif %}
-
+        </div>
         {% endfor %}
+
         <!-- Inclusion du script pour le graphique camembert -->
         {% include '/partials/graphiques/graphique_1_camembert.html' %}
 
         <!-- Graphique des objets trouvés par type, par région -->
         
-        <div class="col-6">
-            <h3>Répartition des objets trouvés par type {{ data_objets_par_types_gares.gare }}</h3>
-            <div>
-                <canvas id="graphique1Barres" style="width: 800px; height: 600px;"></canvas>
-            </div>
+        <div class="row row mt-4 justify-content-center">
+            <div class="col-10 text-center">
+                <h3>Répartition des objets trouvés par type {{ data_objets_par_types_gares.gare }}</h3>
+                <div>
+                    <canvas id="graphique1Barres" style="width: 800px; max-height: 800px;"></canvas>
+                </div>
+            {% include '/partials/graphiques/graphique_2_barres.html' %}
         </div>
-    {% include '/partials/graphiques/graphique_2_barres.html' %}
+
 {% endif %}
 
-</div>
 </div>
 {% endblock %}
