@@ -9,7 +9,7 @@
 <!-- Affichage des messages flash -->
 {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
-        <div class="flash-messages">
+        <div class="alert-container mt-3 text-center mx-5">
             {% for category, message in messages %}
                 <div class="alert alert-{{ category }}">{{ message }}</div>
             {% endfor %}
@@ -30,47 +30,58 @@
     {% include '/partials/scripts/script_carte_leaflet.html' %}
 </div>
 
+<div class="m-5 container-fluid justify-content-around w-100">
+
     <!-- Affichage des données des gares -->
+    
     {% if donnees %}
-        <h2>Résultats</h2>
-        <!-- Itération sur la liste de dictionnaires donnees -->
-        {% for gare in donnees %}
-            <div>
-            <h3>{{ gare.nom }}</h3>
-            <button class="ajout-favoris-btn" data-uic="{{ gare.UIC }}">Ajouter aux favoris</button>
-            <p>Adresse : {{ gare.adresse }}</p>
-            <p>Nombre d'objets trouvés pendant la période : {{ gare.nb_objets_trouves_periode_perte_type }}</p>
-            <!-- Affichage des horaires seulement si la gare en a -->
-            {% if gare.horaires %}
-            <h4>Horaires</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Jour</th>
-                        <th>Horaires (Jour Normal)</th>
-                        <th>Horaires (Jour Férié)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for jour, horaires in gare.horaires.items() %}
-                        <tr>
-                            <td>{{ jour }}</td>
-                            <td>{{ horaires.horaires_jour_normal }}</td>
-                            <td>{{ horaires.horaires_jour_ferie }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% endif %}
-            <!-- Graphique de répartition des objets trouvés par type pour la gare itérée-->
+        <div class="text-center">
+            <h1>Résultats</h1>
+        </div>
+        <div class="row">
+            <div class="col-6"></div>
+                <!-- Itération sur la liste de dictionnaires donnees -->
+                {% for gare in donnees %}
+                <div>
+                <h2>{{ gare.nom }}</h2>
+                <button class="ajout-favoris-btn btn" data-uic="{{ gare.UIC }}">Ajouter aux favoris</button>
+                <p><strong>Adresse</strong> : {{ gare.adresse }}</p>
+                <p><strong>Nombre d'objets trouvés pendant la période</strong> : {{ gare.nb_objets_trouves_periode_perte_type }}</p>
+            </div>
             
+            <div class="col-6">
+                <!-- Affichage des horaires seulement si la gare en a -->
+                {% if gare.horaires %}
+                <h3>Horaires</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Jour</th>
+                            <th>Horaires (Jour Normal)</th>
+                            <th>Horaires (Jour Férié)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for jour, horaires in gare.horaires.items() %}
+                            <tr>
+                                <td>{{ jour }}</td>
+                                <td>{{ horaires.horaires_jour_normal }}</td>
+                                <td>{{ horaires.horaires_jour_ferie }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+            </div>
+        </div>
+
+            <!-- Graphique de répartition des objets trouvés par type pour la gare itérée-->
+        <div class="row" style="width:90%">
             {% if gare.nb_objets_trouves_periode_perte_type > 0 %}
-            <div class="container">
-                <div class="row">
-                    <h4>Répartition des objets trouvés par type - {{ gare.nom }}</h4>
-                    <div>
-                        <canvas id="graphiqueCamembert_{{ gare.UIC }}" style="width: 100%; max-width: 800px; height: 400px;"></canvas>
-                    </div>
+            <div class="col-6">
+                <h3>Répartition des objets trouvés par type - {{ gare.nom }}</h3>
+                <div>
+                    <canvas id="graphiqueCamembert_{{ gare.UIC }}" style="width: 100%; max-width: 800px; height: 400px;"></canvas>
                 </div>
             </div>
             {% endif %}
@@ -81,15 +92,15 @@
 
         <!-- Graphique des objets trouvés par type, par région -->
         
-    <div class="container">
-        <div class="row">
-            <h1>Répartition des objets trouvés par type {{ data_objets_par_types_gares.gare }}</h1>
+        <div class="col-6">
+            <h3>Répartition des objets trouvés par type {{ data_objets_par_types_gares.gare }}</h3>
             <div>
                 <canvas id="graphique1Barres" style="width: 800px; height: 600px;"></canvas>
             </div>
         </div>
-    </div>
     {% include '/partials/graphiques/graphique_2_barres.html' %}
 {% endif %}
 
+</div>
+</div>
 {% endblock %}
