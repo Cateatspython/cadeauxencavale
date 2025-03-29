@@ -5,6 +5,26 @@
 {% block content %}
 
 <h1 class="my-3 text-center">Recherche d'objets trouvés</h1>
+<p class="my-3">
+    Vous avez égaré quelque chose en gare ou durant un trajet ? Pas de panique, ce formulaire est là pour vous aider !<br/>    
+    👜 Type d’objet<br/>
+    Commencez par sélectionner le type d’objet perdu dans la liste déroulante.<br/>
+    
+    🚉 Gare(s) concernée(s)<br/>
+    
+        Si vous savez où vous avez perdu votre objet, choisissez une seule gare.<br/>
+    
+        Si vous l’avez perdu en voyage, sélectionnez la gare de départ et celle d’arrivée.<br/>
+        Tapez le nom d’une gare, laissez-vous guider par l’autocomplétion, et cliquez dessus pour la valider. Elle s’affichera en dessous avec une croix pour la retirer si besoin.<br/>
+    
+    📅 Date du trajet<br/>
+    Indiquez la date à laquelle vous avez perdu votre objet.<br/>
+    
+    ⏳ Heure approximative de perte<br/>
+    Pas besoin d’être précis à la minute près ! Une estimation suffira.<br/>
+    
+    💡 Une fois le formulaire soumis, vous pourrez voir combien d’objets du type sélectionné ont été retrouvés dans la ou les gares choisies, depuis la date et l’heure indiquées jusqu’à la fin des vacances de Noël 2024. Bonne recherche ! 🎄🔎
+</p>
 
 <!-- Affichage des messages flash -->
 {% with messages = get_flashed_messages(with_categories=true) %}
