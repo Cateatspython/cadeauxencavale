@@ -13,7 +13,7 @@ import os
 import io
 from dotenv import load_dotenv
 
-@app.route("/accueil")
+@app.route("/")
 def accueil():
     """
     Affiche la page d'accueil.

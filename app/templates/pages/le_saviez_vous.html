@@ -9,7 +9,7 @@
     <h1 class="my-3 text-center">Le saviez-vous ?</h1>
   
     <!-- Heatmap -->
-    <h2 class="m-5">Carte du taux d'objet perdus par gare pour 1000 voyageurs en moyenne sur 3 ans</h2>
+    <h2 class="m-5">Carte du taux d'objet trouvés par gare pour 1000 voyageurs en moyenne sur 3 ans</h2>
     <div class="container-fluid" style="width: 100%;">
         <div class="row">
             <div class="col-md-8">
@@ -17,34 +17,50 @@
                 {% include 'partials/graphiques/script_carte_taux_objets_perdus.html' %}
             </div>
             <div class="col-md-4 card">
-                <p>Explication but de cette page<br>Explication de la carte</p>
+                <p>Vous trouverez ici quelques statistiques permettant de se faire une meilleure idée de ce qu'il se passe tout au long d'une année aux services des objets perdus en gare.
+                </p>
+                <p>Ci-contre : une carte montrant le taux d'objets trouvés moyen sur 2021-2023 en fonction de la fréquentation de la gare pour 1000 voyageurs.<br/><br/>
+                    Difficile d'ignorer la proportion imposante d'Hendaye, dans le Sud-Ouest de la France, à la frontière avec l'Espagne. Il est possible que sa fonction de lien vers les 
+                    sociétés de transports espagnoles explique le nombre plus élevé d'objets trouvés. En effet, la gare étant gérée par les services de la SNCF, le service des objets perdus 
+                    récupère les objets trouvés à l'échelle de toute l'infrastructure de la gare. Hors, il est possible que la fréquentation ne prenne en compte que les voyageurs de la SNCF 
+                    et non ceux des autres compagnies desservant la gare. Cette situation, dans une moindre mesure, pourrait également s'appliquer à d'autres gares frontalières.
+                </p>
             </div>
         </div>
     </div>
 
     <!-- Courbes objets trouvés par types -->
-    <h2 class="m-5">Moyenne des objets trouvés sur 2021-2023 par mois, par types</h2>
+    <h2 class="m-5">Moyenne des objets trouvés sur 2021-2024 par mois, par types</h2>
     <div class="mb-4">
         <canvas id="graphique"></canvas>
     </div>
     <div class="d-flex justify-content-center card mt-4 mb-3" style="width:80%;" id="texte-grah1">
-        <p>Explication de ce qu'on voit</p>
+        <p>Ci-dessus : la moyenne du nombre d'objets trouvés en 2021-2024 par mois et par types à l'échelle de toute la France.<br/><br/>
+            La majorité des objets trouvés en gares semblent être des articles de bagagerie qui montrent un pic clair autour de décembre, surement causé par les départs en vacance.
+            Les autres types d'objets restent relativement stables sur l'année. La bagagerie est suivie par les appareils éléctroniques, informatiques et appareils photos. </p>
     </div>
     {% include 'partials/graphiques/script_courbes_2021_2024_par_mois.html' %}
 
     <!--GRAPHIQUE TEMPS MOYEN RESTITUTION-->
     <div class="m-5">
         <div id="graph1">
-            <h2 class="mb-4">Délais moyens des resitution en jours par type d'objet</h2>
+            <h2 class="mb-4">Délais moyens des restitutions en jours par type d'objet</h2>
             <div id="graph_type"></div>
             <div class="d-flex justify-content-center card mt-5 mb-4" style="width:80%;" id="texte-graph2">
-                <p>Explication de ce qu'on voit</p>
-                <p>Cliquez sur le graphique et décendez pour une surprise !</p>
+                <p>Ci-dessus : le délai moyen de restitution des objets perdus (en jours) par type d’objet sur la période 2021-2025.<br/><br/>
+                    La SNCF applique la politique de retour suivante : si un objet n’est pas récupéré à la gare où il a été trouvé après un mois,
+                     il est envoyé en entrepôt pour un stockage de longue durée. Cela explique pourquoi aucun type d’objet ne dépasse en moyenne 35 jours de restitution.<br/>
+                     Attention ! Si votre objet a été envoyé en entrepôt, des frais de gardiennage seront appliqués lors de son retrait.<br/>
+                     Le délai plus long constaté pour les pièces d’identité et les porte-monnaie pourrait s’expliquer par la réaction initiale des 
+                     voyageurs en constatant leur absence : <i>« Peut-être s’agit-il d’un vol ? »</i>. Ainsi, leur premier réflexe pourrait être de s’adresser 
+                     aux forces de l’ordre plutôt qu’au service des objets trouvés.
+                </p>
+                <p>Cliquez sur le graphique et décendez pour observer les sous-catégories par type d'objet (natures).</p>
             </div>
         </div>
         
         <div>
-            <h2 id="nature_graph_title" style="display: none;" class="mb-4">Délai moyen par nature d'objet</h2>
+            <h2 id="nature_graph_title" style="display: none;" class="mb-4">Délais moyens des restitutions en jours par nature d'objet</h2>
             <div id="graph_nature" style="display: none;"></div>
             <div class="d-flex justify-content-center">
                 <p id="nature_graph_text" style="display: none; width:80%;" class="card mt-4 mb-3">Ce graphique montre les délais moyens de restitution selon la nature des objets.</p>
