@@ -96,15 +96,12 @@ def trouver_objet():
             flash("Veuillez renseigner tous les champs du formulaire", "error")
             return redirect(url_for("trouver_objet"))
 
-        print(f'Gares sélectionnées : {gares}')
         # Convertir la liste des gares en liste d'objets
         gares = gares.split(",")
 
-        print(f'Gares sélectionnées : {gares}')
         # Limiter le nombre de gares à deux maximum
         if len(gares) > 2 :
             flash("Veuillez sélectionner au maximum deux gares.", "error")
-            print("Trop de gares sélectionnées")
             return redirect(url_for("trouver_objet"))
 
         # Combine date_trajet et heure_approx_perte en datetime ISO 8601
