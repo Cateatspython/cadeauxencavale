@@ -57,7 +57,7 @@ def ajout_utilisateur():
                 return redirect(url_for("accueil"))
             else: 
                 for erreur in donnees:
-                    flash(erreur, "error")
+                    flash(erreur, "danger")
         except Exception as e:
             db.session.rollback()
 
@@ -104,15 +104,15 @@ def connexion():
         utilisateur = Utilisateur.query.filter_by(email=email).first()
 
         if not utilisateur:
-            flash("Cet email n'est pas reconnu.", "error")
+            flash("Cet email n'est pas reconnu.", "danger")
             return render_template("partials/formulaires/connexion.html", form=form, email=email, pseudo=pseudo, password=password)
 
         if utilisateur.pseudo != pseudo:
-            flash("Ce pseudo n'est pas reconnu.", "error")
+            flash("Ce pseudo n'est pas reconnu.", "danger")
             return render_template("partials/formulaires/connexion.html", form=form, email=email, pseudo=pseudo, password=password)
 
         if not check_password_hash(utilisateur.password, password):
-            flash("Ce mot de passe n'est pas reconnu.", "error")
+            flash("Ce mot de passe n'est pas reconnu.", "danger")
             return render_template("partials/formulaires/connexion.html", form=form, email=email, pseudo=pseudo, password=password)
 
         login_user(utilisateur)
