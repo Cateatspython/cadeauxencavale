@@ -80,3 +80,17 @@ main {
     background-color:#ffb612 !important;  
     border-color: #ffb612 !important;  
 }
+
+
+
+.card-header .bi {
+    transition: .3s transform ease-in-out;
+}
+
+.card-header .collapsed .bi {
+    transform: rotate(-90deg);
+}
+
+.card-header a, .card-header a:hover{
+    color:#d52b1e;
+}

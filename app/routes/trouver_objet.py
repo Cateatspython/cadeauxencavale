@@ -93,7 +93,7 @@ def trouver_objet():
         
         # Soulever une erreur si les champs sont vides
         if not (type_d_objet and gares and date_trajet and heure_approx_perte) or gares == []:
-            flash("Veuillez renseigner tous les champs du formulaire", "error")
+            flash("Veuillez renseigner tous les champs du formulaire.", "danger")
             return redirect(url_for("trouver_objet"))
 
         # Convertir la liste des gares en liste d'objets
@@ -101,7 +101,7 @@ def trouver_objet():
 
         # Limiter le nombre de gares à deux maximum
         if len(gares) > 2 :
-            flash("Veuillez sélectionner au maximum deux gares.", "error")
+            flash("Veuillez sélectionner au maximum deux gares.", "danger")
             return redirect(url_for("trouver_objet"))
 
         # Combine date_trajet et heure_approx_perte en datetime ISO 8601
@@ -110,12 +110,12 @@ def trouver_objet():
         try:
             date_heure_perte = datetime.fromisoformat(f"{date_trajet}T{heure_approx_perte}:00+01:00")
         except ValueError:
-            flash("Format de date ou heure invalide.", "error")
+            flash("Format de date ou heure invalide.", "danger")
             return redirect(url_for("trouver_objet"))
 
         # Vérifier si la date de perte est entre la date de début et la date de fin des vacances de Noël
         if not (debut_vacances_noel <= date_heure_perte <= fin_vacances_noel):
-            flash("La date de perte doit être entre le 20 décembre 2024 et le 6 janvier 2025.", "error")
+            flash("La date de perte doit être entre le 20 décembre 2024 et le 6 janvier 2025.", "danger")
             return redirect(url_for("trouver_objet"))
 
         #Message de validation du formulaire si aucun problème n'est rencontré
@@ -308,7 +308,7 @@ def ajouter_favori():
                 flash("Gare ajoutée aux favoris avec succès", "success")
                 return jsonify({"status": "success", "message": "Gare ajoutée aux favoris avec succès"})
         else:
-            flash("Utilisateur non connecté", "error")
+            flash("Utilisateur non connecté", "info")
             return jsonify({"status": "error", "message": "Utilisateur non connecté"})
     except Exception as e:
             db.session.rollback()    

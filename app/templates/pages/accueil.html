@@ -7,15 +7,13 @@
 
 <!-- Affichage des messages d'erreur-->
 {% with messages = get_flashed_messages(with_categories=true) %}
-{% if messages %}
-    <div class="alert-container mt-3 center-text" style="display:inline-block">
-        {% for category, message in messages %}
-            <div class="alert alert-{{ category }}">
-                {{ message }}
-            </div>
-        {% endfor %}
-    </div>
-{% endif %}
+    {% if messages %}
+        <div class="alert-container mt-3 text-center mx-5">
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
 {% endwith %}
 <!--Description de l'application-->
 <div class="container min-vh-100 d-flex flex-column justify-content-center" id="cont_accueil">
