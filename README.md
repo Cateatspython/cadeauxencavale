@@ -3,7 +3,6 @@
 [![Contributors](https://img.shields.io/github/contributors/Cateatspython/cadeauxencavale.svg?style=for-the-badge)](https://github.com/Cateatspython/cadeauxencavale/graphs/contributors)
 [![Forks](https://img.shields.io/github/forks/Cateatspython/cadeauxencavale.svg?style=for-the-badge)](https://github.com/Cateatspython/cadeauxencavale/network/members)
 [![Issues](https://img.shields.io/github/issues/Cateatspython/cadeauxencavale.svg?style=for-the-badge)](https://github.com/Cateatspython/cadeauxencavale/issues)
-[![project_license](https://img.shields.io/github/license/Cateatspython/cadeauxencavale.svg?style=for-the-badge)]((https://github.com/Cateatspython/cadeauxencavale/blob/master/LICENSE.txt))
 
 
 
@@ -20,7 +19,6 @@
     Visualiser les objets perdus pendant les vacances de Noël dans les trains de la SNCF
   </p>
 </div>
-
 
 
 <!-- TABLE OF CONTENTS -->
