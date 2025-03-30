@@ -41,8 +41,6 @@
 <span id="about-the-project"></a>
 ## 🎁 À propos de ce projet
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
 Retrouvez les cadeaux de Noël que vous avez perdus dans le train, localisez les gares où vous les avez égarés, apprenez-en davantage sur les pertes au moment des fêtes et découvrez les objets recherchés par les utilisateurs, tout cela en quelques clics !
 
 <p align="right">(<a href="#readme-top">retour en haut</a>)</p>
@@ -77,12 +75,12 @@ Dans cette application, vous pouvez :
   ```sh
   git clone git@github.com:Cateatspython/cadeauxencavale.git
   ```
-2. Télécharger la base de données en .db et la mettre dans le dossier de l'application (ici Application_cadeaux)
-3. Installer virtualenv
+4. Télécharger la base de données en .db et la mettre dans le dossier de l'application (ici Application_cadeaux)
+5. Installer virtualenv
   ```sh
   python -m pip install --user virtualenv
   ```
-5. Dans le terminal, créer un environnement virtuel avec virtualenv dabs le dossier de l'application (ici Application_cadeaux), en le nommant par exemple env_cadeaux :
+6. Dans le terminal, créer un environnement virtuel avec virtualenv dabs le dossier de l'application (ici Application_cadeaux), en le nommant par exemple env_cadeaux :
   ```sh
   virtualenv env_cadeaux
   ```
@@ -90,7 +88,7 @@ Dans cette application, vous pouvez :
   ```sh
   source env_cadeaux/bin/activate
   ```
-9. Dans le dossier du dépôt git cadeauxencavale, créer le fichier .env et y coller le contenu suivant :
+8. Dans le dossier du dépôt git cadeauxencavale, créer le fichier .env et y coller le contenu suivant :
   ```sh
   RESOURCES_PER_PAGE=10
   SQLALCHEMY_DATABASE_URI=sqlite:////chemin/de/sa/base/de/donnees.db
@@ -102,11 +100,11 @@ Dans cette application, vous pouvez :
   ```
 Il faut donner à SQLALCHEMY_DATABASE_URI le chemin absolu de la base de données, et à SECRET_KEY une clef qui servira à chiffrer les mots de passe utilisateur.
 
-10. Installer les modules nécessaires au fonctionnement de l'application, en lançant cette commande en étant situé dans le dossier cadeauxencavale dans le terminal : 
+9. Installer les modules nécessaires au fonctionnement de l'application, en lançant cette commande en étant situé dans le dossier cadeauxencavale dans le terminal : 
   ```sh
   pip install -r requirements.txt
   ```
-11. Et enfin lancer l'application en copiant dans le terminal :
+10. Et enfin lancer l'application en copiant dans le terminal :
   ```sh
   python3 run.py
   ```
