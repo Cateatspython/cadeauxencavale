@@ -1,5 +1,5 @@
 from ..app import app, db
-from flask import render_template, request, flash, redirect, url_for, jsonify
+from flask import render_template, request, flash, redirect, url_for, jsonify, get_flashed_messages
 from sqlalchemy import or_, func
 from ..models.gares import Gares, Horaires, Objets_trouves, Declaration_de_perte
 from ..models.users import Historique, Gares_favorites
@@ -300,16 +300,18 @@ def ajouter_favori():
             favori_existant = Gares_favorites.query.filter_by(utilisateur_id=current_user.id, UIC=UIC).first()
             
             if favori_existant:
-                flash("Cette gare est déjà dans vos favoris", "info")
-                return jsonify({"status": "exists", "message": "Cette gare est déjà dans vos favoris"})
+                flash("Cette gare est déjà dans vos favoris", "info")    
             else:
                 Gares_favorites.ajout_favoris(utilisateur_id=current_user.id, UIC=UIC)
                 db.session.commit()
                 flash("Gare ajoutée aux favoris avec succès", "success")
-                return jsonify({"status": "success", "message": "Gare ajoutée aux favoris avec succès"})
         else:
-            flash("Utilisateur non connecté", "info")
-            return jsonify({"status": "error", "message": "Utilisateur non connecté"})
+            flash("Utilisateur non connecté", "danger")
     except Exception as e:
             db.session.rollback()    
+
+    # Récupérer tous les messages flash
+    messages = get_flashed_messages(with_categories=True)
+    return jsonify({"messages": messages})
+
     

@@ -1,53 +1,52 @@
 <script>
-    // Attendre que le DOM soit complètement chargé
-    document.addEventListener("DOMContentLoaded", function () {
-        // Sélectionner tous les boutons avec la classe "ajout-favoris-btn"
-        document.querySelectorAll(".ajout-favoris-btn").forEach(button => {
-            // Ajouter un écouteur d'événement "click" à chaque bouton
-            button.addEventListener("click", function () {
-                // Récupérer l'attribut UIC du bouton cliqué
-                let UIC = this.getAttribute("data-uic");
-    
-                // Envoyer une requête POST au serveur pour ajouter le favori
-                fetch("/ajouter-favori", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json" // Spécifier le type de contenu comme JSON
-                    },
-                    body: JSON.stringify({ UIC: UIC }) // Envoyer les données UIC dans le corps de la requête
-                })
-                .then(response => response.json()) // Analyser la réponse JSON
-                .then(data => {
-                    // Afficher un message flash avec les données de la réponse
-                    afficherMessageFlash(data.message, data.status);
-                })
-                .catch(error => console.error("Erreur :", error)); // Afficher les erreurs dans la console
-            });
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".ajout-favoris-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            let UIC = this.getAttribute("data-uic");
+
+            fetch("/ajouter-favori", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ UIC: UIC })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Données reçues :", data); // Debugging
+
+                if (data.messages && data.messages.length > 0) {
+                    afficherMessagesFlash(data.messages);
+                } else {
+                    console.warn("Aucun message flash reçu.");
+                }
+            })
+            .catch(error => console.error("Erreur :", error));
         });
-    
-        // Fonction pour afficher un message flash
-        function afficherMessageFlash(message, category) {
-            // Trouver le conteneur des messages flash, ou en créer un s'il n'existe pas
-            let flashContainer = document.querySelector(".flash-messages");
-            
-            if (!flashContainer) {
-                flashContainer = document.createElement("div");
-                flashContainer.className = "flash-messages";
-                document.body.insertBefore(flashContainer, document.body.firstChild);
-            }
-    
-            // Créer un nouvel élément de message flash
-            let flashMessage = document.createElement("div");
-            flashMessage.className = `alert alert-${category}`; // Ajouter la classe d'alerte appropriée en fonction de la catégorie
-            flashMessage.textContent = message; // Définir le texte du message
-    
-            // Ajouter le message flash au conteneur
-            flashContainer.appendChild(flashMessage);
-    
-            // Supprimer automatiquement le message flash après 5 secondes
-            setTimeout(() => {
-                flashMessage.remove();
-            }, 5000);
-        }
     });
+
+    function afficherMessagesFlash(messages) {
+        let flashContainer = document.querySelector(".alert-container");
+
+        if (!flashContainer) {
+            console.error("Le conteneur des messages flash est introuvable.");
+            return;
+        }
+
+        // Vider les anciens messages
+        flashContainer.innerHTML = "";
+
+        // Ajouter chaque message reçu
+        messages.forEach(([category, message]) => {
+            let flashMessage = document.createElement("div");
+            flashMessage.className = `alert alert-${category} mt-2`;
+            flashMessage.textContent = message;
+
+            flashContainer.appendChild(flashMessage);
+        });
+
+        console.log("Messages affichés :", flashContainer.innerHTML); // Debugging
+    }
+});
+
 </script>
