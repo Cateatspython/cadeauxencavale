@@ -94,6 +94,7 @@ git clone git@github.com:Cateatspython/cadeauxencavale.git
   ```sh
   RESOURCES_PER_PAGE=10
   SQLALCHEMY_DATABASE_URI=sqlite:////chemin/de/sa/base/de/donnees.db
+  DEBUG=False
   SECRET_KEY = inserer_clef_secrete_choisie
   SQLALCHEMY_ECHO=False
   WTF_CSRF_ENABLE=True
