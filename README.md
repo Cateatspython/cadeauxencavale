@@ -72,11 +72,11 @@ Dans cette application, vous pouvez :
 1. D'abord, si vous n'avez pas python : 
     - installer python en suivant <a href="https://www.docstring.fr/formations/faq/configuration/comment-installer-python-sur-mon-ordinateur/">ce tutoriel</a>
     - puis installer pip en suivant <a href="https://docs.python.org/fr/dev/installing/index.html">ce tutoriel</a>
-1. Créer un dossier pour y stocker les fichiers de l'application, par exemple Application_cadeaux
-1. Dans ce dossier, clôner à l'intérieur le dépôt github  :
-```sh
-git clone git@github.com:Cateatspython/cadeauxencavale.git
-```
+2. Créer un dossier pour y stocker les fichiers de l'application, par exemple Application_cadeaux
+3. Dans ce dossier, clôner à l'intérieur le dépôt github  :
+  ```sh
+  git clone git@github.com:Cateatspython/cadeauxencavale.git
+  ```
 2. Télécharger la base de données en .db et la mettre dans le dossier de l'application (ici Application_cadeaux)
 3. Installer virtualenv
   ```sh
