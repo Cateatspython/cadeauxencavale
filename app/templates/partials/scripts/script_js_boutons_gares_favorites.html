@@ -1,52 +1,52 @@
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".ajout-favoris-btn").forEach(button => {
-        button.addEventListener("click", function () {
-            let UIC = this.getAttribute("data-uic");
-
-            fetch("/ajouter-favori", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ UIC: UIC })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Données reçues :", data); // Debugging
-
-                if (data.messages && data.messages.length > 0) {
-                    afficherMessagesFlash(data.messages);
-                } else {
-                    console.warn("Aucun message flash reçu.");
-                }
-            })
-            .catch(error => console.error("Erreur :", error));
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".ajout-favoris-btn").forEach(button => {
+            button.addEventListener("click", function () {
+                let UIC = this.getAttribute("data-uic");
+    
+                fetch("/ajouter-favori", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ UIC: UIC })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Données reçues :", data); // Debugging
+    
+                    if (data.messages && data.messages.length > 0) {
+                        afficherMessagesFlash(data.messages);
+                    } else {
+                        console.warn("Aucun message flash reçu.");
+                    }
+                })
+                .catch(error => console.error("Erreur :", error));
+            });
         });
-    });
-
-    function afficherMessagesFlash(messages) {
-        let flashContainer = document.querySelector(".alert-container");
-
-        if (!flashContainer) {
-            console.error("Le conteneur des messages flash est introuvable.");
-            return;
+    
+        function afficherMessagesFlash(messages) {
+            let flashContainer = document.querySelector(".alert-container");
+    
+            if (!flashContainer) {
+                console.error("Le conteneur des messages flash est introuvable.");
+                return;
+            }
+    
+            // Vider les anciens messages
+            flashContainer.innerHTML = "";
+    
+            // Ajouter chaque message reçu
+            messages.forEach(([category, message]) => {
+                let flashMessage = document.createElement("div");
+                flashMessage.className = `alert alert-${category} mt-2`;
+                flashMessage.textContent = message;
+    
+                flashContainer.appendChild(flashMessage);
+            });
+    
+            console.log("Messages affichés :", flashContainer.innerHTML); // Debugging
         }
-
-        // Vider les anciens messages
-        flashContainer.innerHTML = "";
-
-        // Ajouter chaque message reçu
-        messages.forEach(([category, message]) => {
-            let flashMessage = document.createElement("div");
-            flashMessage.className = `alert alert-${category} mt-2`;
-            flashMessage.textContent = message;
-
-            flashContainer.appendChild(flashMessage);
-        });
-
-        console.log("Messages affichés :", flashContainer.innerHTML); // Debugging
-    }
-});
-
-</script>
+    });
+    
+    </script>

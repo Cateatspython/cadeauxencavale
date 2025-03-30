@@ -125,7 +125,7 @@ def trouver_objet():
 
         # Récupérer les gares correspondantes
         gares_result = Gares.query.filter(
-            or_(*[Gares.nom.ilike(f"%{gare.lower()}%") for gare in gares])
+            or_(*[Gares.nom.like(f"{gare.lower()}") for gare in gares])
         ).all()
 
         # Filtrer les objets trouvés par :
@@ -313,5 +313,3 @@ def ajouter_favori():
     # Récupérer tous les messages flash
     messages = get_flashed_messages(with_categories=True)
     return jsonify({"messages": messages})
-
-    

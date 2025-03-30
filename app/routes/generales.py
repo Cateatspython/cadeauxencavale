@@ -46,6 +46,7 @@ def ajout_utilisateur():
     form = AjoutUtilisateur()
 
     if form.validate_on_submit():
+        print("Validation réussie")
         try:
             statut, donnees = Utilisateur.ajout(
                 pseudo=request.form.get("pseudo", None),
@@ -54,10 +55,18 @@ def ajout_utilisateur():
             )
 
             if statut is True:
-                return redirect(url_for("accueil"))
+                utilisateur = Utilisateur.query.filter_by(email=request.form.get("email")).first()
+
+                if utilisateur :
+                    login_user(utilisateur)
+                    print(current_user.is_authenticated)
+                    flash("Inscription réussie, vous êtes maintenant connecté.", "success")
+                    return redirect(url_for("moncompte"))
+
             else: 
                 for erreur in donnees:
                     flash(erreur, "danger")
+
         except Exception as e:
             db.session.rollback()
 
