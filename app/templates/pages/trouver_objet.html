@@ -4,6 +4,19 @@
 
 {% block content %}
 
+{% set all_messages = get_flashed_messages(with_categories=true) %}
+
+{% set general_messages = [] %}
+{% set favori_messages = [] %}
+
+{% for category, message in all_messages %}
+    {% if "favori" in category %}
+        {% set _ = favori_messages.append((category, message)) %}
+    {% else %}
+        {% set _ = general_messages.append((category, message)) %}
+    {% endif %}
+{% endfor %}
+
 <h1 class="my-3 text-center">Recherche d'objets trouvés</h1>
 
 <div class="card m-5 p-4">
@@ -17,7 +30,7 @@
     </h5>
     <div id="collapse-example" class="collapse show" aria-labelledby="heading-example">
         <div class="card-body">
-            <p>Vous avez égaré quelque chose en gare ou durant un trajet ? Pas de panique, ce formulaire est là pour vous aider !<br/>    
+            <p>Vous avez égaré un objet en gare ou durant un trajet ? Pas de panique, ce formulaire est là pour vous aider !<br/>    
             <span class="font-weight-bold">👜 Type d’objet</span><br/>
             Commencez par sélectionner le type d’objet perdu dans la liste déroulante.<br/>
             
@@ -26,15 +39,15 @@
                 Si vous savez où vous avez perdu votre objet, choisissez une seule gare.<br/>
             
                 Si vous l’avez perdu en voyage, sélectionnez la gare de départ et celle d’arrivée.<br/>
-                Tapez le nom d’une gare, laissez-vous guider par l’autocomplétion, et cliquez dessus pour la valider. Elle s’affichera en dessous avec une croix pour la retirer si besoin.<br/>
+                Tapez le nom d’une gare, laissez-vous guider par l’autocomplétion, et cliquez sur le nom choisi suggéré par l'autocomplétion. Cliquez ensuite en dehors de la case pour valider la sélection. Elle s’affichera en dessous avec une croix pour la retirer si besoin.<br/>
             
             <span class="font-weight-bold">📅 Date du trajet</span><br/>
-            Indiquez la date à laquelle vous avez perdu votre objet.<br/>
+            Indiquez la date à laquelle vous avez perdu votre objet, entre le 20 décembre 2024 et le 6 janvier 2025.<br/>
             
             <span class="font-weight-bold">⏳ Heure approximative de perte</span><br/>
             Pas besoin d’être précis à la minute près ! Une estimation suffira.<br/>
             
-            💡 Une fois le formulaire soumis, vous pourrez voir combien d’objets du type sélectionné ont été retrouvés dans la ou les gares choisies, depuis la date et l’heure indiquées jusqu’à la fin des vacances de Noël 2024. Bonne recherche ! 🎄🔎</p>
+            💡 Une fois le formulaire soumis, vous pourrez voir combien d’objets du type sélectionné ont été retrouvés dans la ou les gares choisies, depuis la date et l’heure indiquées jusqu’à la fin des vacances de Noël 2024-2025. Bonne recherche ! 🎄🔎</p>
         </div>
     </div>
 </div>
@@ -84,6 +97,7 @@
                 
             <div class="col-md-6">
                 <!-- Affichage des horaires seulement si la gare en a -->
+                {% set jours_ordre = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"] %}
                 {% if gare.horaires %}
                 <h3>Horaires</h3>
                 <table>
@@ -95,12 +109,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for jour, horaires in gare.horaires.items() %}
+                        {% for jour in jours_ordre %}
+                        {% if gare.horaires.get(jour) %}
                             <tr>
                                 <td>{{ jour }}</td>
-                                <td>{{ horaires.horaires_jour_normal }}</td>
-                                <td>{{ horaires.horaires_jour_ferie }}</td>
+                                <td>{{ gare.horaires[jour].get("horaires_jour_normal", "Non disponible") }}</td>
+                        <td>{{ gare.horaires[jour].get("horaires_jour_ferie", "Non disponible") }}</td>
                             </tr>
+                        {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>
